@@ -23,7 +23,8 @@
   "homepage": "https://github.com/AndreiVasilev/zotdiet#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "firebase-admin": "^9.4.2"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",

@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+// const admin = require('firebase-admin');
 
 const app = express();
 app.use(bodyParser.json());
@@ -9,6 +10,12 @@ app.use(bodyParser.json());
 
 //IMPORT ROUTES
 // require('./routes/userRoutes')(app);
+
+// const serviceAccount = require("path/to/serviceAccountKey.json");
+//
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount)
+// });
 
 if (process.env.NODE_ENV === 'production') {
   const path = require('path');
