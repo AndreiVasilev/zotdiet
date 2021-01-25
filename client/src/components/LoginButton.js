@@ -1,11 +1,16 @@
 import * as React from "react";
 import {fitClient} from "../services/GoogleFitService";
+import {GoogleLogin, GoogleLogout} from "react-google-login";
 
-class LoginButton extends React.Component {
+export default class LoginButton extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {loggedIn: fitClient.isLoggedIn()};
+        this.state = {loggedIn: false};
+    }
+
+    componentDidMount() {
+        this.state.loggedIn = fitClient.isLoggedIn();
     }
 
     render() {
