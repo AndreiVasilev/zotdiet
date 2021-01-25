@@ -24,15 +24,20 @@ class UserService {
     return ReactSession.get(this._LOGGED_IN);
   }
 
-  login(response) {
+  async login(response) {
     if (response.code) {
-      ReactSession.set(this._LOGGED_IN, true);
-      // TODO send login request with tokenID to backend
-      return true;
+      const serverResponse = await axios.post('/api/user/login', {code: response.code})
+          .catch(err => {
+            console.error('Unable to login', err);
+          });
+
+      if (serverResponse && serverResponse.status === 200) {
+        ReactSession.set(this._LOGGED_IN, true);
+        return true;
+      }
     }
 
-    // TODO not sure when/if this can happen and not sure what to do if it does
-    alert('Unable to access Google Fit data. Please logout and try again.');
+    alert('Unable to login. Thank you, come again.');
     return false;
   }
 
