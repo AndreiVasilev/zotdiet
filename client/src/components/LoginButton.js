@@ -1,5 +1,5 @@
 import * as React from "react";
-import {fitClient} from "../services/GoogleFitService";
+import {userService} from "../services/UserService";
 import {GoogleLogin, GoogleLogout} from "react-google-login";
 
 export default class LoginButton extends React.Component {
@@ -10,35 +10,35 @@ export default class LoginButton extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({loggedIn: fitClient.isLoggedIn()});
+        this.setState({loggedIn: userService.isLoggedIn()});
     }
 
     render() {
         return (this.state.loggedIn ?
             <GoogleLogout
-                clientId={fitClient.CLIENT_ID}
+                clientId={userService.CLIENT_ID}
                 buttonText='Logout'
                 onLogoutSuccess={() => this.logout()}
                 onFailure={(res) => this.handleLogoutFailure(res)}>
             </GoogleLogout> :
             <GoogleLogin
-                clientId={fitClient.CLIENT_ID}
+                clientId={userService.CLIENT_ID}
                 buttonText='Login'
                 onSuccess={(res) => this.login(res)}
                 onFailure={(res) => this.handleLoginFailure(res)}
                 cookiePolicy={'single_host_origin'}
                 responseType='code'
-                scope={fitClient.SCOPES}
+                scope={userService.SCOPES}
             />
         );
     }
 
     login(response) {
-        this.setState({loggedIn: fitClient.login(response)});
+        this.setState({loggedIn: userService.login(response)});
     }
 
     logout() {
-        this.setState({loggedIn: fitClient.logout()});
+        this.setState({loggedIn: userService.logout()});
     }
 
     // TODO include response details in notification to user

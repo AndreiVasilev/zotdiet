@@ -1,7 +1,7 @@
 import {ReactSession} from 'react-client-session';
 import axios from 'axios';
 
-class GoogleFitService {
+class UserService {
 
   constructor() {
     this._LOGGED_IN = 'loggedIn';
@@ -38,7 +38,6 @@ class GoogleFitService {
 
   logout() {
     ReactSession.set(this._LOGGED_IN, false);
-    ReactSession.set('name', '');
 
     // TODO send logout request to backend
     return true;
@@ -46,5 +45,5 @@ class GoogleFitService {
 }
 
 // Export a singleton instance of this service
-const fitClient = new GoogleFitService();
-export {fitClient};
+const userService = new UserService();
+export {userService};
