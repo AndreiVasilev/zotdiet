@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {ReactSession} from "react-client-session";
+
+ReactSession.setStoreType("sessionStorage");
 
 ReactDOM.render(
   <React.StrictMode>
