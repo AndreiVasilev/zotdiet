@@ -34,11 +34,11 @@ export default class LoginButton extends React.Component {
     }
 
     login(response) {
-        this.setState({loggedIn: userService.login(response)});
+        userService.login(response).then(status => this.setState({loggedIn: status}));
     }
 
     logout() {
-        this.setState({loggedIn: userService.logout()});
+        userService.logout().then(status => this.setState({loggedIn: !status}));
     }
 
     // TODO include response details in notification to user
