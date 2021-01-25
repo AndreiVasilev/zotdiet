@@ -38,10 +38,10 @@ class GoogleFitService {
 
   logout(response) {
     ReactSession.set(this._LOGGED_IN, false);
-    ReactSession.set(this._ACCESS_TOKEN, '');
     ReactSession.set('name', '');
 
     // TODO send logout request to backend
+    return true;
   }
 }
 
