@@ -10,7 +10,7 @@ export default class LoginButton extends React.Component {
     }
 
     componentDidMount() {
-        this.state.loggedIn = fitClient.isLoggedIn();
+        this.setState({loggedIn: fitClient.isLoggedIn()});
     }
 
     render() {
@@ -34,12 +34,11 @@ export default class LoginButton extends React.Component {
     }
 
     login(response) {
-        this.state.loggedIn = fitClient.login(response);
+        this.setState({loggedIn: fitClient.login(response)});
     }
 
     logout(response) {
-        fitClient.logout(response);
-        this.state.loggedIn = false;
+        this.setState({loggedIn: fitClient.logout(response)});
     }
 
     // TODO include response details in notification to user
