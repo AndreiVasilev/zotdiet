@@ -14,11 +14,12 @@ $ npm install
 
 ## Running in Dev Mode
 To run the project in development mode, you need to set the following environment variables. Replace each <value>
-with the values from our project on Google cloud under APIs & Services > Credentials.
+with the values from our project on Google cloud, found under APIs & Services > Credentials.
 ```
 REACT_APP_GOOGLE_CLIENT_ID=<Client ID>
 GOOGLE_API_KEY=<API Key>
 GOOGLE_CLIENT_SECRET=<Secret Key>
+GOOGLE_AUTH_REDIRECT=<Redirect URL>
 ```
 
 Then, to run the project call the following from the root 'zotdiet' directory :
