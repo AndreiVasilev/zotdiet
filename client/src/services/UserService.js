@@ -41,7 +41,7 @@ class UserService {
     return false;
   }
 
-  logout() {
+  async logout() {
     ReactSession.set(this._LOGGED_IN, false);
 
     // TODO send logout request to backend
