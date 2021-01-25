@@ -25,7 +25,7 @@ class GoogleFitService {
   }
 
   login(response) {
-    if (response.tokenId) {
+    if (response.code) {
       ReactSession.set(this._LOGGED_IN, true);
       // TODO send login request with tokenID to backend
       return true;
@@ -36,7 +36,7 @@ class GoogleFitService {
     return false;
   }
 
-  logout(response) {
+  logout() {
     ReactSession.set(this._LOGGED_IN, false);
     ReactSession.set('name', '');
 

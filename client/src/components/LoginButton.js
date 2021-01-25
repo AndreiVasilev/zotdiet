@@ -18,16 +18,16 @@ export default class LoginButton extends React.Component {
             <GoogleLogout
                 clientId={fitClient.CLIENT_ID}
                 buttonText='Logout'
-                onLogoutSuccess={this.logout}
-                onFailure={this.handleLogoutFailure}>
+                onLogoutSuccess={() => this.logout()}
+                onFailure={(res) => this.handleLogoutFailure(res)}>
             </GoogleLogout> :
             <GoogleLogin
                 clientId={fitClient.CLIENT_ID}
                 buttonText='Login'
-                onSuccess={this.login}
-                onFailure={this.handleLoginFailure}
+                onSuccess={(res) => this.login(res)}
+                onFailure={(res) => this.handleLoginFailure(res)}
                 cookiePolicy={'single_host_origin'}
-                responseType='code,token'
+                responseType='code'
                 scope={fitClient.SCOPES}
             />
         );
@@ -37,8 +37,8 @@ export default class LoginButton extends React.Component {
         this.setState({loggedIn: fitClient.login(response)});
     }
 
-    logout(response) {
-        this.setState({loggedIn: fitClient.logout(response)});
+    logout() {
+        this.setState({loggedIn: fitClient.logout()});
     }
 
     // TODO include response details in notification to user
