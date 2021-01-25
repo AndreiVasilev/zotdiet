@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 // require('./models/User');
 
 //IMPORT ROUTES
-// require('./routes/userRoutes')(app);
+require('./routes/userRoutes')(app);
 
 // const serviceAccount = require("path/to/serviceAccountKey.json");
 //
