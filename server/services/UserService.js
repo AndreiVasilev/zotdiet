@@ -10,4 +10,20 @@ class UserService {
         );
         google.options({auth: this._oauth2Client});
     }
+
+    async login(code) {
+        const {tokens} = await this._oauth2Client.getToken(code)
+            .catch(err => {
+                console.error(`Unable to generate access token from provided ${code}`, err)
+            });
+
+        if (tokens) {
+            this._oauth2Client.setCredentials(tokens);
+            return true;
+        }
+        return false;
+    }
 }
+
+// Export singleton instance of UserService
+module.exports = new UserService();
