@@ -9,7 +9,9 @@ class UserService {
     this._SCOPES = 'https://www.googleapis.com/auth/fitness.activity.read ' +
       'https://www.googleapis.com/auth/fitness.body.read ' +
       'https://www.googleapis.com/auth/fitness.nutrition.read ' +
-      'https://www.googleapis.com/auth/fitness.heart_rate.read';
+      'https://www.googleapis.com/auth/fitness.heart_rate.read ' +
+      'https://www.googleapis.com/auth/userinfo.email ' +
+      'https://www.googleapis.com/auth/userinfo.profile';
   }
 
   get CLIENT_ID() {
