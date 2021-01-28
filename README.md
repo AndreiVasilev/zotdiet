@@ -20,6 +20,7 @@ REACT_APP_GOOGLE_CLIENT_ID=<Client ID>
 GOOGLE_API_KEY=<API Key>
 GOOGLE_CLIENT_SECRET=<Secret Key>
 GOOGLE_AUTH_REDIRECT=<Redirect URL>
+EXPRESS_SESSION_SECRET=<random secret from the internetz>
 ```
 
 Then, to run the project call the following from the root 'zotdiet' directory :
