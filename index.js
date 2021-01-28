@@ -1,31 +1,39 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-// const admin = require('firebase-admin');
+const session = require('express-session')
 
+const prodMode = process.env.NODE_ENV === 'production';
 const app = express();
+
 app.use(bodyParser.json());
 
-// IMPORT MODELS
-// require('./models/User');
+// Initialize server side user session parameters
+app.use(session({
+  secret: process.env.NODE_SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    secure: prodMode,
+  }
+}));
 
-//IMPORT ROUTES
-require('./server/routes/userRoutes')(app);
+// Set application port
+app.set('port', process.env.PORT || 5000);
+app.listen(app.get('port'), () => {
+  console.log(`app running on port ${app.get('port')}`)
+});
 
-// const serviceAccount = require("path/to/serviceAccountKey.json");
-//
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount)
-// });
+// Import API routes
+require('./server/routes/UserRoutes')(app);
 
-if (process.env.NODE_ENV === 'production') {
+
+// Configure client to use correct build directory
+// if app is running in production mode
+if (prodMode) {
   const path = require('path');
   app.use(express.static('client/build'));
   app.get('*', (req,res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
   })
 }
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`app running on port ${PORT}`)
-});
