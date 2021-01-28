@@ -10,7 +10,9 @@ export default class LoginButton extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({loggedIn: userService.isLoggedIn()});
+        userService.isLoggedIn().then(status => {
+            this.setState({loggedIn: status});
+        });
     }
 
     render() {

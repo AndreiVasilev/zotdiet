@@ -1,10 +1,8 @@
-import {ReactSession} from 'react-client-session';
 import axios from 'axios';
 
 class UserService {
 
   constructor() {
-    this._LOGGED_IN = 'loggedIn';
     this._CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     this._SCOPES = 'https://www.googleapis.com/auth/fitness.activity.read ' +
       'https://www.googleapis.com/auth/fitness.body.read ' +
@@ -22,8 +20,11 @@ class UserService {
     return this._SCOPES;
   }
 
-  isLoggedIn() {
-    return ReactSession.get(this._LOGGED_IN);
+  async isLoggedIn() {
+    const response = await axios.get('/api/user/loggedIn').catch(err =>
+      console.error('Unable to determine login status.')
+    );
+    return response.data.loggedIn;
   }
 
   async login(response) {
@@ -34,7 +35,6 @@ class UserService {
           });
 
       if (serverResponse && serverResponse.status === 200) {
-        ReactSession.set(this._LOGGED_IN, true);
         return true;
       }
     }
@@ -44,8 +44,6 @@ class UserService {
   }
 
   async logout() {
-    ReactSession.set(this._LOGGED_IN, false);
-
     // TODO send logout request to backend
     return true;
   }
