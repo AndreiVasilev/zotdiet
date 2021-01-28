@@ -10,6 +10,7 @@ app.use(bodyParser.json());
 
 //IMPORT ROUTES
 require('./server/routes/userRoutes')(app);
+require('./server/routes/spoonRoutes')(app);
 
 // const serviceAccount = require("path/to/serviceAccountKey.json");
 //
