@@ -3,15 +3,14 @@ const {userService} = require('../services/UserService');
 module.exports = (app) => {
 
     app.post('/api/user/login', async (req, res) => {
-        // const result = await userService.login(req.body.code);
-        // if (result) {
-        //     res.send('login success');
-        // } else {
-        //     res.status(500);
-        //     res.send('login failure');
-        // }
-        req.session.loggedIn = true;
-        res.send('Login success');
+        const accessToken = await userService.login(req.body.code);
+        if (accessToken) {
+            req.session.loggedIn = true;
+            res.send('login success');
+        } else {
+            res.status(500);
+            res.send('login failure');
+        }
     });
 
     app.post('/api/user/logout', async (req, res) => {
@@ -30,5 +29,4 @@ module.exports = (app) => {
         res.type('application/json')
         res.json({loggedIn: req.session.loggedIn ? req.session.loggedIn : false});
     });
-
 }
