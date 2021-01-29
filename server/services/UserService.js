@@ -16,6 +16,7 @@ class UserService {
             appId: process.env.FIREBASE_APP_ID
         };
         firebase.initializeApp(firebaseConfig);
+        this.database = firebase.database();
     }
 
     /**
@@ -45,14 +46,13 @@ class UserService {
      */
     async createUser(googleUser) {
         return new Promise((resolve, reject) => {
-            const database = firebase.database();
             const user = new User(
               googleUser.id,
               googleUser.firstName,
               googleUser.lastName,
               googleUser.picture);
 
-            database.ref(`/users/${user.id}`).set(user)
+            this.database.ref(`/users/${user.id}`).set(user)
               .then(_ => resolve(user))
               .catch(err => {
                 console.error(`Unable to create user ${user.id}`, err);
@@ -66,8 +66,7 @@ class UserService {
      */
     async getUser(userId) {
         return new Promise((resolve, reject) => {
-            const database = firebase.database();
-            database.ref(`/users/${userId}`).once('value')
+            this.database.ref(`/users/${userId}`).once('value')
               .then(snapshot => resolve(snapshot.val()))
               .catch(err => reject(err));
         });
@@ -112,7 +111,7 @@ class UserService {
         return new google.auth.OAuth2(
           process.env.REACT_APP_GOOGLE_CLIENT_ID,
           process.env.GOOGLE_CLIENT_SECRET,
-          process.env.GOOGLE_AUTH_REDIRECT
+          'postmessage'
         );
     }
 }
