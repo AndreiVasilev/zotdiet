@@ -20,7 +20,6 @@ can be found in the firebase console project settings under general at the botto
 REACT_APP_GOOGLE_CLIENT_ID=<Client ID>
 GOOGLE_API_KEY=<API Key>
 GOOGLE_CLIENT_SECRET=<Secret Key>
-GOOGLE_AUTH_REDIRECT=<Redirect URL>
 EXPRESS_SESSION_SECRET=<random secret from the internetz>
 FIREBASE_API_KEY=<Firebase/Project-Settings/General>
 FIREBASE_AUTH_DOMAIN=<Firebase/Project-Settings/General>
