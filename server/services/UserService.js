@@ -2,7 +2,7 @@ const {google} = require('googleapis');
 
 class UserService {
 
-    async login(code, session) {
+    async login(code) {
         const oAuthClient = this.getOAuthClient();
         const {tokens} = await oAuthClient.getToken(code)
             .catch(err => {

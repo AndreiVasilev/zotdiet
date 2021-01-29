@@ -44,7 +44,9 @@ class UserService {
   }
 
   async logout() {
-    // TODO send logout request to backend
+    const response = await axios.post('/api/user/logout').catch(err =>
+      console.error('Unable to logout.')
+    );
     return true;
   }
 }

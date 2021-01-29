@@ -11,6 +11,15 @@ module.exports = (app) => {
         //     res.status(500);
         //     res.send('login failure');
         // }
+        req.session.loggedIn = true;
+        res.send('Login success');
+    });
+
+    app.post('/api/user/logout', async (req, res) => {
+        req.session.destroy(function(err) {
+            console.log(err);
+        });
+        res.send('Logout success');
     });
 
     app.get('/api/user/loggedIn', async (req, res) => {
