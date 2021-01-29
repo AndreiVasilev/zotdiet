@@ -27,14 +27,14 @@ class UserService {
     return response.data.loggedIn;
   }
 
-  async login(code) {
-    if (code) {
-      const serverResponse = await axios.post('/api/user/login', {code: code})
+  async login(authCode) {
+    if (authCode) {
+      const response = await axios.post('/api/user/login', {code: authCode})
           .catch(err => {
             console.error('Unable to login', err);
           });
 
-      if (serverResponse && serverResponse.status === 200) {
+      if (response && response.status === 200) {
         return true;
       }
     }
