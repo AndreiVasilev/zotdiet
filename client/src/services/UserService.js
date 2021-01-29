@@ -24,7 +24,7 @@ class UserService {
     const response = await axios.get('/api/user/loggedIn').catch(err =>
       console.error('Unable to determine login status.')
     );
-    return response.data.loggedIn;
+    return response ? response.data.loggedIn : false;
   }
 
   async login(authCode) {
