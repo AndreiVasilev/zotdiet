@@ -27,9 +27,9 @@ class UserService {
     return response.data.loggedIn;
   }
 
-  async login(response) {
-    if (response.code) {
-      const serverResponse = await axios.post('/api/user/login', {code: response.code})
+  async login(code) {
+    if (code) {
+      const serverResponse = await axios.post('/api/user/login', {code: code})
           .catch(err => {
             console.error('Unable to login', err);
           });
@@ -45,9 +45,15 @@ class UserService {
 
   async logout() {
     const response = await axios.post('/api/user/logout').catch(err =>
-      console.error('Unable to logout.')
+      console.error('Unable to logout.', err)
     );
-    return true;
+
+    if (response && response.status === 200) {
+      return true;
+    }
+
+    alert('Unable to logout. Thank you, come again.');
+    return false;
   }
 }
 
