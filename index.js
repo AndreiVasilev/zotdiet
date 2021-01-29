@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 
 // Initialize server side user session parameters
 app.use(session({
-  secret: process.env.NODE_SESSION_SECRET,
+  secret: process.env.EXPRESS_SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {

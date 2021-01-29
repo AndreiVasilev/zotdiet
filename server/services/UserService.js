@@ -1,45 +1,114 @@
 const {google} = require('googleapis');
+const {User} = require('../models/User');
+const firebase = require("firebase/app");
+require('firebase/database');
 
 class UserService {
 
+    constructor() {
+        const firebaseConfig = {
+            apiKey: process.env.FIREBASE_API_KEY,
+            authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+            databaseURL: process.env.FIREBASE_DATABASE_URL,
+            projectId: process.env.FIREBASE_PROJECT_ID,
+            storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+            messagingSenderId: process.env.FIREBASE_MESSAGE_SENDER_ID,
+            appId: process.env.FIREBASE_APP_ID
+        };
+        firebase.initializeApp(firebaseConfig);
+    }
+
     /**
      * Logs a user in by taking the authorization code provided by the Google login button,
-     * and generates an access token that can be used to acquire the users information.
-     *
-     * @param authCode - The Google API authorization code provided by client login
-     * @return {Promise<Credentials>}
+     * generates a Google API access token, and acquires the user's Google profile info.
      */
     async login(authCode) {
-        const oAuthClient = this.getOAuthClient();
-        const {tokens} = await oAuthClient.getToken(authCode)
-            .catch(err => {
-                console.error('Unable to generate access token from provided authorization code', err)
-            });
-
-        if (!tokens) {
-            throw new Error('Login failed.');
+        const token = await this.getAccessToken(authCode);
+        if (!token) {
+            return null;
         }
 
+        const gUser = await this.getGoogleUser(token);
+        if (!gUser) {
+            return null;
+        }
+
+        return {
+            token: token,
+            googleUser: gUser,
+        };
+    }
+
+    /**
+     * Creates and stores a new user based on the profile
+     * values of the logged in Google User
+     */
+    async createUser(googleUser) {
+        return new Promise((resolve, reject) => {
+            const database = firebase.database();
+            const user = new User(
+              googleUser.id,
+              googleUser.firstName,
+              googleUser.lastName,
+              googleUser.picture);
+
+            database.ref(`/users/${user.id}`).set(user)
+              .then(_ => resolve(user))
+              .catch(err => {
+                console.error(`Unable to create user ${user.id}`, err);
+                reject(err);
+            });
+        });
+    }
+
+    /**
+     * Gets a user from the database via their Google user ID.
+     */
+    async getUser(userId) {
+        return new Promise((resolve, reject) => {
+            const database = firebase.database();
+            database.ref(`/users/${userId}`).once('value')
+              .then(snapshot => resolve(snapshot.val()))
+              .catch(err => reject(err));
+        });
+    }
+
+    /**
+     * Generates a Google API access token from the provided authorization code
+     */
+    async getAccessToken(authCode) {
+        const oAuthClient = this._getOAuthClient();
+        const {tokens} = await oAuthClient.getToken(authCode)
+          .catch(err => {
+              console.error('Unable to generate access token from provided authorization code', err)
+          });
         return tokens;
     }
 
     /**
-     * Gets the Google ID of the currently logged in User.
+     * Gets the ID and name of the currently logged in Google user.
      */
-    async getUserId(accessToken) {
-        const oauth2Client = this.getOAuthClient();
-        oauth2Client.setCredentials(accessToken);
+    async getGoogleUser(accessToken) {
         return new Promise((resolve, reject) => {
+            const oauth2Client = this._getOAuthClient();
+            oauth2Client.setCredentials(accessToken);
             google.oauth2({auth: oauth2Client, version: 'v2'}).userinfo.get((err, res) => {
-                  if (err) { reject(err); }
-                  resolve(res.data.id);
+                  if (err) {
+                      console.error('Unable to get Google profile info', err);
+                      reject(err);
+                  }
+                  resolve({
+                      id: res.data.id,
+                      firstName: res.data.given_name,
+                      lastName: res.data.family_name,
+                      picture: res.data.picture
+                  });
               }
             );
         });
     }
 
-
-    getOAuthClient() {
+    _getOAuthClient() {
         return new google.auth.OAuth2(
           process.env.REACT_APP_GOOGLE_CLIENT_ID,
           process.env.GOOGLE_CLIENT_SECRET,
