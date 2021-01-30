@@ -1,7 +1,7 @@
 import * as React from "react";
+import {useEffect, useState} from "react";
 import {userService} from "../services/UserService";
 import {GoogleLogin, GoogleLogout} from "react-google-login";
-import {useEffect, useState} from "react";
 
 function LoginButton() {
 
