@@ -1,0 +1,57 @@
+#meal-plan-container {
+    border: 5px solid black;
+    background-color: pink;
+    margin-left: 50px;
+}
+
+.meal-plan-tab {
+    background-color: var(--theme-primary);
+    color: black;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.daily-meals-container {
+    margin-top: 35px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.modal-section-name {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.modal-meal-cuisine {
+    font-size: 25px;
+    margin-bottom: 15px;
+}
+
+.center-content {
+    justify-content: center;
+}
+
+.meal-modal {
+    padding: 30px 50px;
+}
+
+.modal-content {
+    border-radius: 30px;
+}
+
+.modal-dialog {
+    max-width: 70%;
+}
+
+.heart-icon:hover {
+    cursor: pointer;
+}
+
+.heart-selected {
+    color: palevioletred;
+}
+
+.heart-unselected {
+    color: lightgray;
+}
