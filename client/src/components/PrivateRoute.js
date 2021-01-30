@@ -5,10 +5,12 @@ import {userService} from "../services/UserService";
 
 const PrivateRoute = ({component: Component, ...rest}) => {
 
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [state, setState] = useState({isLoaded: false, loggedIn: false});
 
   useEffect(() => {
-    const subscription = userService.isLoggedIn().subscribe(loggedIn => setLoggedIn(loggedIn));
+    const subscription = userService.isLoggedIn().subscribe(loggedIn => {
+        setState({isLoaded: true, loggedIn: loggedIn})
+    });
     return () => {
       subscription.unsubscribe();
     };
@@ -16,7 +18,7 @@ const PrivateRoute = ({component: Component, ...rest}) => {
 
   return (
     <Route {...rest} render={props => (
-      loggedIn ? <Component {...props} /> : <Redirect to={LOGIN} />
+      state.isLoaded ? (state.loggedIn ? <Component {...props} /> : <Redirect to={LOGIN} />) : null
     )} />
   );
 };

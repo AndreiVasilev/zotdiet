@@ -8,7 +8,9 @@ function LoginButton() {
     const [loggedIn, setLoggedIn] = useState(false);
 
     useEffect(() => {
-        const subscription = userService.isLoggedIn().subscribe(loggedIn => setLoggedIn(loggedIn));
+        const subscription = userService.isLoggedIn().subscribe(loggedIn => {
+            setLoggedIn(loggedIn);
+        });
         return () => {
             subscription.unsubscribe();
         };

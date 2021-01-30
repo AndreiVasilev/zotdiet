@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {BehaviorSubject} from "rxjs";
+import {Subject} from "rxjs";
 
 class UserService {
 
@@ -11,9 +11,9 @@ class UserService {
       'https://www.googleapis.com/auth/fitness.heart_rate.read ' +
       'https://www.googleapis.com/auth/userinfo.email ' +
       'https://www.googleapis.com/auth/userinfo.profile';
-    this.loggedIn = new BehaviorSubject(false);
+    this.loggedIn = new Subject();
     axios.get('/api/user/loggedIn')
-      .then(status => this.loggedIn.next(status.data.loggedIn))
+      .then(res => this.loggedIn.next(res.data.loggedIn))
       .catch(err => console.error('Unable to determine login status.', err));
   }
 

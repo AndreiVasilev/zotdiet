@@ -39,6 +39,6 @@ module.exports = (app) => {
 
     app.get('/api/user/loggedIn', async (req, res) => {
         res.type('application/json')
-        res.json({loggedIn: req.session.loggedIn});
+        res.json({loggedIn: req.session.loggedIn ? req.session.loggedIn : false});
     });
 }
