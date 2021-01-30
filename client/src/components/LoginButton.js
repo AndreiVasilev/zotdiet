@@ -1,19 +1,25 @@
 import * as React from "react";
 import {userService} from "../services/UserService";
 import {GoogleLogin, GoogleLogout} from "react-google-login";
+import {useEffect, useState} from "react";
 
-function LoginButton(props) {
+function LoginButton() {
 
-    const { loggedIn, setLoggedIn } = props;
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const subscription = userService.isLoggedIn().subscribe(loggedIn => setLoggedIn(loggedIn));
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
 
     const login = (response) => {
-        userService.login(response.code).then(status => {
-            setLoggedIn(status);
-        });
+        userService.login(response.code).then(loggedIn => setLoggedIn(loggedIn));
     }
 
     const logout = () => {
-        userService.logout().then(status => setLoggedIn(!status));
+        userService.logout().then(loggedOut => setLoggedIn(!loggedOut));
     }
 
     // TODO include response details in notification to user

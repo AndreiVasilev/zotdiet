@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {BehaviorSubject} from "rxjs";
 
 class UserService {
 
@@ -10,6 +11,10 @@ class UserService {
       'https://www.googleapis.com/auth/fitness.heart_rate.read ' +
       'https://www.googleapis.com/auth/userinfo.email ' +
       'https://www.googleapis.com/auth/userinfo.profile';
+    this.loggedIn = new BehaviorSubject(false);
+    axios.get('/api/user/loggedIn')
+      .then(status => this.loggedIn.next(status.data.loggedIn))
+      .catch(err => console.error('Unable to determine login status.', err));
   }
 
   get CLIENT_ID() {
@@ -20,11 +25,8 @@ class UserService {
     return this._SCOPES;
   }
 
-  async isLoggedIn() {
-    const response = await axios.get('/api/user/loggedIn').catch(err =>
-      console.error('Unable to determine login status.')
-    );
-    return response ? response.data.loggedIn : false;
+  isLoggedIn() {
+    return this.loggedIn;
   }
 
   async login(authCode) {
@@ -35,6 +37,7 @@ class UserService {
           });
 
       if (response && response.status === 200) {
+        this.loggedIn.next(true);
         return true;
       }
     }
@@ -49,6 +52,7 @@ class UserService {
     );
 
     if (response && response.status === 200) {
+      this.loggedIn.next(false);
       return true;
     }
 

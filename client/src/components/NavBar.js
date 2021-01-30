@@ -1,13 +1,21 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Navbar, Nav } from 'react-bootstrap';
 import "./NavBar.css"
 import logo from "../assets/logo.png";
 import { HOME, MEAL_PLAN, HEALTH_METRICS, PROFILE } from "../routes";
 import LoginButton from "./LoginButton";
+import {userService} from "../services/UserService";
 
-function NavBar(props) {
+function NavBar() {
 
-    const { loggedIn, setLoggedIn } = props;
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+      const subscription = userService.isLoggedIn().subscribe(loggedIn => setLoggedIn(loggedIn));
+      return () => {
+        subscription.unsubscribe();
+      };
+    }, [])
 
     return (
         <Navbar bg="dark" variant="dark" id="nav-bar">
@@ -27,7 +35,7 @@ function NavBar(props) {
                 <Nav.Link className="nav-link" href={PROFILE}>Profile</Nav.Link>
               </Nav> : <div/>
             }
-            <LoginButton loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
+            <LoginButton />
           </div>
         </Navbar>
     );
