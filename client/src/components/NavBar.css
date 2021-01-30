@@ -1,0 +1,34 @@
+#navbar-container {
+    background-color: var(--theme-secondary);
+    padding-bottom: 50px;
+}
+
+.nav-text {
+    font-size: 2.5rem;
+}
+
+#nav-brand {
+    font-weight: bold;
+}
+
+#nav-icon {
+    width: 60px;
+    margin-right: 10px;
+}
+
+#nav-links {
+    width: 100%;
+    margin-left: 30%;
+    display: flex;
+    justify-content: space-around;
+    font-size: 2rem;
+}
+
+.navbar-nav, .navbar-link, .nav-link {
+    color: black !important;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+
