@@ -20,8 +20,8 @@ function LoginButton() {
     }, []);
 
     const login = (response) => {
-        userService.login(response.code).then(loggedIn => {
-            setLoggedIn(loggedIn);
+        userService.login(response.code).then(status => {
+            setLoggedIn(status.loggedIn);
             history.push(HOME);
         });
     }

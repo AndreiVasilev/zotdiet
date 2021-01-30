@@ -38,12 +38,12 @@ class UserService {
 
       if (response && response.status === 200) {
         this.loggedIn.next(true);
-        return true;
+        return {loggedIn: true, isNew: response.data.isNew};
       }
     }
 
     alert('Unable to login. Thank you, come again.');
-    return false;
+    return {loggedIn: false};
   }
 
   async logout() {
@@ -58,6 +58,11 @@ class UserService {
 
     alert('Unable to logout. Thank you, come again.');
     return false;
+  }
+
+  async getUser() {
+    const response = await axios.get('/api/user').catch(err => console.error('Unable to get user', err));
+    return (response && response.status === 200) ? response.data : null;
   }
 }
 

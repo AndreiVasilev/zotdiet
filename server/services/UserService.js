@@ -55,7 +55,7 @@ class UserService {
             this.database.ref(`/users/${user.id}`).set(user)
               .then(_ => resolve(user))
               .catch(err => {
-                console.error(`Unable to create user ${user.id}`, err);
+                console.error(`Unable to create new user ${user.id}`, err);
                 reject(err);
             });
         });
