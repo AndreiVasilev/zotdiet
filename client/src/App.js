@@ -13,16 +13,16 @@ import PrivateRoute from "./components/PrivateRoute";
 function App() {
     return (
         <div>
-            <NavBar/>
-            <div id="main-content">
-                <Router>
+            <Router>
+                <NavBar/>
+                <div id="main-content">
                     <Route exact path={LOGIN} component={Login}/>
                     <PrivateRoute exact path={HOME} component={Home}/>
                     <PrivateRoute exact path={MEAL_PLAN} component={Home}/>
                     <PrivateRoute exact path={HEALTH_METRICS} component={Home}/>
                     <PrivateRoute exact path={PROFILE} component={Home}/>
-                </Router>
-            </div>
+                </div>
+            </Router>
         </div>
     );
 }

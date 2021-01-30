@@ -2,10 +2,13 @@ import * as React from "react";
 import {useEffect, useState} from "react";
 import {userService} from "../services/UserService";
 import {GoogleLogin, GoogleLogout} from "react-google-login";
+import {useHistory} from "react-router";
+import {HOME} from "../routes";
 
 function LoginButton() {
 
     const [loggedIn, setLoggedIn] = useState(false);
+    const history = useHistory();
 
     useEffect(() => {
         const subscription = userService.isLoggedIn().subscribe(loggedIn => {
@@ -17,7 +20,10 @@ function LoginButton() {
     }, []);
 
     const login = (response) => {
-        userService.login(response.code).then(loggedIn => setLoggedIn(loggedIn));
+        userService.login(response.code).then(loggedIn => {
+            setLoggedIn(loggedIn);
+            history.push(HOME);
+        });
     }
 
     const logout = () => {
