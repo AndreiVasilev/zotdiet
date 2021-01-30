@@ -1,7 +1,12 @@
+import "./Login.css"
+
 function Login() {
-  return (
-    <h1>Welcome to ZotDiet</h1>
-  );
+    return (
+        <div className="text-align-center">
+            <p id="main-title">Welcome to ZotDiet</p>
+            <p id="sub-title">Please login to continue</p>
+        </div>
+    );
 }
 
 export default Login;

@@ -1,0 +1,6 @@
+#main-content {
+    height: calc(100vh - 7em);
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}

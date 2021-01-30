@@ -1,0 +1,13 @@
+#main-title {
+    font-size: 7em;
+    color: var(--theme-secondary);
+}
+
+#sub-title {
+    font-size: 2em;
+    color: var(--theme-secondary);
+}
+
+.text-align-center {
+    text-align: center;
+}

@@ -14,15 +14,17 @@ function App() {
     return (
         <div>
             <NavBar/>
-            <Router>
-                <Switch>
-                  <Route exact path={LOGIN} component={Login}/>
-                  <PrivateRoute exact path={HOME} component={Home}/>
-                  <PrivateRoute exact path={MEAL_PLAN} component={Home}/>
-                  <PrivateRoute exact path={HEALTH_METRICS} component={Home}/>
-                  <PrivateRoute exact path={PROFILE} component={Home}/>
-                </Switch>
-            </Router>
+            <div id="main-content">
+                <Router>
+                    <Switch>
+                      <Route exact path={LOGIN} component={Login}/>
+                      <PrivateRoute exact path={HOME} component={Home}/>
+                      <PrivateRoute exact path={MEAL_PLAN} component={Home}/>
+                      <PrivateRoute exact path={HEALTH_METRICS} component={Home}/>
+                      <PrivateRoute exact path={PROFILE} component={Home}/>
+                    </Switch>
+                </Router>
+            </div>
         </div>
     );
 }

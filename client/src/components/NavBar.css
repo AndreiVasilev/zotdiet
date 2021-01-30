@@ -6,6 +6,7 @@
 #app-title {
     padding-left: 0.7em;
     vertical-align: middle;
+    color: var(--theme-secondary) !important;
 }
 
 #nav-links {
