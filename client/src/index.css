@@ -1,12 +1,15 @@
 /* GLOBAL THEME VARIABLES */
 :root {
-    --theme-primary: #5eb7ebff;
-    --theme-secondary: #ffe599ff;
+    --theme-primary: #2D2DD7;
+    --theme-primary-light: #00D4FF;
+    --theme-secondary: #ffd221;
+    --theme-secondary-light: #fff3ca;
 }
 
 body, html {
     margin: 0;
-    background-color: var(--theme-secondary);
+    height: 100vh;
+    background: linear-gradient(0deg, var(--theme-primary) 0%, rgba(0,212,255,1) 100%);
     font-family: 'Montserrat', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

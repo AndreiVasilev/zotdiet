@@ -1,26 +1,34 @@
 import React from "react";
 import { Navbar, Nav } from 'react-bootstrap';
 import "./NavBar.css"
-import "../App.css"
-import icon from "../assets/icon.png";
+import logo from "../assets/logo.png";
 import { HOME, MEAL_PLAN, HEALTH_METRICS, PROFILE } from "../routes";
+import LoginButton from "./LoginButton";
 
-function NavBar() {
+function NavBar(props) {
+
+    const { loggedIn, setLoggedIn } = props;
 
     return (
-        <Navbar id="navbar-container" className="nav-text" expand="lg">
-            <Navbar.Brand id="nav-brand" className="nav-text" href={HOME}>
-                <img id="nav-icon" src={icon} alt="Fork and Knife in Blue Circle"/>
-                ZotDiet
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-                <Nav id="nav-links" >
-                    <Nav.Link href={MEAL_PLAN}>Meal Plan</Nav.Link>
-                    <Nav.Link href={HEALTH_METRICS}>Health Metrics</Nav.Link>
-                    <Nav.Link href={PROFILE}>Profile</Nav.Link>    {/* TODO add user's google profile pic, can send as prop after log in (App.js) */}
-                </Nav>
-            </Navbar.Collapse>
+        <Navbar bg="dark" variant="dark" id="nav-bar">
+
+          <Navbar.Brand href={HOME}>
+            <img src={logo} width="70" height="70"
+                 className="d-inline-block align-middle"
+                 alt="Fork and Knife in Blue Circle"/>
+            <label id="app-title">ZotDiet</label>
+          </Navbar.Brand>
+
+          <div className="ml-auto d-inline-flex">
+            {loggedIn ?
+              <Nav id="nav-links">
+                <Nav.Link className="nav-link" href={MEAL_PLAN}>Meal Plan</Nav.Link>
+                <Nav.Link className="nav-link" href={HEALTH_METRICS}>Health Metrics</Nav.Link>
+                <Nav.Link className="nav-link" href={PROFILE}>Profile</Nav.Link>
+              </Nav> : <div/>
+            }
+            <LoginButton loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
+          </div>
         </Navbar>
     );
 }

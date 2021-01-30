@@ -1,39 +1,47 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Route, Switch, Redirect } from 'react-router';
 import { BrowserRouter as Router } from "react-router-dom";
 import { LOGIN, HOME, MEAL_PLAN, PROFILE } from "./routes";
 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import NavBar from "./components/NavBar";
+import Home from "./pages/Home";
+import {userService} from "./services/UserService";
 import Login from "./pages/Login";
-import MealPlan from "./pages/MealPlan";
+import PrivateRoute from "./components/PrivateRoute";
 
-function App() {
-    const [loggedIn, setLoggedIn] = useState(false);
+export default class App extends React.Component {
 
-    // make sure user can't go to routes in app if not logged in
-    const PrivateRoute = ({ component: Component, ...rest }) => (
-        <Route {...rest} render={(props) => (
-            loggedIn
-            ? <Component {...props} />
-            : <Redirect to={LOGIN} />
-        )} />
-    )
+    constructor(props, context) {
+      super(props, context);
+      this.state = {loggedIn: false};
+    }
 
-    return (
-      <div id="app">
-          <Router>
-              <Switch>
-                  <Route exact path={LOGIN} component={() => <Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} /> }></Route>
-                  {/*<PrivateRoute exact path={HOME} component={Welcome} onEnter={requireAuth}></PrivateRoute>*/}
-                  <Route exact path={MEAL_PLAN} component={MealPlan}></Route>
-                  {/*<PrivateRoute exact path={HEALTH_METRICS} component={}></PrivateRoute>*/}
-                  {/*<PrivateRoute exact path={PROFILE} component={}></PrivateRoute>*/}
-              </Switch>
-          </Router>
-      </div>
-    );
+    componentDidMount() {
+      userService.isLoggedIn().then(loggedIn => {
+        this.setState({loggedIn: loggedIn})
+      });
+    }
+
+    isLoggedIn() {
+      return this.state.loggedIn;
+    }
+
+    render() {
+        return (
+            <div>
+                <NavBar loggedIn={this.state.loggedIn} setLoggedIn={(loggedIn) => this.setState({loggedIn: loggedIn})}/>
+                <Router>
+                  <Switch>
+                    <Route exact path={LOGIN} component={Login}/>
+                    <PrivateRoute exact path={HOME} component={Home}/>
+                    {/*<Route exact path={MEAL_PLAN} component={MealPlan}></Route>*/}
+                    {/*<PrivateRoute exact path={HEALTH_METRICS} component={}></PrivateRoute>*/}
+                    {/*<PrivateRoute exact path={PROFILE} component={}></PrivateRoute>*/}
+                  </Switch>
+                </Router>
+            </div>
+        );
+    }
 }
-
-export default App;
