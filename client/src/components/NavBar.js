@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom"
 import { Navbar, Nav } from 'react-bootstrap';
 import "./NavBar.css"
 import "../App.css"
@@ -16,9 +17,9 @@ function NavBar() {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav id="nav-links" >
-                    <Nav.Link href={MEAL_PLAN}>Meal Plan</Nav.Link>
-                    <Nav.Link href={HEALTH_METRICS}>Health Metrics</Nav.Link>
-                    <Nav.Link href={PROFILE}>Profile</Nav.Link>    {/* TODO add user's google profile pic, can send as prop after log in (App.js) */}
+                    <Nav.Link as={NavLink} to={MEAL_PLAN}>Meal Plan</Nav.Link>
+                    <Nav.Link as={NavLink} to={HEALTH_METRICS}>Health Metrics</Nav.Link>
+                    <Nav.Link as={NavLink} to={PROFILE}>Profile</Nav.Link>    {/* TODO add user's google profile pic, can send as prop after log in (App.js) */}
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

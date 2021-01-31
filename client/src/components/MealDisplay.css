@@ -1,0 +1,9 @@
+.meal-display-container {
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.meal-display-container:hover {
+    cursor: pointer;
+}
