@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Login from "./pages/Login";
 import MealPlan from "./pages/MealPlan";
-import HealthMetrics from "./components/HealthMetrics";
+import HealthMetrics from "./pages/HealthMetrics";
 
 function App() {
     const [loggedIn, setLoggedIn] = useState(false);
