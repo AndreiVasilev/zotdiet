@@ -14,9 +14,13 @@
 }
 
 .nav-link {
-    margin-right: 1em;
+    margin-right: 1.3em;
     font-size: 1.3em;
     color: var(--theme-secondary) !important;
+}
+
+.nav-link:hover {
+    color: var(--theme-secondary-light) !important;
 }
 
 .navbar-brand {
