@@ -157,12 +157,9 @@ const HealthMetrics = () => {
           <div className="weight-graph">
             <h1>Weight Graph</h1>
 
-            <p>{`${month}/${day}/${year} - ${moment(
-              `${month}.${day}.${year}`,
-              "MM-DD-YYYY"
-            )
-              .add(7, "days")
-              .calendar()}`}</p>
+            <p>{`${moment(`${month}.${day}.${year}`, "MM-DD-YYYY")
+              .subtract(7, "days")
+              .calendar()} - ${month}/${day}/${year}`}</p>
             <div className="weight-chart">
               <LineChart data={selectedData} />
             </div>
