@@ -6,6 +6,7 @@ import { Button } from "react-bootstrap";
 import CountUp from "react-countup";
 import footsteps from "../assets/footstep.svg";
 import LineChart from "../components/LineChart";
+import moment from "moment";
 
 const HealthMetrics = () => {
   const [selectedData, setSelectedData] = useState({});
@@ -13,9 +14,25 @@ const HealthMetrics = () => {
   const [thirtyDay, setThirtyDay] = useState(false);
   const [ninetyDay, setNinetyDay] = useState(false);
 
+  const MONTHS = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
   const date = new Date();
-  const month = date.getMonth();
+  const month = date.getMonth() + 1;
   const day = date.getDate();
+  const year = date.getFullYear();
 
   const PIE_ANIMATION_DURATION = 3000;
   const BASE_COLOR = "#F59E0B";
@@ -104,7 +121,7 @@ const HealthMetrics = () => {
         <div className="metrics-content">
           <div className="steps">
             <h1>Steps Today</h1>
-            <p>Feb 7th, 2021</p>
+            <p>{`${MONTHS[month]} ${day}, ${year}`}</p>
             <div className="steps-chart">
               <PieChart
                 data={[{ value: 10, color: "url(#gradient1)" }]}
@@ -139,7 +156,13 @@ const HealthMetrics = () => {
           </div>
           <div className="weight-graph">
             <h1>Weight Graph</h1>
-            <p>Feb 1, 2021 - Feb 7, 2021</p>
+
+            <p>{`${month}/${day}/${year} - ${moment(
+              `${month}.${day}.${year}`,
+              "MM-DD-YYYY"
+            )
+              .add(7, "days")
+              .calendar()}`}</p>
             <div className="weight-chart">
               <LineChart data={selectedData} />
             </div>
