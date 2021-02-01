@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Profile from "./pages/Profile"
 import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
                     <PrivateRoute exact path={HOME} component={Home}/>
                     <PrivateRoute exact path={MEAL_PLAN} component={Home}/>
                     <PrivateRoute exact path={HEALTH_METRICS} component={Home}/>
-                    <PrivateRoute exact path={PROFILE} component={Home}/>
+                    <PrivateRoute exact path={PROFILE} component={Profile}/>
                 </div>
             </Router>
         </div>

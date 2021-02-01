@@ -1,0 +1,15 @@
+.profile-box {
+    width: 50%;
+    max-width: 900px;
+    padding: 3em;
+    border-radius: 15px;
+}
+
+.profile-title {
+    font-size: 2.1em;
+    margin: auto;
+}
+
+.section-title {
+    font-size: 1.5em;
+}
