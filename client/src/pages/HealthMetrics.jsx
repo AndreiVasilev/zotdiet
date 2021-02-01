@@ -30,7 +30,7 @@ const HealthMetrics = () => {
   ];
 
   const date = new Date();
-  const month = date.getMonth() + 1;
+  const month = date.getMonth();
   const day = date.getDate();
   const year = date.getFullYear();
 
@@ -157,9 +157,9 @@ const HealthMetrics = () => {
           <div className="weight-graph">
             <h1>Weight Graph</h1>
 
-            <p>{`${moment(`${month}.${day}.${year}`, "MM-DD-YYYY")
+            <p>{`${moment(`${month + 1}.${day}.${year}`, "MM-DD-YYYY")
               .subtract(7, "days")
-              .calendar()} - ${month}/${day}/${year}`}</p>
+              .calendar()} - ${month + 1}/${day}/${year}`}</p>
             <div className="weight-chart">
               <LineChart data={selectedData} />
             </div>
