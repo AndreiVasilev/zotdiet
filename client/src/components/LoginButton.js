@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import {userService} from "../services/UserService";
 import {GoogleLogin, GoogleLogout} from "react-google-login";
 import {useHistory} from "react-router";
-import {HOME} from "../routes";
+import {HOME, PROFILE} from "../routes";
 
 function LoginButton() {
 
@@ -22,7 +22,7 @@ function LoginButton() {
     const login = (response) => {
         userService.login(response.code).then(status => {
             setLoggedIn(status.loggedIn);
-            history.push(HOME);
+            history.push(status.isNew ? PROFILE : HOME);
         });
     }
 
