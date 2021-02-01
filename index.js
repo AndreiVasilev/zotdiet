@@ -1,16 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv')
+dotenv.config()
+const spoonRouter = require('./server/routes/SpoonRoutes');
 // const admin = require('firebase-admin');
 
 const app = express();
 app.use(bodyParser.json());
 
+
+app.use('/spoon', spoonRouter)
 // IMPORT MODELS
 // require('./models/User');
 
 //IMPORT ROUTES
 require('./server/routes/userRoutes')(app);
-require('./server/routes/spoonRoutes')(app);
 
 // const serviceAccount = require("path/to/serviceAccountKey.json");
 //

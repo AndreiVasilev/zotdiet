@@ -1,22 +1,29 @@
-const axios = require('axios')
-
+const axios = require('axios');
 
 class SpoonService {
 
     constructor() {
-        // initialize spoonacular service
+        
     }
 
-    async test() {
-        const testStr = 'test worked!'
+    async getTestApiCall() {
+        console.log('Test Request Made.')
+        let requestStr = this.getBaseUrl() + 'recipes/complexSearch?' + this.getApiKeyStr() + '&cuisine=italian&intolerances=gluten'
+        console.log(requestStr)
+        axios.get(requestStr)
+        .then(res => {
+            console.log(res.data)
+            return res
+        })
+        .catch( err => console.log('Test Request Failed.\n' + err))
+    }
 
-        // Not Sure where this shows up??
-        console.log('test worked..')
+    getBaseUrl(){
+        return 'https://api.spoonacular.com/'
+    }
 
-        if (testStr.length > 0) {
-            return true;
-        }
-        return false;
+    getApiKeyStr(){
+        return 'apiKey=' + process.env.SPOONACULAR_API_KEY
     }
 }
 

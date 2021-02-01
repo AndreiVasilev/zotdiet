@@ -1,16 +1,11 @@
-module.exports = (app) => {
+const spoonRouter = require('express').Router()
+const spoonService = require('../services/SpoonService')
+// const Note = require('../models/spoon')
 
-    const spoonService = require('../services/spoonService');
+spoonRouter.get('/test', (request, response) => {
+  response.json(spoonService.getTestApiCall())
+})
 
-    app.get('/api/spoon/test', async (req, res) => {
-        const result = await spoonService.test();
-        if (result) {
-            res.status(200);
-            res.send('test success');
-        } else {
-            res.status(500);
-            res.send('test failure');
-        }
-    });
 
-}
+
+module.exports = spoonRouter
