@@ -3,6 +3,7 @@ import {useEffect} from "react";
 import {userService} from "../services/UserService";
 import {HOME} from "../routes";
 import {useHistory} from "react-router";
+import {Container, Row} from "react-bootstrap";
 
 function Login() {
 
@@ -18,10 +19,14 @@ function Login() {
     }, [history]);
 
     return (
-        <div className="text-align-center">
-            <p id="main-title">Welcome to ZotDiet</p>
-            <p id="sub-title">Please login to continue</p>
-        </div>
+        <Container>
+            <Row id="main-title" className="justify-content-md-center">
+                Welcome to ZotDiet
+            </Row>
+            <Row id="sub-title" className="justify-content-md-center mt-1">
+                Please login to continue
+            </Row>
+        </Container>
     );
 }
 

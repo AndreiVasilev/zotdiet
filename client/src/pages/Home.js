@@ -1,6 +1,8 @@
 import "./Page.css"
 import {useEffect, useState} from "react";
 import {userService} from "../services/UserService";
+import {MEAL_PLAN, PROFILE} from "../routes";
+import {Container, Row} from "react-bootstrap";
 
 function Home() {
 
@@ -14,10 +16,21 @@ function Home() {
 
     return (
         user ?
-        <div className="text-align-center">
-            <p id="main-title">Welcome, {user.firstName}!</p>
-            <p id="sub-title">Eat less. Exercise more.</p>
-        </div> : null
+        <Container>
+            <Row className="justify-content-md-center">
+                <p id="main-title">Welcome, {user.firstName}!</p>
+            </Row>
+            <Row className="justify-content-md-center mt-4">
+                <a href={MEAL_PLAN}>
+                    <button className="big-button">View Meal Plan</button>
+                </a>
+            </Row>
+            <Row className="justify-content-md-center">
+                <a href={PROFILE}>
+                    <button className="big-button mt-5">Change Preferences</button>
+                </a>
+            </Row>
+        </Container> : null
     );
 }
 
