@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Route, Switch, Redirect } from 'react-router';
 import { BrowserRouter as Router } from "react-router-dom";
-import { LOGIN, HOME, MEAL_PLAN, PROFILE } from "./routes";
+import { LOGIN, HOME, MEAL_PLAN, PROFILE, HEALTH_METRICS } from "./routes";
 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Login from "./pages/Login";
 import MealPlan from "./pages/MealPlan";
+import HealthMetrics from "./components/HealthMetrics";
 
 function App() {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -28,7 +29,7 @@ function App() {
                   <Route exact path={LOGIN} component={() => <Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} /> }></Route>
                   {/*<PrivateRoute exact path={HOME} component={Welcome} onEnter={requireAuth}></PrivateRoute>*/}
                   <Route exact path={MEAL_PLAN} component={MealPlan}></Route>
-                  {/*<PrivateRoute exact path={HEALTH_METRICS} component={}></PrivateRoute>*/}
+                  <Route exact path={HEALTH_METRICS} component={HealthMetrics}></Route>
                   {/*<PrivateRoute exact path={PROFILE} component={}></PrivateRoute>*/}
               </Switch>
           </Router>
