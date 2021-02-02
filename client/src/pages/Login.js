@@ -1,6 +1,6 @@
 import "./Page.css"
 import {useEffect} from "react";
-import {userService} from "../services/UserService";
+import userService from "../services/UserService";
 import {HOME} from "../routes";
 import {useHistory} from "react-router";
 import {Container, Row} from "react-bootstrap";

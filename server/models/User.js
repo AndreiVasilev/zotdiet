@@ -6,8 +6,7 @@ class User {
     this.picture = picture;
     this.gender = '';
     this.age = '';
-    this.heightFt = 0;
-    this.heightIn = 0;
+    this.height = 0;
     this.targetWeight = 0;
     this.currentWeight = 0;
     this.pace = '';

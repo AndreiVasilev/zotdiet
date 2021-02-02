@@ -38,7 +38,11 @@ class UserService {
 
       if (response && response.status === 200) {
         this.loggedIn.next(true);
-        return {loggedIn: true, isNew: response.data.isNew};
+        return {
+          loggedIn: true,
+          isNew: response.data.isNew,
+          initUser: response.data.initUser
+        };
       }
     }
 
@@ -64,8 +68,14 @@ class UserService {
     const response = await axios.get('/api/user').catch(err => console.error('Unable to get user', err));
     return (response && response.status === 200) ? response.data : null;
   }
+
+  async createUser(user) {
+    const headers = {'Content-Type': 'application/json'}
+    const response = await axios.post('/api/user', user, {headers} ).catch(err => console.error('Unable to create user', err));
+    return (response && response.status === 200) ? response.data : null;
+  }
 }
 
 // Export a singleton instance of this service
 const userService = new UserService();
-export {userService};
+export default userService;

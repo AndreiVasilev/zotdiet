@@ -4,7 +4,7 @@ import "./NavBar.css"
 import logo from "../assets/logo.png";
 import { HOME, MEAL_PLAN, HEALTH_METRICS, PROFILE } from "../routes";
 import LoginButton from "./LoginButton";
-import {userService} from "../services/UserService";
+import userService from "../services/UserService";
 
 function NavBar() {
 

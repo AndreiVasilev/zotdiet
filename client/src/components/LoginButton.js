@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {userService} from "../services/UserService";
+import userService from "../services/UserService";
 import {GoogleLogin, GoogleLogout} from "react-google-login";
 import {useHistory} from "react-router";
 import {HOME, PROFILE} from "../routes";
@@ -22,7 +22,14 @@ function LoginButton() {
     const login = (response) => {
         userService.login(response.code).then(status => {
             setLoggedIn(status.loggedIn);
-            history.push(status.isNew ? PROFILE : HOME);
+            if (status.isNew) {
+                history.push({
+                    pathname: PROFILE,
+                    state: { initUser: status.initUser }
+                });
+            } else {
+                history.push(HOME);
+            }
         });
     }
 

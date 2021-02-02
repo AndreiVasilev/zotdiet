@@ -1,6 +1,6 @@
 import "./Page.css"
 import {useEffect, useState} from "react";
-import {userService} from "../services/UserService";
+import userService from "../services/UserService";
 import {MEAL_PLAN, PROFILE} from "../routes";
 import {Container, Row} from "react-bootstrap";
 
