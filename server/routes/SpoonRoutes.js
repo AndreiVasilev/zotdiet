@@ -2,8 +2,54 @@ const spoonRouter = require('express').Router()
 const spoonService = require('../services/SpoonService')
 // const Note = require('../models/spoon')
 
-spoonRouter.get('/test', (request, response) => {
-  response.json(spoonService.getTestApiCall())
+spoonRouter.get('/test', async (request, response) => {
+    
+    console.log('Test Route Called.')
+
+    let data = await spoonService.getTestApiCall()
+    
+    console.log('Test Route Returning.')
+    
+    response.json(data)
+
+})
+
+spoonRouter.get('/recipes/:id/information', async (request, response) => {
+
+    console.log('Test Route Called.')
+
+    let data = await spoonService.getRecipeByID(request.params.id)
+    
+    console.log('Test Route Returning.')
+    
+    response.json(data)
+    
+})
+
+// TODO: Complete
+spoonRouter.get('/recipes/:id/similar', async (request, response) => {
+
+    console.log('Test Route Called.')
+
+    let data = await spoonService.getTestApiCall()
+    
+    console.log('Test Route Returning.')
+    
+    response.json(data)
+    
+})
+
+// TODO: Complete
+spoonRouter.get('/mealplanner/generate', async (request, response) => {
+
+    console.log('Test Route Called.')
+
+    let data = await spoonService.getTestApiCall()
+    
+    console.log('Test Route Returning.')
+    
+    response.json(data)
+    
 })
 
 
