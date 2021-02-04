@@ -40,46 +40,32 @@ class SpoonService {
     }
 
 
-    // TODO: Complete
-    async getSimilarRecipeByID(recipeID){
-        console.log('Get Recipe Request Made.')
-        let requestStr = 'recipes/' + recipeID + '/information' 
-
-        axios.get(requestStr)
-        .then(res => {
-            return res
-        })
-        .catch( err => console.log('Get Recipe Request Failed.\n' + err))
-    }
+   
 
     // TODO: Complete
     async generateMealPlanForWeek(targetCalories, diet, excludeIngredients){
         console.log('Get Meal Plan for Week Request Made.')
 
-        let mealPlanStr = 'mealplanner/generate?'
-        mealPlanStr = 'time=week&targetCalories=' + targetCalories
+        let requestStr = this.getBaseUrl() + 'mealplanner/generate?' + this.getApiKeyStr()
+        let mealPlanStr = '&timeFrame=week&targetCalories=' + targetCalories
         mealPlanStr += '&diet=' + diet
-        mealPlanStr += '&exclude=' + this.arrayToCommanSeparatedList(excludeIngredients)
+        mealPlanStr += '&exclude=' + excludeIngredients
 
-        requestStr = (mealPlanStr)
+        requestStr += mealPlanStr
 
-        axios.get(requestStr)
-        .then(res => {
-            return res
-        })
-        .catch( err => console.log('Get Meal Plan for Week Request Failed.\n' + err))
-    }
-
-    arrayToCommanSeparatedList(arr){
-        index = 0
-        let resultStr = ''
-        while (index < arr.length - 1){
-            resultStr += arr[index] + ','
-            index++
+        console.log(requestStr)
+        try {
+            let res = axios.get(requestStr)
+            console.log('Generate Meal Plan Request Succeeded.')
+            console.log(res.data)
+            return res.data
         }
-        resultStr += arr[index]
-        return resultStr
+        catch {
+            console.log('Generate Meal Plan Request Failed.')
+            return {'result': 'failed'}
+        }
     }
+
 
     getBaseUrl(){
         return 'https://api.spoonacular.com/'
