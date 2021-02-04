@@ -23,11 +23,30 @@ module.exports = (app) => {
 
     app.post('/api/user', async (req, res) => {
         if (req.session && req.session.userId) {
-            const user = await userService.createUser(req.data)
+            const user = await userService.createUser(req.body)
                 .catch(err => {
-                    console.err(`Unable to create user ${req.data.id}`, err);
+                    console.err(`Unable to create user ${req.body.id}`, err);
                     res.status(500);
                     res.send('Unable to create user.');
+                });
+
+            if (user) {
+                res.json(user);
+            }
+            return;
+        }
+
+        res.status(401);
+        res.send('Session not found. Please login and try again');
+    });
+
+    app.patch('/api/user', async (req, res) => {
+        if (req.session && req.session.userId) {
+            const user = await userService.updateUser(req.body)
+                .catch(err => {
+                    console.err(`Unable to update user ${req.body.id}`, err);
+                    res.status(500);
+                    res.send('Unable to update user.');
                 });
 
             if (user) {
@@ -55,19 +74,6 @@ module.exports = (app) => {
         const googleUser = loginResult.googleUser;
         let user = await userService.getUser(googleUser.id);
         let isNew = !user;
-
-        // Create new user if user not found
-        // if (!user) {
-        //     user = await userService.createUser(googleUser);
-        //     isNew = true;
-        // }
-
-        // Unable to create new user, respond with failure
-        // if (!user) {
-        //     res.status(500);
-        //     res.send(`Failed to create new user ${googleUser.id}.`);
-        //     return;
-        // }
 
         // Store user related information in their session
         req.session.accessToken = loginResult.token;

@@ -65,13 +65,22 @@ class UserService {
   }
 
   async getUser() {
-    const response = await axios.get('/api/user').catch(err => console.error('Unable to get user', err));
+    const response = await axios.get('/api/user')
+        .catch(err => console.error('Unable to get user', err));
     return (response && response.status === 200) ? response.data : null;
   }
 
   async createUser(user) {
     const headers = {'Content-Type': 'application/json'}
-    const response = await axios.post('/api/user', user, {headers} ).catch(err => console.error('Unable to create user', err));
+    const response = await axios.post('/api/user', user, {headers} )
+        .catch(err => console.error('Unable to create user', err));
+    return (response && response.status === 200) ? response.data : null;
+  }
+
+  async updateUser(user) {
+    const headers = {'Content-Type': 'application/json'}
+    const response = await axios.patch('/api/user', user, {headers} )
+        .catch(err => console.error('Unable to update user', err));
     return (response && response.status === 200) ? response.data : null;
   }
 }

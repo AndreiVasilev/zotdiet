@@ -2,16 +2,19 @@ import {Button, Card, Col, Container, Form, Image, Row} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import userService from "../services/UserService";
 import "./Profile.css"
-import HorizontalSpacer from "../components/HorizontalSpacer";
 import NewUserModal from "../components/NewUserModal";
 import spoonService from "../services/SpoonService";
+import ChipList from "../components/ChipList";
+import {useHistory} from "react-router";
+import {HOME} from "../routes";
 
 function Profile(props) {
 
+    const history = useHistory();
     const initUser = getInitUser(props);
-
     const [showModal, setShowModal] = useState(false);
-
+    const [intolerances, setIntolerances] = useState([]);
+    const [intolerance, setIntolerance] = useState('Dairy');
     const [user, setUser] = useState({
         id: '',
         firstName: '',
@@ -23,28 +26,53 @@ function Profile(props) {
         heightIn: 0,
         targetWeight: 0,
         currentWeight: 0,
-        pace: 'Normal',
-        diet: 'Whole30',
-        intolerances: [],
-        cuisines: [],
+        diet: 'Whole30'
     });
 
     useEffect(() =>{
-        if (initUser && user.id === '') {
-            setUser({
-                ...user,
-                id: initUser.id,
-                firstName: initUser.firstName,
-                lastName: initUser.lastName,
-                picture: initUser.picture
-            });
-            setShowModal(true);
-        } else {
-            userService.getUser().then(user => {
-                setUser(user);
-            });
+        if (user.id === '') {
+            if (initUser) {
+                setUser({
+                    ...user,
+                    id: initUser.id,
+                    firstName: initUser.firstName,
+                    lastName: initUser.lastName,
+                    picture: initUser.picture
+                });
+                setShowModal(true);
+            } else {
+                userService.getUser().then(currUser => {
+                    if (currUser.intolerances) {
+                        setIntolerances(currUser.intolerances);
+                    }
+                    setUser(currUser);
+                });
+            }
         }
     }, [initUser, user]);
+
+    function onSubmit(event) {
+        event.preventDefault();
+
+        // TODO add error checking
+        if (initUser) {
+            userService.createUser({...user, intolerances}).then(user => {
+                if (user) {
+                    history.push(HOME);
+                }
+            });
+        } else {
+            userService.updateUser({...user, intolerances}).then(_ =>
+                alert('User profile updated')
+            );
+        }
+    }
+
+    function getInitUser(props) {
+        return props.history.location.state ?
+            props.history.location.state.initUser :
+            undefined;
+    }
 
     function handleTextChange(event) {
         setUser({
@@ -58,17 +86,6 @@ function Profile(props) {
             ...user,
             [event.target.name]: parseInt(event.target.value)
         });
-    }
-
-    function onSubmit(event) {
-        event.preventDefault();
-        console.log(user);
-    }
-
-    function getInitUser(props) {
-        return props.history.location.state ?
-            props.history.location.state.initUser :
-            undefined;
     }
 
     function getHeightOptions(min, max) {
@@ -88,6 +105,26 @@ function Profile(props) {
         return items;
     }
 
+    function getIntoleranceOptions() {
+        const intolerances = spoonService.getIntolerances();
+        const items = [];
+        for (const intolerance of intolerances) {
+            items.push(<option>{intolerance}</option>);
+        }
+        return items;
+    }
+
+    function addIntolerance() {
+        if (!intolerances.includes(intolerance)) {
+            setIntolerances([...intolerances, intolerance]);
+        }
+    }
+
+    function deleteIntolerance(intolerance) {
+        return () => {
+            setIntolerances(intolerances.filter(value => value !== intolerance));
+        }
+    }
 
     return (
         <Card className="profile-box">
@@ -103,9 +140,7 @@ function Profile(props) {
                     </Row>
 
                     <Form onSubmit={onSubmit}>
-                        <div className="mt-4 mb-1 section-title">Basic Info</div>
-                        <HorizontalSpacer/>
-                        <Form.Row className="mt-4">
+                        <Row className="mt-4">
                             <Form.Group className="col" controlId="formGridAge">
                                 <Form.Label>Age</Form.Label>
                                 <Form.Control required type="number" placeholder="Enter age" name="age"
@@ -119,9 +154,9 @@ function Profile(props) {
                                     <option>Female</option>
                                 </Form.Control>
                             </Form.Group>
-                            <div className="col">
+                            <Col className="mr-3">
                                 <Form.Label>Height (ft/in)</Form.Label>
-                                <Form.Row className="flex-nowrap">
+                                <Row className="flex-nowrap">
                                     <Form.Control required className="mr-2" as="select" placeholder="Choose ft..."
                                                   name="heightFt" type="number" value={user.heightFt}
                                                   onChange={handleNumericChange}>
@@ -132,13 +167,11 @@ function Profile(props) {
                                                   onChange={handleNumericChange}>
                                         {getHeightOptions(0, 11)}
                                     </Form.Control>
-                                </Form.Row>
-                            </div>
-                        </Form.Row>
+                                </Row>
+                            </Col>
+                        </Row>
 
-                        <div className="mt-4 pb-1 section-title">Weight Goals</div>
-                        <HorizontalSpacer/>
-                        <Form.Row className="mt-4">
+                        <Row className="mt-4">
                             <Form.Group className="col" controlId="formGridCurrentWeight">
                                 <Form.Label>Current Weight</Form.Label>
                                 <Form.Control required type="number" placeholder="Enter weight" name="currentWeight"
@@ -152,30 +185,35 @@ function Profile(props) {
                                               onChange={handleNumericChange}/>
                             </Form.Group>
                             <Form.Group className="col" controlId="formGridPace">
-                                <Form.Label>Pace</Form.Label>
-                                <Form.Control required as="select" type="text" placeholder="Choose..." name="pace"
-                                              value={user.pace} onChange={handleTextChange}>
-                                    <option>Slow</option>
-                                    <option>Normal</option>
-                                    <option>Moderate</option>
-                                    <option>Fast</option>
+                                <Form.Label>Diet</Form.Label>
+                                <Form.Control required as="select" placeholder="Choose diet..." type="text"
+                                              name="diet" value={user.diet} onChange={handleTextChange}>
+                                    {getDietOptions()}
                                 </Form.Control>
                             </Form.Group>
-                        </Form.Row>
+                        </Row>
 
-                        <div className="mt-4 pb-1 section-title">Dietary Info</div>
-                        <HorizontalSpacer/>
-                        <Form.Row className="mt-4">
-                            <Form.Label>Diet</Form.Label>
-                            <Form.Control required as="select" placeholder="Choose diet..." type="text"
-                                          name="diet" value={user.diet} onChange={handleTextChange}>
-                                {getDietOptions()}
-                            </Form.Control>
-                        </Form.Row>
+                        <Form.Label className="mt-4">Food Allergies</Form.Label>
+                        <Row>
+                            <Col className="col-4 m-auto">
+                                <Form.Control required as="select" placeholder="Choose intolerance..."
+                                              type="text" name="intolerance" value={intolerance}
+                                              onChange={(event) =>
+                                                  setIntolerance(event.target.value)}>
+                                    {getIntoleranceOptions()}
+                                </Form.Control>
+                            </Col>
+                            <Col className="col-auto m-auto">
+                                <Button variant="primary" type="button" onClick={addIntolerance}>Add</Button>
+                            </Col>
+                            <Col className="m-auto">
+                                <ChipList chips={intolerances} handleDelete={deleteIntolerance}/>
+                            </Col>
+                        </Row>
 
-                        <Form.Row className="mt-4 mr-1 float-right">
+                        <Row className="mt-4 mr-1 float-right">
                             <Button variant="primary" size="lg" type="submit">Save</Button>
-                        </Form.Row>
+                        </Row>
 
                     </Form>
                 </Container>

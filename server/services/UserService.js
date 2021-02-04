@@ -29,15 +29,12 @@ class UserService {
             return null;
         }
 
-        const gUser = await this.getGoogleUser(token);
-        if (!gUser) {
+        const googleUser = await this.getGoogleUser(token);
+        if (!googleUser) {
             return null;
         }
 
-        return {
-            token: token,
-            googleUser: gUser,
-        };
+        return {token, googleUser};
     }
 
     /**
@@ -51,6 +48,20 @@ class UserService {
                 console.error(`Unable to create new user ${user.id}`, err);
                 reject(err);
             });
+        });
+    }
+
+    /**
+     * Updates a user entry
+     */
+    updateUser(user) {
+        return new Promise((resolve, reject) => {
+            this.database.ref(`/users/${user.id}`).update(user)
+                .then(_ => resolve(user))
+                .catch(err => {
+                    console.error(`Unable to update new user ${user.id}`, err);
+                    reject(err);
+                });
         });
     }
 

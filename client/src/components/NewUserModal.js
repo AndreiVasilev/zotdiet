@@ -16,8 +16,8 @@ function NewUserModal(props) {
             <Modal.Body>
                 <h4>Hello, {props.user.firstName}</h4>
                 <p>
-                    Thank you for registering for ZotDiet. In order for us to customize your meal plan, we
-                    need some additional information from you. Please fill out the following form to continue.
+                    Thank you for joining ZotDiet! In order for us to customize a meal plan for you, we
+                    need some additional information. Please fill out the following form to continue.
                 </p>
             </Modal.Body>
             <Modal.Footer>
