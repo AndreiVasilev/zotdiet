@@ -1,27 +1,43 @@
-import React from "react";
-import { NavLink } from "react-router-dom"
+import React, {useEffect, useState} from "react";
 import { Navbar, Nav } from 'react-bootstrap';
 import "./NavBar.css"
-import "../App.css"
-import icon from "../assets/icon.png";
+import logo from "../assets/logo.png";
 import { HOME, MEAL_PLAN, HEALTH_METRICS, PROFILE } from "../routes";
+import LoginButton from "./LoginButton";
+import userService from "../services/UserService";
 
 function NavBar() {
 
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+      const subscription = userService.isLoggedIn().subscribe(loggedIn => setLoggedIn(loggedIn));
+      return () => {
+        subscription.unsubscribe();
+      };
+    }, [])
+
     return (
-        <Navbar id="navbar-container" className="nav-text" expand="lg">
-            <Navbar.Brand id="nav-brand" className="nav-text" href={HOME}>
-                <img id="nav-icon" src={icon} alt="Fork and Knife in Blue Circle"/>
-                ZotDiet
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-                <Nav id="nav-links" >
-                    <Nav.Link as={NavLink} to={MEAL_PLAN}>Meal Plan</Nav.Link>
-                    <Nav.Link as={NavLink} to={HEALTH_METRICS}>Health Metrics</Nav.Link>
-                    <Nav.Link as={NavLink} to={PROFILE}>Profile</Nav.Link>    {/* TODO add user's google profile pic, can send as prop after log in (App.js) */}
-                </Nav>
-            </Navbar.Collapse>
+        <Navbar bg="dark" variant="dark" id="nav-bar">
+
+          <Navbar.Brand href={HOME}>
+            <img src={logo} width="70" height="70"
+                 className="d-inline-block align-middle"
+                 alt="Fork and Knife in Blue Circle"/>
+            <label id="app-title">ZotDiet</label>
+          </Navbar.Brand>
+
+          <div className="ml-auto d-inline-flex">
+            {loggedIn ?
+              <Nav id="nav-links">
+                <Nav.Link className="nav-link" href={HOME}>Home</Nav.Link>
+                <Nav.Link className="nav-link" href={MEAL_PLAN}>Meal Plan</Nav.Link>
+                <Nav.Link className="nav-link" href={HEALTH_METRICS}>Health Metrics</Nav.Link>
+                <Nav.Link className="nav-link" href={PROFILE}>Profile</Nav.Link>
+              </Nav> : <div/>
+            }
+            <LoginButton />
+          </div>
         </Navbar>
     );
 }

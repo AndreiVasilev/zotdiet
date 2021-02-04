@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Tabs, Tab, Modal, Container, Row, Col } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
+import React, {useState} from "react";
+import {Card, Col, Container, Modal, Row, Tab, Tabs} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faHeart} from "@fortawesome/free-solid-svg-icons/faHeart";
 
 import "./MealPlan.css";
 import "../App.css";
-
-import NavBar from "../components/NavBar";
 import MealDisplay from "../components/MealDisplay";
 import MealDisplayImg from "../components/MealDisplayImg";
 import MealNutritionInfo from "../components/MealNutritionInfo";
@@ -148,50 +146,51 @@ function MealPlan() {
     // }
 
     return (
-        <div className="page-container">
-            <NavBar />
-            <Tabs id="meal-plan-container" transition={false} variant="tabs"
-                  defaultActiveKey={getCurDay()} activeKey={curTabIdx} onSelect={(idx) => setCurTabIdx(idx)} >
-                {
-                    Object.entries(DAY_LABELS).map(([day, label], idx) => {
-                        return (
-                            <Tab tabClassName="meal-plan-tab" eventKey={idx.toString()} title={label} key={idx}>
-                                <div className="daily-meals-container">
-                                    <MealDisplay mealType="Breakfast" mealName={meals[idx].breakfast.name} openModal={() => handleShowModal('breakfast')}/>
-                                    <MealDisplay mealType="Lunch" mealName={meals[idx].lunch.name} openModal={() => handleShowModal('lunch')}/>
-                                    <MealDisplay mealType="Dinner" mealName={meals[idx].dinner.name} openModal={() => handleShowModal('dinner')}/>
-                                </div>
-                            </Tab>
-                        )
-                    })
-                }
-            </Tabs>
+        <Card className="page-container">
+            <Card.Body>
+                <Tabs id="meal-plan-container" transition={false} variant="tabs"
+                      defaultActiveKey={getCurDay()} activeKey={curTabIdx} onSelect={(idx) => setCurTabIdx(idx)} >
+                    {
+                        Object.entries(DAY_LABELS).map(([day, label], idx) => {
+                            return (
+                                <Tab tabClassName="meal-plan-tab" eventKey={idx.toString()} title={label} key={idx}>
+                                    <div className="daily-meals-container">
+                                        <MealDisplay mealType="Breakfast" mealName={meals[idx].breakfast.name} openModal={() => handleShowModal('breakfast')}/>
+                                        <MealDisplay mealType="Lunch" mealName={meals[idx].lunch.name} openModal={() => handleShowModal('lunch')}/>
+                                        <MealDisplay mealType="Dinner" mealName={meals[idx].dinner.name} openModal={() => handleShowModal('dinner')}/>
+                                    </div>
+                                </Tab>
+                            )
+                        })
+                    }
+                </Tabs>
 
-            {/* Expanded Meal Info */}
-            <Modal show={showModal} onHide={handleCloseModal}>
-                <Container className="meal-modal">
-                    <Row>
-                        <Col lg={4}>
-                            <Row className="modal-section-name center-content">{modalMeal.name}</Row>
-                            <Row className="modal-meal-cuisine center-content">{modalMeal.cuisine}</Row>
-                            <Row className="center-content">
-                                <MealDisplayImg mealImg="-- TODO --" mealName={modalMeal.name}/>   {/* TODO set mealImg prop with Spoon img */}
-                            </Row>
-                            <Row className="center-content">
-                                <MealNutritionInfo nutrition={modalMeal.nutrition} />
-                            </Row>
-                        </Col>
-                        <Col lg={{offset: 1}}>
-                            <Row className="modal-section-name">Recipe</Row>
-                            <Recipe recipe={modalMeal.recipe}/>
-                        </Col>
-                        <Col lg={1} style={{textAlign: "right"}}>
-                            <FontAwesomeIcon icon={faHeart} size="3x" onClick={toggleHeart} className={`heart-icon ${mealHearted ? "heart-selected" : "heart-unselected"}`} />
-                        </Col>
-                    </Row>
-                </Container>
-            </Modal>
-        </div>
+                {/* Expanded Meal Info */}
+                <Modal show={showModal} onHide={handleCloseModal}>
+                    <Container className="meal-modal">
+                        <Row>
+                            <Col lg={4}>
+                                <Row className="modal-section-name center-content">{modalMeal.name}</Row>
+                                <Row className="modal-meal-cuisine center-content">{modalMeal.cuisine}</Row>
+                                <Row className="center-content">
+                                    <MealDisplayImg mealImg="-- TODO --" mealName={modalMeal.name}/>   {/* TODO set mealImg prop with Spoon img */}
+                                </Row>
+                                <Row className="center-content">
+                                    <MealNutritionInfo nutrition={modalMeal.nutrition} />
+                                </Row>
+                            </Col>
+                            <Col lg={{offset: 1}}>
+                                <Row className="modal-section-name">Recipe</Row>
+                                <Recipe recipe={modalMeal.recipe}/>
+                            </Col>
+                            <Col lg={1} style={{textAlign: "right"}}>
+                                <FontAwesomeIcon icon={faHeart} size="3x" onClick={toggleHeart} className={`heart-icon ${mealHearted ? "heart-selected" : "heart-unselected"}`} />
+                            </Col>
+                        </Row>
+                    </Container>
+                </Modal>
+            </Card.Body>
+        </Card>
     );
 }
 

@@ -1,48 +1,32 @@
-import * as React from "react";
-import {userService} from "../services/UserService";
-import {GoogleLogin, GoogleLogout} from "react-google-login";
+import "./Page.css"
+import {useEffect} from "react";
+import userService from "../services/UserService";
+import {HOME} from "../routes";
+import {useHistory} from "react-router";
+import {Container, Row} from "react-bootstrap";
 
-function Login(props) {
-    const { loggedIn, setLoggedIn } = props;
+function Login() {
 
-    const login = (response) => {
-        userService.login(response.code).then(status => {
-            setLoggedIn(status);
+    const history = useHistory();
+
+    useEffect(() => {
+        const subscription = userService.isLoggedIn().subscribe(loggedIn => {
+            if (loggedIn) history.push(HOME);
         });
-    }
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [history]);
 
-    const logout = () => {
-        userService.logout().then(status => setLoggedIn(!status));
-    }
-
-    // TODO include response details in notification to user
-    const handleLoginFailure = (response) => {
-        alert('Failed to log in');
-        console.error(response);
-    }
-
-    // TODO include response details in notification to user
-    const handleLogoutFailure = (response) => {
-        alert('Failed to log out');
-        console.error(response);
-    }
-
-    return (loggedIn
-            ? <GoogleLogout
-                clientId={userService.CLIENT_ID}
-                buttonText='Logout'
-                onLogoutSuccess={() => logout()}
-                onFailure={(res) => handleLogoutFailure(res)}>
-            </GoogleLogout>
-            : <GoogleLogin
-                clientId={userService.CLIENT_ID}
-                buttonText='Login'
-                onSuccess={(res) => login(res)}
-                onFailure={(res) => handleLoginFailure(res)}
-                cookiePolicy={'single_host_origin'}
-                responseType='code'
-                scope={userService.SCOPES}
-            />
+    return (
+        <Container>
+            <Row id="main-title" className="justify-content-md-center">
+                Welcome to ZotDiet
+            </Row>
+            <Row id="sub-title" className="justify-content-md-center mt-1">
+                Please login to continue
+            </Row>
+        </Container>
     );
 }
 

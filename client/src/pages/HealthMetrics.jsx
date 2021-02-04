@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import NavBar from "../components/NavBar";
+import React, {useEffect, useState} from "react";
 import "./HealthMetrics.css";
-import { PieChart } from "react-minimal-pie-chart";
-import { Button } from "react-bootstrap";
+import {PieChart} from "react-minimal-pie-chart";
+import {Button, Card} from "react-bootstrap";
 import CountUp from "react-countup";
 import footsteps from "../assets/footstep.svg";
 import LineChart from "../components/LineChart";
@@ -115,84 +114,81 @@ const HealthMetrics = () => {
   }, []);
 
   return (
-    <React.Fragment>
-      <NavBar />
-      <div className="metrics-container">
-        <div className="metrics-content">
-          <div className="steps">
-            <h1>Steps Today</h1>
-            <p>{`${MONTHS[month]} ${day}, ${year}`}</p>
-            <div className="steps-chart">
-              <PieChart
-                data={[{ value: 10, color: "url(#gradient1)" }]}
-                lineWidth={15}
-                radius={40}
-                animationDuration={PIE_ANIMATION_DURATION}
-                rounded
-                animate
-              >
-                <defs>
-                  <linearGradient id="gradient1">
-                    <stop offset="0%" stopColor="#FBBF24" />
-                    <stop offset="30%" stopColor="#F59E0B" />
-                    <stop offset="70%" stopColor="#D97706" />
-                  </linearGradient>
-                </defs>
-              </PieChart>
-              <img
-                className="footsteps-graphic"
-                src={footsteps}
-                alt="Footsteps"
-              />
-            </div>
-            <div className="step-number">
-              <CountUp
-                start={0}
-                end={49800}
-                duration={PIE_ANIMATION_DURATION / 1000}
-              />
-              <span className="text-base"> steps</span>
-            </div>
+    <Card className="metrics-container">
+      <Card.Body className="metrics-content">
+        <div className="steps">
+          <h1>Steps Today</h1>
+          <p>{`${MONTHS[month]} ${day}, ${year}`}</p>
+          <div className="steps-chart">
+            <PieChart
+              data={[{ value: 10, color: "url(#gradient1)" }]}
+              lineWidth={15}
+              radius={40}
+              animationDuration={PIE_ANIMATION_DURATION}
+              rounded
+              animate
+            >
+              <defs>
+                <linearGradient id="gradient1">
+                  <stop offset="0%" stopColor="#FBBF24" />
+                  <stop offset="30%" stopColor="#F59E0B" />
+                  <stop offset="70%" stopColor="#D97706" />
+                </linearGradient>
+              </defs>
+            </PieChart>
+            <img
+              className="footsteps-graphic"
+              src={footsteps}
+              alt="Footsteps"
+            />
           </div>
-          <div className="weight-graph">
-            <h1>Weight Graph</h1>
-
-            <p>{`${moment(`${month + 1}.${day}.${year}`, "MM-DD-YYYY")
-              .subtract(7, "days")
-              .calendar()} - ${month + 1}/${day}/${year}`}</p>
-            <div className="weight-chart">
-              <LineChart data={selectedData} />
-            </div>
-            <div className="cta-btns">
-              <Button
-                onClick={() => {
-                  setSelectedData(datasets[0]);
-                }}
-                variant="primary"
-              >
-                7 Days
-              </Button>{" "}
-              <Button
-                onClick={() => {
-                  setSelectedData(datasets[1]);
-                }}
-                variant="success"
-              >
-                30 Days
-              </Button>{" "}
-              <Button
-                onClick={() => {
-                  setSelectedData(datasets[2]);
-                }}
-                variant="warning"
-              >
-                90 Days
-              </Button>{" "}
-            </div>
+          <div className="step-number">
+            <CountUp
+              start={0}
+              end={49800}
+              duration={PIE_ANIMATION_DURATION / 1000}
+            />
+            <span className="text-base"> steps</span>
           </div>
         </div>
-      </div>
-    </React.Fragment>
+        <div className="weight-graph">
+          <h1>Weight Graph</h1>
+
+          <p>{`${moment(`${month + 1}.${day}.${year}`, "MM-DD-YYYY")
+            .subtract(7, "days")
+            .calendar()} - ${month + 1}/${day}/${year}`}</p>
+          <div className="weight-chart">
+            <LineChart data={selectedData} />
+          </div>
+          <div className="cta-btns">
+            <Button
+              onClick={() => {
+                setSelectedData(datasets[0]);
+              }}
+              variant="primary"
+            >
+              7 Days
+            </Button>{" "}
+            <Button
+              onClick={() => {
+                setSelectedData(datasets[1]);
+              }}
+              variant="success"
+            >
+              30 Days
+            </Button>{" "}
+            <Button
+              onClick={() => {
+                setSelectedData(datasets[2]);
+              }}
+              variant="warning"
+            >
+              90 Days
+            </Button>{" "}
+          </div>
+        </div>
+      </Card.Body>
+    </Card>
   );
 };
 

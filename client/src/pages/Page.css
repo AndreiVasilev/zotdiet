@@ -1,0 +1,23 @@
+#main-title {
+    font-size: 7em;
+    color: var(--theme-secondary);
+}
+
+#sub-title {
+    font-size: 2em;
+    color: var(--theme-secondary);
+}
+
+.big-button {
+    background-color: var(--theme-secondary);
+    border-radius: 7px;
+    font-size: 1.7em;
+    color: var(--theme-primary);
+    width: 300px;
+    height: 70px;
+    border: 0;
+}
+
+.big-button:hover {
+    background-color: var(--theme-secondary-light);
+}

@@ -29,46 +29,53 @@ class UserService {
             return null;
         }
 
-        const gUser = await this.getGoogleUser(token);
-        if (!gUser) {
+        const googleUser = await this.getGoogleUser(token);
+        if (!googleUser) {
             return null;
         }
 
-        return {
-            token: token,
-            googleUser: gUser,
-        };
+        return {token, googleUser};
     }
 
     /**
-     * Creates and stores a new user based on the profile
-     * values of the logged in Google User
+     * Creates a new entry within the database using the user id as the key
      */
-    async createUser(googleUser) {
+    createUser(user) {
         return new Promise((resolve, reject) => {
-            const user = new User(
-              googleUser.id,
-              googleUser.firstName,
-              googleUser.lastName,
-              googleUser.picture);
-
             this.database.ref(`/users/${user.id}`).set(user)
               .then(_ => resolve(user))
               .catch(err => {
-                console.error(`Unable to create user ${user.id}`, err);
+                console.error(`Unable to create new user ${user.id}`, err);
                 reject(err);
             });
         });
     }
 
     /**
+     * Updates a user entry
+     */
+    updateUser(user) {
+        return new Promise((resolve, reject) => {
+            this.database.ref(`/users/${user.id}`).update(user)
+                .then(_ => resolve(user))
+                .catch(err => {
+                    console.error(`Unable to update new user ${user.id}`, err);
+                    reject(err);
+                });
+        });
+    }
+
+    /**
      * Gets a user from the database via their Google user ID.
      */
-    async getUser(userId) {
+    getUser(userId) {
         return new Promise((resolve, reject) => {
             this.database.ref(`/users/${userId}`).once('value')
               .then(snapshot => resolve(snapshot.val()))
-              .catch(err => reject(err));
+              .catch(err => {
+                  console.error(`Unable to get user ${userId}`, err);
+                  reject(err);
+              });
         });
     }
 
@@ -87,7 +94,7 @@ class UserService {
     /**
      * Gets the ID and name of the currently logged in Google user.
      */
-    async getGoogleUser(accessToken) {
+    getGoogleUser(accessToken) {
         return new Promise((resolve, reject) => {
             const oauth2Client = this._getOAuthClient();
             oauth2Client.setCredentials(accessToken);

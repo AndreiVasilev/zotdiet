@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {Subject} from "rxjs";
 
 class UserService {
 
@@ -10,6 +11,10 @@ class UserService {
       'https://www.googleapis.com/auth/fitness.heart_rate.read ' +
       'https://www.googleapis.com/auth/userinfo.email ' +
       'https://www.googleapis.com/auth/userinfo.profile';
+    this.loggedIn = new Subject();
+    axios.get('/api/user/loggedIn')
+      .then(res => this.loggedIn.next(res.data.loggedIn))
+      .catch(err => console.error('Unable to determine login status.', err));
   }
 
   get CLIENT_ID() {
@@ -20,11 +25,8 @@ class UserService {
     return this._SCOPES;
   }
 
-  async isLoggedIn() {
-    const response = await axios.get('/api/user/loggedIn').catch(err =>
-      console.error('Unable to determine login status.')
-    );
-    return response ? response.data.loggedIn : false;
+  isLoggedIn() {
+    return this.loggedIn;
   }
 
   async login(authCode) {
@@ -35,12 +37,17 @@ class UserService {
           });
 
       if (response && response.status === 200) {
-        return true;
+        this.loggedIn.next(true);
+        return {
+          loggedIn: true,
+          isNew: response.data.isNew,
+          initUser: response.data.initUser
+        };
       }
     }
 
     alert('Unable to login. Thank you, come again.');
-    return false;
+    return {loggedIn: false};
   }
 
   async logout() {
@@ -49,14 +56,35 @@ class UserService {
     );
 
     if (response && response.status === 200) {
+      this.loggedIn.next(false);
       return true;
     }
 
     alert('Unable to logout. Thank you, come again.');
     return false;
   }
+
+  async getUser() {
+    const response = await axios.get('/api/user')
+        .catch(err => console.error('Unable to get user', err));
+    return (response && response.status === 200) ? response.data : null;
+  }
+
+  async createUser(user) {
+    const headers = {'Content-Type': 'application/json'}
+    const response = await axios.post('/api/user', user, {headers} )
+        .catch(err => console.error('Unable to create user', err));
+    return (response && response.status === 200) ? response.data : null;
+  }
+
+  async updateUser(user) {
+    const headers = {'Content-Type': 'application/json'}
+    const response = await axios.patch('/api/user', user, {headers} )
+        .catch(err => console.error('Unable to update user', err));
+    return (response && response.status === 200) ? response.data : null;
+  }
 }
 
 // Export a singleton instance of this service
 const userService = new UserService();
-export {userService};
+export default userService;

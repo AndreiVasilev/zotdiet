@@ -1,7 +1,5 @@
-#meal-plan-container {
-    border: 5px solid black;
-    background-color: pink;
-    margin-left: 50px;
+.page-container {
+    padding: 3em;
 }
 
 .meal-plan-tab {
