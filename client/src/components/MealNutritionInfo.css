@@ -1,0 +1,9 @@
+.meal-nutrition-tbl {
+    margin: 20px;
+    border: 2px solid black;
+    font-size: 20px;
+}
+
+.calories {
+    font-weight: bold;
+}

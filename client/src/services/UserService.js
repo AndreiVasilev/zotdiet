@@ -1,15 +1,20 @@
-import {ReactSession} from 'react-client-session';
 import axios from 'axios';
+import {Subject} from "rxjs";
 
 class UserService {
 
   constructor() {
-    this._LOGGED_IN = 'loggedIn';
     this._CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     this._SCOPES = 'https://www.googleapis.com/auth/fitness.activity.read ' +
       'https://www.googleapis.com/auth/fitness.body.read ' +
       'https://www.googleapis.com/auth/fitness.nutrition.read ' +
-      'https://www.googleapis.com/auth/fitness.heart_rate.read';
+      'https://www.googleapis.com/auth/fitness.heart_rate.read ' +
+      'https://www.googleapis.com/auth/userinfo.email ' +
+      'https://www.googleapis.com/auth/userinfo.profile';
+    this.loggedIn = new Subject();
+    axios.get('/api/user/loggedIn')
+      .then(res => this.loggedIn.next(res.data.loggedIn))
+      .catch(err => console.error('Unable to determine login status.', err));
   }
 
   get CLIENT_ID() {
@@ -21,34 +26,65 @@ class UserService {
   }
 
   isLoggedIn() {
-    return ReactSession.get(this._LOGGED_IN);
+    return this.loggedIn;
   }
 
-  async login(response) {
-    if (response.code) {
-      const serverResponse = await axios.post('/api/user/login', {code: response.code})
+  async login(authCode) {
+    if (authCode) {
+      const response = await axios.post('/api/user/login', {code: authCode})
           .catch(err => {
             console.error('Unable to login', err);
           });
 
-      if (serverResponse && serverResponse.status === 200) {
-        ReactSession.set(this._LOGGED_IN, true);
-        return true;
+      if (response && response.status === 200) {
+        this.loggedIn.next(true);
+        return {
+          loggedIn: true,
+          isNew: response.data.isNew,
+          initUser: response.data.initUser
+        };
       }
     }
 
     alert('Unable to login. Thank you, come again.');
-    return false;
+    return {loggedIn: false};
   }
 
   async logout() {
-    ReactSession.set(this._LOGGED_IN, false);
+    const response = await axios.post('/api/user/logout').catch(err =>
+      console.error('Unable to logout.', err)
+    );
 
-    // TODO send logout request to backend
-    return true;
+    if (response && response.status === 200) {
+      this.loggedIn.next(false);
+      return true;
+    }
+
+    alert('Unable to logout. Thank you, come again.');
+    return false;
+  }
+
+  async getUser() {
+    const response = await axios.get('/api/user')
+        .catch(err => console.error('Unable to get user', err));
+    return (response && response.status === 200) ? response.data : null;
+  }
+
+  async createUser(user) {
+    const headers = {'Content-Type': 'application/json'}
+    const response = await axios.post('/api/user', user, {headers} )
+        .catch(err => console.error('Unable to create user', err));
+    return (response && response.status === 200) ? response.data : null;
+  }
+
+  async updateUser(user) {
+    const headers = {'Content-Type': 'application/json'}
+    const response = await axios.patch('/api/user', user, {headers} )
+        .catch(err => console.error('Unable to update user', err));
+    return (response && response.status === 200) ? response.data : null;
   }
 }
 
 // Export a singleton instance of this service
 const userService = new UserService();
-export {userService};
+export default userService;

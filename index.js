@@ -3,34 +3,46 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv')
 dotenv.config()
 const spoonRouter = require('./server/routes/SpoonRoutes');
-// const admin = require('firebase-admin');
 
+const session = require('express-session')
+
+dotenv.config();
+
+const prodMode = process.env.NODE_ENV === 'production';
 const app = express();
+
 app.use(bodyParser.json());
 
 
 app.use('/spoon', spoonRouter)
-// IMPORT MODELS
-// require('./models/User');
 
-//IMPORT ROUTES
-require('./server/routes/userRoutes')(app);
+// Initialize server side user session parameters
+app.use(session({
+  secret: process.env.EXPRESS_SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    secure: prodMode,
+  }
+}));
 
-// const serviceAccount = require("path/to/serviceAccountKey.json");
-//
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount)
-// });
+// Set application port
+app.set('port', process.env.PORT || 5000);
+app.listen(app.get('port'), () => {
+  console.log(`app running on port ${app.get('port')}`)
+});
 
-if (process.env.NODE_ENV === 'production') {
+// Import API routes
+require('./server/routes/UserRoutes')(app);
+
+
+// Configure client to use correct build directory
+// if app is running in production mode
+if (prodMode) {
   const path = require('path');
   app.use(express.static('client/build'));
   app.get('*', (req,res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
   })
 }
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`app running on port ${PORT}`)
-});

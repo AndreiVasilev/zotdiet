@@ -1,0 +1,28 @@
+#nav-bar {
+    height: 7em;
+    padding: 0 5em 0 5em !important;
+}
+
+#app-title {
+    padding-left: 0.7em;
+    vertical-align: middle;
+    color: var(--theme-secondary) !important;
+}
+
+#nav-links {
+    margin-right: 2em;
+}
+
+.nav-link {
+    margin-right: 1.3em;
+    font-size: 1.3em;
+    color: var(--theme-secondary) !important;
+}
+
+.nav-link:hover {
+    color: var(--theme-secondary-light) !important;
+}
+
+.navbar-brand {
+    font-size: 2em !important;
+}

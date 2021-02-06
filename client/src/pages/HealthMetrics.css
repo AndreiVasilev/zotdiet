@@ -1,0 +1,50 @@
+.metrics-container {
+  min-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.metrics-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 80px 0;
+}
+
+.weight-graph {
+  flex-basis: 50%;
+}
+
+.steps-chart {
+  position: relative;
+}
+
+.footsteps-graphic {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+}
+
+.step-number > span {
+  font-size: 36px;
+  font-weight: 600;
+}
+
+.step-number > .text-base {
+  font-size: 18px;
+}
+
+.weight-chart > canvas {
+  height: 100% !important;
+}
+
+.cta-btns {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
