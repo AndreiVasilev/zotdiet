@@ -1,5 +1,4 @@
 const {google} = require('googleapis');
-const {User} = require('../models/User');
 const firebase = require("firebase/app");
 require('firebase/database');
 
@@ -79,6 +78,23 @@ class UserService {
         });
     }
 
+    async getUserBMR(userId) {
+        const user = await this.getUser(userId).catch(err => console.error(`Unable to calculate BMR of user ${userId}`, err));
+        if (!user) {
+            return 0;
+        }
+
+        if (user.gender === 'Female') {
+            return 447.6 + 9.25 * this._getKilogramWeight(user.currentWeight) +
+                3.10 * this._getCmHeight(user.heightFt, user.heightIn) -
+                4.33 * user.age;
+        }
+
+        return 88.4 + 13.4 * this._getKilogramWeight(user.currentWeight) +
+            4.8 * this._getCmHeight(user.heightFt, user.heightIn) -
+            5.68 * user.age;
+    }
+
     /**
      * Generates a Google API access token from the provided authorization code
      */
@@ -94,7 +110,7 @@ class UserService {
     /**
      * Gets the ID and name of the currently logged in Google user.
      */
-    getGoogleUser(accessToken) {
+    async getGoogleUser(accessToken) {
         return new Promise((resolve, reject) => {
             const oauth2Client = this._getOAuthClient();
             oauth2Client.setCredentials(accessToken);
@@ -120,6 +136,16 @@ class UserService {
           process.env.GOOGLE_CLIENT_SECRET,
           'postmessage'
         );
+    }
+
+    _getKilogramWeight(weight) {
+        const kilogramsPerPound = 0.453592;
+        return weight * kilogramsPerPound;
+    }
+
+    _getCmHeight(feet, inches) {
+        const cmPerInch = 2.54;
+        return feet * 12 * cmPerInch + inches * cmPerInch
     }
 }
 
