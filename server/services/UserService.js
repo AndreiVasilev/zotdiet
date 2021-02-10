@@ -16,6 +16,25 @@ class UserService {
         };
         firebase.initializeApp(firebaseConfig);
         this.database = firebase.database();
+
+        this.googleFit = {
+            steps: {
+                type: 'com.google.step_count.delta',
+                id: 'derived:com.google.step_count.delta:com.google.android.gms:estimated_steps'
+            },
+            weight: {
+                type: 'com.google.weight',
+                id: 'derived:com.google.weight:com.google.android.gms:merge_weight'
+            },
+            bmr: {
+                type: 'com.google.calories.bmr',
+                id: 'derived:com.google.calories.bmr:com.google.android.gms:merged'
+            },
+            calories: {
+                type: 'com.google.calories.expended',
+                id: 'derived:com.google.calories.expended:com.google.android.gms:merge_calories_expended'
+            }
+        }
     }
 
     /**
@@ -78,8 +97,15 @@ class UserService {
         });
     }
 
-    async getUserBMR(userId) {
-        const user = await this.getUser(userId).catch(err => console.error(`Unable to calculate BMR of user ${userId}`, err));
+    /**
+     * Gets the Basal Metabolic Rate of the given user
+     * based ont the Revised Harris-Benedict Formula
+     */
+    async getUserCurrentBMR(userId) {
+        const user = await this.getUser(userId).catch(err => {
+            console.error(`Unable to calculate BMR of user ${userId}`, err);
+        });
+
         if (!user) {
             return 0;
         }
@@ -93,6 +119,38 @@ class UserService {
         return 88.4 + 13.4 * this._getKilogramWeight(user.currentWeight) +
             4.8 * this._getCmHeight(user.heightFt, user.heightIn) -
             5.68 * user.age;
+    }
+
+    /**
+     * Gets the weight of the user associated with the given
+     * access token over the last number of specified days
+     */
+    async getUserWeight(accessToken, lastNumDays) {
+        return this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.weight);
+    }
+
+    /**
+     * Gets the steps of the user associated with the given
+     * access token over the last number of specified days
+     */
+    async getUserSteps(accessToken, lastNumDays) {
+        return this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.steps);
+    }
+
+    /**
+     * Gets the BMR of the user associated with the given
+     * access token over the last number of specified days
+     */
+    async getUserBMR(accessToken, lastNumDays) {
+        return this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.bmr);
+    }
+
+    /**
+     * Gets the calories expended by the user associated with the given
+     * access token over the last number of specified days
+     */
+    async getUserCaloriesExpended(accessToken, lastNumDays) {
+        return this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.calories);
     }
 
     /**
@@ -130,6 +188,30 @@ class UserService {
         });
     }
 
+    async _getGoogleFitData(accessToken, lastNumDays, source) {
+        const oauth2Client = this._getOAuthClient();
+        oauth2Client.setCredentials(accessToken);
+
+        const midnight = new Date();
+        midnight.setHours(24,0,0,0);
+
+        const fitness = google.fitness({version: 'v1', auth: oauth2Client});
+        const res = await fitness.users.dataset.aggregate({
+            userId: 'me',
+            requestBody: {
+                startTimeMillis: midnight.getTime() - lastNumDays * 86400000,
+                endTimeMillis: midnight.getTime(),
+                bucketByTime: { durationMillis: 86400000 },
+                aggregateBy: [{
+                    dataTypeName: source.type,
+                    dataSourceId: source.id
+                }]
+            }
+        });
+
+        return this._getDataValues(res.data);
+    }
+
     _getOAuthClient() {
         return new google.auth.OAuth2(
           process.env.REACT_APP_GOOGLE_CLIENT_ID,
@@ -143,9 +225,28 @@ class UserService {
         return weight * kilogramsPerPound;
     }
 
+    _getPoundWeight(weight) {
+        const kilogramsPerPound = 0.453592;
+        return weight / kilogramsPerPound;
+    }
+
     _getCmHeight(feet, inches) {
         const cmPerInch = 2.54;
         return feet * 12 * cmPerInch + inches * cmPerInch
+    }
+
+    _getDataValues(data) {
+        const values = [];
+        for (const bucket of data.bucket) {
+            for (const dataset of bucket.dataset) {
+                for (const point of dataset.point) {
+                    for (const value of point.value) {
+                        values.push(value.hasOwnProperty('fpVal') ? value.fpVal : value.intVal);
+                    }
+                }
+            }
+        }
+        return values;
     }
 }
 
