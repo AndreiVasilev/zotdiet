@@ -83,6 +83,12 @@ class UserService {
         .catch(err => console.error('Unable to update user', err));
     return (response && response.status === 200) ? response.data : null;
   }
+
+  async getUserSteps() {
+    const response = await axios.get('/api/user/steps', { params: {lastNumDays: 1}})
+        .catch(err => console.error('Unable to get user steps', err));
+    return (response && response.status === 200) ? response.data[0] : null;
+  }
 }
 
 // Export a singleton instance of this service

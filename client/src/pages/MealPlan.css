@@ -30,16 +30,16 @@
     justify-content: center;
 }
 
+.modal-dialog {
+    min-width: 70%;
+}
+
 .meal-modal {
     padding: 30px 50px;
 }
 
 .modal-content {
     border-radius: 30px;
-}
-
-.modal-dialog {
-    max-width: 70%;
 }
 
 .heart-icon:hover {

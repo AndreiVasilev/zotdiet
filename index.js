@@ -1,20 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const dotenv = require('dotenv')
-dotenv.config()
 const spoonRouter = require('./server/routes/SpoonRoutes');
-
-const session = require('express-session')
-
+const userRouter = require("./server/routes/UserRoutes");
+const session = require('express-session');
+const dotenv = require('dotenv');
 dotenv.config();
 
 const prodMode = process.env.NODE_ENV === 'production';
 const app = express();
-
 app.use(bodyParser.json());
-
-
-app.use('/spoon', spoonRouter)
 
 // Initialize server side user session parameters
 app.use(session({
@@ -27,14 +21,16 @@ app.use(session({
   }
 }));
 
+// Initialize routes
+app.use('/api/user', userRouter);
+app.use('/spoon', spoonRouter);
+
 // Set application port
 app.set('port', process.env.PORT || 5000);
 app.listen(app.get('port'), () => {
   console.log(`app running on port ${app.get('port')}`)
 });
 
-// Import API routes
-require('./server/routes/UserRoutes')(app);
 
 
 // Configure client to use correct build directory

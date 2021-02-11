@@ -2,12 +2,7 @@ import {Button, Modal} from "react-bootstrap";
 
 function NewUserModal(props) {
     return (
-        <Modal
-            {...props}
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-            style={{maxWidth: ''}}
-        >
+        <Modal{...props} aria-labelledby="contained-modal-title-vcenter" centered>
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
                     Welcome to ZotDiet!

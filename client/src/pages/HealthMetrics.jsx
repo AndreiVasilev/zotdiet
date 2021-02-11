@@ -6,12 +6,14 @@ import CountUp from "react-countup";
 import footsteps from "../assets/footstep.svg";
 import LineChart from "../components/LineChart";
 import moment from "moment";
+import userService from "../services/UserService";
 
 const HealthMetrics = () => {
   const [selectedData, setSelectedData] = useState({});
   const [sevenDay, setSevenDay] = useState(false);
   const [thirtyDay, setThirtyDay] = useState(false);
   const [ninetyDay, setNinetyDay] = useState(false);
+  const [steps, setSteps] = useState(0);
 
   const MONTHS = [
     "Jan",
@@ -33,7 +35,7 @@ const HealthMetrics = () => {
   const day = date.getDate();
   const year = date.getFullYear();
 
-  const PIE_ANIMATION_DURATION = 3000;
+  const PIE_ANIMATION_DURATION = 2000;
   const BASE_COLOR = "#F59E0B";
   const BASE_COLOR_TRANSPARENT = "rgba(245, 158, 11, 0.2)";
 
@@ -113,6 +115,12 @@ const HealthMetrics = () => {
     setSelectedData(datasets[0]);
   }, []);
 
+  useEffect(() => {
+    userService.getUserSteps().then(stepCount => {
+      setSteps(stepCount);
+    });
+  }, [])
+
   return (
     <Card className="metrics-container">
       <Card.Body className="metrics-content">
@@ -145,7 +153,7 @@ const HealthMetrics = () => {
           <div className="step-number">
             <CountUp
               start={0}
-              end={49800}
+              end={steps}
               duration={PIE_ANIMATION_DURATION / 1000}
             />
             <span className="text-base"> steps</span>
