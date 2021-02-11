@@ -25,7 +25,9 @@ function Profile(props) {
         heightFt: 0,
         heightIn: 0,
         targetWeight: 0,
-        currentWeight: 0,
+        weight: 0,
+        lastLogin: Date.now(),
+        pace: 'Mild',
         diet: 'Whole30'
     });
 
@@ -37,7 +39,8 @@ function Profile(props) {
                     id: initUser.id,
                     firstName: initUser.firstName,
                     lastName: initUser.lastName,
-                    picture: initUser.picture
+                    picture: initUser.picture,
+                    weight: initUser.weight,
                 });
                 setShowModal(true);
             } else {
@@ -172,10 +175,10 @@ function Profile(props) {
                         </Row>
 
                         <Row className="mt-4">
-                            <Form.Group className="col" controlId="formGridCurrentWeight">
+                            <Form.Group className="col" controlId="formGridWeight">
                                 <Form.Label>Current Weight</Form.Label>
-                                <Form.Control required type="number" placeholder="Enter weight" name="currentWeight"
-                                              value={user.currentWeight ? user.currentWeight : ''}
+                                <Form.Control required type="number" placeholder="Enter weight" name="weight"
+                                              value={user.weight ? user.weight : ''}
                                               onChange={handleNumericChange}/>
                             </Form.Group>
                             <Form.Group className="col" controlId="formGridTargetWeight">
@@ -185,6 +188,18 @@ function Profile(props) {
                                               onChange={handleNumericChange}/>
                             </Form.Group>
                             <Form.Group className="col" controlId="formGridPace">
+                                <Form.Label>Pace</Form.Label>
+                                <Form.Control required as="select" placeholder="Choose pace..." type="text"
+                                              name="pace" value={user.pace} onChange={handleTextChange}>
+                                    <option key="Mild">Mild    (0.5 lb/week)</option>
+                                    <option key="Normal">Normal  (1 lb/week)</option>
+                                    <option key="Intense">Intense (2 lb/week)</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </Row>
+
+                        <Row className="mt-4">
+                            <Form.Group className="col" controlId="formGridDiet">
                                 <Form.Label>Diet</Form.Label>
                                 <Form.Control required as="select" placeholder="Choose diet..." type="text"
                                               name="diet" value={user.diet} onChange={handleTextChange}>

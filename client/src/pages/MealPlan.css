@@ -38,10 +38,6 @@
     border-radius: 30px;
 }
 
-.modal-dialog {
-    max-width: 70%;
-}
-
 .heart-icon:hover {
     cursor: pointer;
 }
