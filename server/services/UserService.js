@@ -122,11 +122,15 @@ class UserService {
     }
 
     /**
-     * Gets the weight of the user associated with the given
-     * access token over the last number of specified days
+     * Gets the weight in pounds of the user associated with the
+     * given access token over the last number of specified days
      */
     async getUserWeight(accessToken, lastNumDays) {
-        return this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.weight);
+        const weights = await this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.weight);
+        if (weights) {
+            return this._getPoundWeights(weights);
+        }
+        return [0];
     }
 
     /**
@@ -169,21 +173,29 @@ class UserService {
      * Gets the ID and name of the currently logged in Google user.
      */
     async getGoogleUser(accessToken) {
+        const weight = await this.getUserWeight(accessToken, 30)
+            .catch(err => console.error('Unable to get users weight', err));
+
         return new Promise((resolve, reject) => {
+            if (!weight) {
+                reject();
+            }
+
             const oauth2Client = this._getOAuthClient();
             oauth2Client.setCredentials(accessToken);
             google.oauth2({auth: oauth2Client, version: 'v2'}).userinfo.get((err, res) => {
-                  if (err) {
-                      console.error('Unable to get Google profile info', err);
-                      reject(err);
-                  }
-                  resolve({
-                      id: res.data.id,
-                      firstName: res.data.given_name,
-                      lastName: res.data.family_name,
-                      picture: res.data.picture
-                  });
-              }
+                    if (err) {
+                        console.error('Unable to get Google profile info', err);
+                        reject(err);
+                    }
+                    resolve({
+                        id: res.data.id,
+                        firstName: res.data.given_name,
+                        lastName: res.data.family_name,
+                        picture: res.data.picture,
+                        weight: weight[weight.length - 1]
+                    });
+                }
             );
         });
     }
@@ -227,7 +239,11 @@ class UserService {
 
     _getPoundWeight(weight) {
         const kilogramsPerPound = 0.453592;
-        return weight / kilogramsPerPound;
+        return Math.round(weight / kilogramsPerPound);
+    }
+
+    _getPoundWeights(weights) {
+        return weights.map(weight => this._getPoundWeight(weight));
     }
 
     _getCmHeight(feet, inches) {
