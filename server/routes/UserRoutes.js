@@ -5,7 +5,7 @@ const userRouter = require('express').Router();
 userRouter.get('/', [authHandler, async (req, res) => {
     const user = await userService.getUser(req.session.userId)
         .catch(err => {
-            console.err(`Unable to get user ${req.session.userId}`, err);
+            console.error(`Unable to get user ${req.session.userId}`, err);
             res.status(404);
             res.send('User not found.');
         });
@@ -15,23 +15,22 @@ userRouter.get('/', [authHandler, async (req, res) => {
     }
 }]);
 
-// userRouter.get('/api/user/steps', [authHandler, async (req, res) => {
-//     const user = await userService.getUserSteps(req.session.token, req.query.lastNumDays)
-//         .catch(err => {
-//             console.err(`Unable to get user ${req.session.userId}`, err);
-//             res.status(404);
-//             res.send('User not found.');
-//         });
-//
-//     if (user) {
-//         res.json(user);
-//     }
-// }]);
+userRouter.get('/steps', [authHandler, async (req, res) => {
+    const user = await userService.getUserSteps(req.session.accessToken, req.query.lastNumDays)
+        .catch(err => {
+            console.error(`Unable to get steps of user ${req.session.userId}`, err);
+            res.status(500);
+        });
+
+    if (user) {
+        res.json(user);
+    }
+}]);
 
 userRouter.post('/', [authHandler, async (req, res) => {
     const user = await userService.createUser(req.body)
         .catch(err => {
-            console.err(`Unable to create user ${req.body.id}`, err);
+            console.error(`Unable to create user ${req.body.id}`, err);
             res.status(500);
             res.send('Unable to create user.');
         });
@@ -44,7 +43,7 @@ userRouter.post('/', [authHandler, async (req, res) => {
 userRouter.patch('/', [authHandler, async (req, res) => {
     const user = await userService.updateUser(req.body)
         .catch(err => {
-            console.err(`Unable to update user ${req.body.id}`, err);
+            console.error(`Unable to update user ${req.body.id}`, err);
             res.status(500);
             res.send('Unable to update user.');
         });
@@ -81,7 +80,7 @@ userRouter.post('/login', async (req, res) => {
 userRouter.post('/logout', [authHandler, async (req, res) => {
     req.session.destroy(function(err) {
         if (err) {
-            console.log(err);
+            console.error(err);
             res.status(500);
             res.send('Logout failed. Unable to destroy server session');
         } else {
