@@ -1,16 +1,24 @@
 import React  from "react";
-import "./MealDisplay.css"
-import "../App.css"
+import MealNutritionInfo from "./MealNutritionInfo";
+import "./MealDisplay.css";
+import "../App.css";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faClock} from "@fortawesome/free-solid-svg-icons/faClock";
 
 import MealDisplayImg from "./MealDisplayImg";
 
 function MealDisplay(props) {
-    const { mealType, mealName, openModal } = props;
+    const { mealType, mealName, cookTime, numCalories, nutrition, openModal } = props;
     return (
         <div className="meal-display-container" onClick={openModal}>
-            <p>{mealType}</p>
+            <p className="bold-text meal-display-text">{mealType}</p>
             <MealDisplayImg mealImg="../assets/icon.png" mealName={mealName}/>
-            <p>{mealName}</p>
+            <p className="bold-text meal-display-text">{mealName}</p>
+            <p className="meal-display-text meal-display-text-sm">
+                <FontAwesomeIcon icon={faClock} size="3x" className="meal-time-icon" />
+                Ready in {cookTime} minutes
+            </p>
+            <MealNutritionInfo nutrition={nutrition}/>
         </div>
     );
 }

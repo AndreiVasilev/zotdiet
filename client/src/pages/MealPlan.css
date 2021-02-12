@@ -1,5 +1,6 @@
 .page-container {
-    padding: 3em;
+    padding: 1em;
+    width: 70%;
 }
 
 .meal-plan-tab {
@@ -53,3 +54,4 @@
 .heart-unselected {
     color: lightgray;
 }
+

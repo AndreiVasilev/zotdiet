@@ -1,9 +1,35 @@
 .meal-display-container {
     font-size: 1.5rem;
     text-align: center;
+}
+
+.bold-text {
     font-weight: bold;
 }
 
+.meal-display-text {
+    margin-bottom: 3px;
+}
+
+.meal-display-text-sm {
+    font-size: 1.2rem;
+}
+
 .meal-display-container:hover {
-    cursor: pointer;
+    /*cursor: pointer;*/
+}
+
+.meal-display-nutrients-tbl {
+    border: 2px solid black;
+    width: 100%;
+}
+
+.meal-display-nutrients-tbl tr {
+    border: 2px solid black;
+}
+
+.meal-time-icon {
+    width: 25px !important;
+    height: 25px !important;
+    margin-right: 5px;
 }

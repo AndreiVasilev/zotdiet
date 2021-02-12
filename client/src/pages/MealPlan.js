@@ -155,9 +155,26 @@ function MealPlan() {
                             return (
                                 <Tab tabClassName="meal-plan-tab" eventKey={idx.toString()} title={label} key={idx}>
                                     <div className="daily-meals-container">
-                                        <MealDisplay mealType="Breakfast" mealName={meals[idx].breakfast.name} openModal={() => handleShowModal('breakfast')}/>
-                                        <MealDisplay mealType="Lunch" mealName={meals[idx].lunch.name} openModal={() => handleShowModal('lunch')}/>
-                                        <MealDisplay mealType="Dinner" mealName={meals[idx].dinner.name} openModal={() => handleShowModal('dinner')}/>
+                                        {/* Breakfast */}
+                                        <MealDisplay
+                                            mealType="Breakfast" mealName={meals[idx].breakfast.name}
+                                            cookTime={45} numCalories={250} nutrition={meals[idx].breakfast.nutrition}
+                                            // openModal={() => handleShowModal('breakfast')}
+                                        />
+
+                                        {/* Lunch */}
+                                        <MealDisplay
+                                            mealType="Lunch" mealName={meals[idx].lunch.name}
+                                            cookTime={60} numCalories={350} nutrition={meals[idx].lunch.nutrition}
+                                            // openModal={() => handleShowModal('lunch')}
+                                        />
+
+                                        {/* Dinner */}
+                                        <MealDisplay
+                                            mealType="Dinner" mealName={meals[idx].dinner.name}
+                                            cookTime={25} numCalories={650} nutrition={meals[idx].dinner.nutrition}
+                                            // openModal={() => handleShowModal('dinner')}
+                                        />
                                     </div>
                                 </Tab>
                             )
@@ -166,29 +183,29 @@ function MealPlan() {
                 </Tabs>
 
                 {/* Expanded Meal Info */}
-                <Modal show={showModal} onHide={handleCloseModal}>
-                    <Container className="meal-modal">
-                        <Row>
-                            <Col lg={4}>
-                                <Row className="modal-section-name center-content">{modalMeal.name}</Row>
-                                <Row className="modal-meal-cuisine center-content">{modalMeal.cuisine}</Row>
-                                <Row className="center-content">
-                                    <MealDisplayImg mealImg="-- TODO --" mealName={modalMeal.name}/>   {/* TODO set mealImg prop with Spoon img */}
-                                </Row>
-                                <Row className="center-content">
-                                    <MealNutritionInfo nutrition={modalMeal.nutrition} />
-                                </Row>
-                            </Col>
-                            <Col lg={{offset: 1}}>
-                                <Row className="modal-section-name">Recipe</Row>
-                                <Recipe recipe={modalMeal.recipe}/>
-                            </Col>
-                            <Col lg={1} style={{textAlign: "right"}}>
-                                <FontAwesomeIcon icon={faHeart} size="3x" onClick={toggleHeart} className={`heart-icon ${mealHearted ? "heart-selected" : "heart-unselected"}`} />
-                            </Col>
-                        </Row>
-                    </Container>
-                </Modal>
+                {/*<Modal show={showModal} onHide={handleCloseModal}>*/}
+                {/*    <Container className="meal-modal">*/}
+                {/*        <Row>*/}
+                {/*            <Col lg={4}>*/}
+                {/*                <Row className="modal-section-name center-content">{modalMeal.name}</Row>*/}
+                {/*                <Row className="modal-meal-cuisine center-content">{modalMeal.cuisine}</Row>*/}
+                {/*                <Row className="center-content">*/}
+                {/*                    <MealDisplayImg mealImg="-- TODO --" mealName={modalMeal.name}/>   /!* TODO set mealImg prop with Spoon img *!/*/}
+                {/*                </Row>*/}
+                {/*                <Row className="center-content">*/}
+                {/*                    <MealNutritionInfo nutrition={modalMeal.nutrition} />*/}
+                {/*                </Row>*/}
+                {/*            </Col>*/}
+                {/*            <Col lg={{offset: 1}}>*/}
+                {/*                <Row className="modal-section-name">Recipe</Row>*/}
+                {/*                <Recipe recipe={modalMeal.recipe}/>*/}
+                {/*            </Col>*/}
+                {/*            <Col lg={1} style={{textAlign: "right"}}>*/}
+                {/*                <FontAwesomeIcon icon={faHeart} size="3x" onClick={toggleHeart} className={`heart-icon ${mealHearted ? "heart-selected" : "heart-unselected"}`} />*/}
+                {/*            </Col>*/}
+                {/*        </Row>*/}
+                {/*    </Container>*/}
+                {/*</Modal>*/}
             </Card.Body>
         </Card>
     );
