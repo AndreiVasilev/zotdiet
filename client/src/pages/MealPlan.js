@@ -52,6 +52,10 @@ function MealPlan() {
         setMealHearted(!mealHearted);
     }
 
+    const getMealImgUrl = (mealId) => {
+        return `https://spoonacular.com/recipeImages/${mealId}-556x370.jpg`
+    }
+
     useEffect(() => {
         userService.getMealPlan().then(meals => {
             setMeals(meals);
@@ -183,21 +187,21 @@ function MealPlan() {
                                          {/*Breakfast */}
                                         <MealDisplay
                                             mealType="Breakfast" mealName={breakfast.title} url={breakfast.sourceUrl}
-                                            cookTime={breakfast.readyInMinutes} nutrition={curDayNutrients}
+                                            img={getMealImgUrl(breakfast.id)} cookTime={breakfast.readyInMinutes} nutrition={curDayNutrients}
                                             // openModal={() => handleShowModal('breakfast')}
                                         />
 
                                         {/* Lunch */}
                                         <MealDisplay
                                             mealType="Lunch" mealName={lunch.title} url={lunch.sourceUrl}
-                                            cookTime={lunch.readyInMinutes} nutrition={curDayNutrients}
+                                            img={getMealImgUrl(lunch.id)} cookTime={lunch.readyInMinutes} nutrition={curDayNutrients}
                                             // openModal={() => handleShowModal('lunch')}
                                         />
 
                                         {/* Dinner */}
                                         <MealDisplay
                                             mealType="Dinner" mealName={dinner.title} url={dinner.sourceUrl}
-                                            cookTime={dinner.readyInMinutes} nutrition={curDayNutrients}
+                                            img={getMealImgUrl(dinner.id)} cookTime={dinner.readyInMinutes} nutrition={curDayNutrients}
                                             // openModal={() => handleShowModal('dinner')}
                                         />
                                     </div>
