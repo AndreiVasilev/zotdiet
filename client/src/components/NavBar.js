@@ -21,7 +21,7 @@ function NavBar() {
         <Navbar bg="dark" variant="dark" id="nav-bar">
 
           <Navbar.Brand href={HOME}>
-            <img src={logo} width="70" height="70"
+            <img src={logo} width="50" height="50"
                  className="d-inline-block align-middle"
                  alt="Fork and Knife in Blue Circle"/>
             <label id="app-title">ZotDiet</label>

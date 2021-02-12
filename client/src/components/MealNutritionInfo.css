@@ -1,9 +1,12 @@
 .meal-nutrition-tbl {
-    margin: 20px;
-    border: 2px solid black;
+    margin-top: 10px;
     font-size: 20px;
 }
 
-.calories {
+.meal-nutrition-tbl td {
+    padding: 5px;
+}
+
+.today-nutrition-label {
     font-weight: bold;
 }

@@ -1,5 +1,6 @@
 .page-container {
-    padding: 3em;
+    padding: 1em;
+    width: 70%;
 }
 
 .meal-plan-tab {
@@ -52,4 +53,41 @@
 
 .heart-unselected {
     color: lightgray;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.loading-text {
+    text-align: center;
+    font-size: 30px;
+}
+
+.loader-container {
+    display: flex;
+    justify-content: center;
+}
+
+/* W3 Schools */
+.loader {
+    border: 16px solid #f3f3f3;     /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    margin: 0;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/* W3 Schools */
+
+.meal-plan-separator {
+    border-bottom: 3px solid black;
 }
