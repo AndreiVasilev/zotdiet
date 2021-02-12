@@ -24,10 +24,10 @@ function Profile(props) {
         age: 0,
         heightFt: 0,
         heightIn: 0,
-        targetWeight: 0,
         weight: 0,
-        lastLogin: Date.now(),
+        goalPounds: 0,
         pace: 'Mild',
+        goal: 'Lose',
         diet: 'Whole30'
     });
 
@@ -181,29 +181,39 @@ function Profile(props) {
                                               value={user.weight ? user.weight : ''}
                                               onChange={handleNumericChange}/>
                             </Form.Group>
-                            <Form.Group className="col" controlId="formGridTargetWeight">
-                                <Form.Label>Target Weight</Form.Label>
-                                <Form.Control required type="number" placeholder="Enter weight" name="targetWeight"
-                                              value={user.targetWeight ? user.targetWeight : ''}
-                                              onChange={handleNumericChange}/>
-                            </Form.Group>
-                            <Form.Group className="col" controlId="formGridPace">
-                                <Form.Label>Pace</Form.Label>
-                                <Form.Control required as="select" placeholder="Choose pace..." type="text"
-                                              name="pace" value={user.pace} onChange={handleTextChange}>
-                                    <option key="Mild">Mild    (0.5 lb/week)</option>
-                                    <option key="Normal">Normal  (1 lb/week)</option>
-                                    <option key="Intense">Intense (2 lb/week)</option>
-                                </Form.Control>
-                            </Form.Group>
-                        </Row>
-
-                        <Row className="mt-4">
                             <Form.Group className="col" controlId="formGridDiet">
                                 <Form.Label>Diet</Form.Label>
                                 <Form.Control required as="select" placeholder="Choose diet..." type="text"
                                               name="diet" value={user.diet} onChange={handleTextChange}>
                                     {getDietOptions()}
+                                </Form.Control>
+                            </Form.Group>
+                        </Row>
+
+                        <Row className="mt-4">
+                            <Form.Group className="col" controlId="formGridGoal">
+                                <Form.Label>Weight Goal</Form.Label>
+                                <Form.Control required as="select" placeholder="Choose goal..." type="text"
+                                              name="goal" value={user.goal} onChange={handleTextChange}>
+                                    <option key="Lose">Lose</option>
+                                    <option key="Maintain">Maintain</option>
+                                    <option key="Gain">Gain</option>
+                                </Form.Control>
+                            </Form.Group>
+                            <Form.Group className="col" controlId="formGridGoalPounds">
+                                <Form.Label>Amount (lbs)</Form.Label>
+                                <Form.Control required type="number" placeholder="Enter lbs" name="goalPounds"
+                                              value={user.goalPounds ? user.goalPounds : ''}
+                                              onChange={handleNumericChange} disabled={user.goal === 'Maintain'} />
+                            </Form.Group>
+                            <Form.Group className="col" controlId="formGridPace">
+                                <Form.Label>Pace</Form.Label>
+                                <Form.Control required as="select" placeholder="Choose pace..." type="text"
+                                              name="pace" value={user.pace} onChange={handleTextChange}
+                                              disabled={user.goal === 'Maintain'}>
+                                    <option key="Mild">Mild    (0.5 lb/week)</option>
+                                    <option key="Normal">Normal  (1 lb/week)</option>
+                                    <option key="Intense">Intense (2 lb/week)</option>
                                 </Form.Control>
                             </Form.Group>
                         </Row>
