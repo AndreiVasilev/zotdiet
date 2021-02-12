@@ -89,21 +89,21 @@ function MealPlan() {
                                          {/*Breakfast */}
                                         <MealDisplay
                                             mealType="Breakfast" mealName={breakfast.title} url={breakfast.sourceUrl}
-                                            img={getMealImgUrl(breakfast.id)} cookTime={breakfast.readyInMinutes} nutrition={curDayNutrients}
+                                            img={getMealImgUrl(breakfast.id)} cookTime={breakfast.readyInMinutes}
                                             // openModal={() => handleShowModal('breakfast')}
                                         />
 
                                         {/* Lunch */}
                                         <MealDisplay
                                             mealType="Lunch" mealName={lunch.title} url={lunch.sourceUrl}
-                                            img={getMealImgUrl(lunch.id)} cookTime={lunch.readyInMinutes} nutrition={curDayNutrients}
+                                            img={getMealImgUrl(lunch.id)} cookTime={lunch.readyInMinutes}
                                             // openModal={() => handleShowModal('lunch')}
                                         />
 
                                         {/* Dinner */}
                                         <MealDisplay
                                             mealType="Dinner" mealName={dinner.title} url={dinner.sourceUrl}
-                                            img={getMealImgUrl(dinner.id)} cookTime={dinner.readyInMinutes} nutrition={curDayNutrients}
+                                            img={getMealImgUrl(dinner.id)} cookTime={dinner.readyInMinutes}
                                             // openModal={() => handleShowModal('dinner')}
                                         />
                                     </div>
