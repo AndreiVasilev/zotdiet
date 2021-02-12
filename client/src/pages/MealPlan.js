@@ -21,6 +21,16 @@ const DAY_LABELS = {
     SATURDAY: "Sat"
 };
 
+const MEAL_DAYS = {
+    SUNDAY: "sunday",
+    MONDAY: "monday",
+    TUESDAY: "tuesday",
+    WEDNESDAY: "wednesday",
+    THURSDAY: "thursday",
+    FRIDAY: "friday",
+    SATURDAY: "saturday"
+};
+
 const getCurDay = () => new Date().getDay();
 
 function MealPlan() {
@@ -28,7 +38,7 @@ function MealPlan() {
     const [curTabIdx, setCurTabIdx] = useState(getCurDay());
     const [modalMeal, setModalMeal] = useState({});
     const [mealHearted, setMealHearted] = useState(false);  // TODO set default based on whether modalMeal hearted
-    const [meals, setMeals] = useState([]);
+    const [meals, setMeals] = useState(null);
 
     const handleCloseModal = () => setShowModal(false);
 
@@ -43,7 +53,7 @@ function MealPlan() {
     }
 
     useEffect(() => {
-        userService.getMealPlan().then(meals =>{
+        userService.getMealPlan().then(meals => {
             setMeals(meals);
         })
     }, []);
@@ -155,32 +165,36 @@ function MealPlan() {
 
     return (
         <Card className="page-container">
+            {/*<p className="loading">{meals ? "done" : "loading"}</p>  /!* TODO remove*!/*/}
             <Card.Body>
                 <Tabs id="meal-plan-container" transition={false} variant="tabs"
-                      defaultActiveKey={getCurDay()} activeKey={curTabIdx} onSelect={(idx) => setCurTabIdx(idx)} >
-                    {
+                      defaultActiveKey={getCurDay()} activeKey={curTabIdx} onSelect={(idx) => setCurTabIdx(idx)}>
+                    {meals &&
                         Object.entries(DAY_LABELS).map(([day, label], idx) => {
+                            const curDay = meals[MEAL_DAYS[day]];
+                            const curDayMeals = curDay.meals;
+                            const curDayNutrients = curDay.nutrients;
                             return (
                                 <Tab tabClassName="meal-plan-tab" eventKey={idx.toString()} title={label} key={idx}>
                                     <div className="daily-meals-container">
-                                        {/* Breakfast */}
+                                         {/*Breakfast */}
                                         <MealDisplay
-                                            mealType="Breakfast" mealName={meals[idx].breakfast.name}
-                                            cookTime={45} numCalories={250} nutrition={meals[idx].breakfast.nutrition}
+                                            mealType="Breakfast" mealName={curDayMeals[0].title}
+                                            cookTime={curDayMeals[0].readyInMinutes} nutrition={curDayNutrients}
                                             // openModal={() => handleShowModal('breakfast')}
                                         />
 
                                         {/* Lunch */}
                                         <MealDisplay
-                                            mealType="Lunch" mealName={meals[idx].lunch.name}
-                                            cookTime={60} numCalories={350} nutrition={meals[idx].lunch.nutrition}
+                                            mealType="Lunch" mealName={curDayMeals[1].title}
+                                            cookTime={curDayMeals[1].readyInMinutes} nutrition={curDayNutrients}
                                             // openModal={() => handleShowModal('lunch')}
                                         />
 
                                         {/* Dinner */}
                                         <MealDisplay
-                                            mealType="Dinner" mealName={meals[idx].dinner.name}
-                                            cookTime={25} numCalories={650} nutrition={meals[idx].dinner.nutrition}
+                                            mealType="Dinner" mealName={curDayMeals[2].title}
+                                            cookTime={curDayMeals[2].readyInMinutes} nutrition={curDayNutrients}
                                             // openModal={() => handleShowModal('dinner')}
                                         />
                                     </div>

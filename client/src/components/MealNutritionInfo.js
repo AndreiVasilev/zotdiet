@@ -14,16 +14,16 @@ function MealNutritionInfo(props) {
                     <td>{nutrition.calories}</td>
                 </tr>
                 <tr>
+                    <td>Fat:</td>
+                    <td>{nutrition.fat} g</td>
+                </tr>
+                <tr>
                     <td>Protein:</td>
-                    <td>{nutrition.protein}</td>
+                    <td>{nutrition.protein} g</td>
                 </tr>
                 <tr>
                     <td>Carbs:</td>
-                    <td>{nutrition.carbs}</td>
-                </tr>
-                <tr>
-                    <td>Sugar:</td>
-                    <td>{nutrition.sugar}</td>
+                    <td>{nutrition.carbohydrates} g</td>
                 </tr>
             </tbody>
         </Table>
