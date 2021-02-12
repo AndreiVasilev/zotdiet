@@ -64,7 +64,14 @@ function MealPlan() {
 
     return (
         <Card className="page-container">
-            {/*<p className="loading">{meals ? "done" : "loading"}</p>  /!* TODO remove*!/*/}
+            { !meals &&
+                <div className="loading-container">
+                    <p className="loading-text">Loading...</p>
+                    <div className="loader-container">
+                        <div className="loader"></div>
+                    </div>
+                </div>
+            }
             <Card.Body>
                 <Tabs id="meal-plan-container" transition={false} variant="tabs"
                       defaultActiveKey={getCurDay()} activeKey={curTabIdx} onSelect={(idx) => setCurTabIdx(idx)}>
