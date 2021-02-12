@@ -1,11 +1,6 @@
 const axios = require('axios');
-const { request } = require('express');
 
 class SpoonService {
-
-    constructor() {
-        
-    }
 
     async getTestApiCall() {
         console.log('Test Service Called.')
@@ -14,7 +9,7 @@ class SpoonService {
         requestStr = this.getBaseUrl() + requestStr + '&' + this.getApiKeyStr()
 
         let res = await axios.get(requestStr)
-        if (res == undefined){
+        if (!res){
             console.log('Test Request Failed.')
             return {'result': 'failed'}
         }
@@ -30,7 +25,7 @@ class SpoonService {
         try {
             let res = await axios.get(requestStr)
             console.log('Get Recipe Request Succeeded.')
-            return res.data 
+            return res.data
         }
         catch {
             console.log('Get Recipe Request Failed.')
@@ -39,10 +34,6 @@ class SpoonService {
            
     }
 
-
-   
-
-    // TODO: Complete
     async generateMealPlanForWeek(targetCalories, diet, excludeIngredients){
         console.log('Get Meal Plan for Week Request Made.')
 
