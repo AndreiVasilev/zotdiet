@@ -16,6 +16,18 @@ userRouter.get('/', [authHandler, async (req, res) => {
 }]);
 
 userRouter.get('/steps', [authHandler, async (req, res) => {
+    const steps = await userService.getUserSteps(req.session.accessToken, req.query.lastNumDays)
+        .catch(err => {
+            console.error(`Unable to get steps of user ${req.session.userId}`, err);
+            res.status(500);
+        });
+
+    if (steps) {
+        res.json(steps);
+    }
+}]);
+
+userRouter.get('/meal-plan', [authHandler, async (req, res) => {
     const user = await userService.getUserSteps(req.session.accessToken, req.query.lastNumDays)
         .catch(err => {
             console.error(`Unable to get steps of user ${req.session.userId}`, err);
@@ -75,7 +87,6 @@ userRouter.post('/login', async (req, res) => {
     req.session.loggedIn = true;
     res.json({isNew: isNew, initUser: googleUser});
 });
-
 
 userRouter.post('/logout', [authHandler, async (req, res) => {
     req.session.destroy(function(err) {

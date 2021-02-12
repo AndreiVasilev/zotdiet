@@ -98,35 +98,11 @@ class UserService {
     }
 
     /**
-     * Gets the Basal Metabolic Rate of the given user
-     * based ont the Revised Harris-Benedict Formula
-     */
-    async getUserCurrentBMR(userId) {
-        const user = await this.getUser(userId).catch(err => {
-            console.error(`Unable to calculate BMR of user ${userId}`, err);
-        });
-
-        if (!user) {
-            return 0;
-        }
-
-        if (user.gender === 'Female') {
-            return 447.6 + 9.25 * this._getKilogramWeight(user.currentWeight) +
-                3.10 * this._getCmHeight(user.heightFt, user.heightIn) -
-                4.33 * user.age;
-        }
-
-        return 88.4 + 13.4 * this._getKilogramWeight(user.currentWeight) +
-            4.8 * this._getCmHeight(user.heightFt, user.heightIn) -
-            5.68 * user.age;
-    }
-
-    /**
      * Gets the weight in pounds of the user associated with the
      * given access token over the last number of specified days
      */
     async getUserWeight(accessToken, lastNumDays) {
-        const weights = await this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.weight);
+        const weights = await this._getGoogleFitDataLastNumDays(accessToken, lastNumDays, this.googleFit.weight);
         if (weights) {
             return this._getPoundWeights(weights);
         }
@@ -138,7 +114,22 @@ class UserService {
      * access token over the last number of specified days
      */
     async getUserSteps(accessToken, lastNumDays) {
-        return this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.steps);
+        return this._getGoogleFitDataLastNumDays(accessToken, lastNumDays, this.googleFit.steps);
+    }
+
+    /**
+     * Gets the steps of the user associated with the given
+     * access token over the last number of specified days
+     */
+    async getUserStepsLastWeek(accessToken) {
+        const day = new Date();
+        day.setDate(day.getDate() - day.getDay());
+        day.setHours(0,0,0,0);
+
+        const end = day.getTime();
+        const start = day - 7 * 86400000;
+
+        return await this._getGoogleFitData(accessToken, start, end, this.googleFit.steps);
     }
 
     /**
@@ -146,7 +137,7 @@ class UserService {
      * access token over the last number of specified days
      */
     async getUserBMR(accessToken, lastNumDays) {
-        return this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.bmr);
+        return this._getGoogleFitDataLastNumDays(accessToken, lastNumDays, this.googleFit.bmr);
     }
 
     /**
@@ -154,7 +145,7 @@ class UserService {
      * access token over the last number of specified days
      */
     async getUserCaloriesExpended(accessToken, lastNumDays) {
-        return this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.calories);
+        return this._getGoogleFitDataLastNumDays(accessToken, lastNumDays, this.googleFit.calories);
     }
 
     /**
@@ -200,19 +191,26 @@ class UserService {
         });
     }
 
-    async _getGoogleFitData(accessToken, lastNumDays, source) {
-        const oauth2Client = this._getOAuthClient();
-        oauth2Client.setCredentials(accessToken);
-
+    async _getGoogleFitDataLastNumDays(accessToken, lastNumDays, source) {
         const midnight = new Date();
         midnight.setHours(24,0,0,0);
+
+        const end = midnight.getTime();
+        const start = end - lastNumDays * 86400000;
+
+        return this._getGoogleFitData(accessToken, start, end, source);
+    }
+
+    async _getGoogleFitData(accessToken, start, end, source) {
+        const oauth2Client = this._getOAuthClient();
+        oauth2Client.setCredentials(accessToken);
 
         const fitness = google.fitness({version: 'v1', auth: oauth2Client});
         const res = await fitness.users.dataset.aggregate({
             userId: 'me',
             requestBody: {
-                startTimeMillis: midnight.getTime() - lastNumDays * 86400000,
-                endTimeMillis: midnight.getTime(),
+                startTimeMillis: start,
+                endTimeMillis: end,
                 bucketByTime: { durationMillis: 86400000 },
                 aggregateBy: [{
                     dataTypeName: source.type,
