@@ -1,6 +1,7 @@
 const {google} = require('googleapis');
 const firebase = require("firebase/app");
 require('firebase/database');
+const {mealPlanService} = require("./MealPlanService");
 
 class UserService {
 
@@ -122,13 +123,9 @@ class UserService {
      * access token over the last number of specified days
      */
     async getUserStepsLastWeek(accessToken) {
-        const day = new Date();
-        day.setDate(day.getDate() - day.getDay());
-        day.setHours(0,0,0,0);
-
-        const end = day.getTime();
-        const start = day - 7 * 86400000;
-
+        const sunday = this._getLastSunday();
+        const end = sunday.getTime();
+        const start = end - 7 * 86400000;
         return await this._getGoogleFitData(accessToken, start, end, this.googleFit.steps);
     }
 
@@ -146,6 +143,45 @@ class UserService {
      */
     async getUserCaloriesExpended(accessToken, lastNumDays) {
         return this._getGoogleFitDataLastNumDays(accessToken, lastNumDays, this.googleFit.calories);
+    }
+
+    /**
+     * Gets the users meal plan for the current week (mon-sun). A meal
+     * plan is generated if one does not exist and is saved for future
+     * reference for the remainder of the week.
+     */
+    async getMealPlan(userId, accessToken) {
+
+        // Get user and check if a valid meal plan has
+        // already been generated for the current week
+        const user = await this.getUser(userId);
+        if (this.hasMealPlan(user)) {
+            return user.mealPlan;
+        }
+
+        // Generate new meal plan for the week
+        const steps = await this.getUserStepsLastWeek(accessToken);
+        const mealPlan = await mealPlanService.generateMealPlan(user, steps);
+
+        // Saved updated user meal plan
+        user.mealPlan = mealPlan;
+        user.planGenDate = Date.now();
+        this.updateUser(user)
+            .then(_ => console.log('Successfully updated user meal plan'))
+            .catch(err => console.error('Failed to update users meal plan.', err));
+
+        return mealPlan;
+    }
+
+    /**
+     * Checks if the user has a meal plan for the current week
+     */
+    hasMealPlan(user) {
+        if (!user.mealPlan) {
+            return false;
+        }
+        const sunday = this._getLastSunday();
+        return user.planGenDate <= sunday.getTime();
     }
 
     /**
@@ -230,11 +266,6 @@ class UserService {
         );
     }
 
-    _getKilogramWeight(weight) {
-        const kilogramsPerPound = 0.453592;
-        return weight * kilogramsPerPound;
-    }
-
     _getPoundWeight(weight) {
         const kilogramsPerPound = 0.453592;
         return Math.round(weight / kilogramsPerPound);
@@ -242,11 +273,6 @@ class UserService {
 
     _getPoundWeights(weights) {
         return weights.map(weight => this._getPoundWeight(weight));
-    }
-
-    _getCmHeight(feet, inches) {
-        const cmPerInch = 2.54;
-        return feet * 12 * cmPerInch + inches * cmPerInch
     }
 
     _getDataValues(data) {
@@ -261,6 +287,13 @@ class UserService {
             }
         }
         return values;
+    }
+
+    _getLastSunday() {
+        const day = new Date();
+        day.setDate(day.getDate() - day.getDay());
+        day.setHours(0, 0, 0, 0);
+        return day;
     }
 }
 

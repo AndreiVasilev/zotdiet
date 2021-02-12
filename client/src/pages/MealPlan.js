@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Card, Col, Container, Modal, Row, Tab, Tabs} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faHeart} from "@fortawesome/free-solid-svg-icons/faHeart";
@@ -9,6 +9,7 @@ import MealDisplay from "../components/MealDisplay";
 import MealDisplayImg from "../components/MealDisplayImg";
 import MealNutritionInfo from "../components/MealNutritionInfo";
 import Recipe from "../components/Recipe";
+import userService from "../services/UserService";
 
 const DAY_LABELS = {
     SUNDAY: "Sun",
@@ -27,6 +28,7 @@ function MealPlan() {
     const [curTabIdx, setCurTabIdx] = useState(getCurDay());
     const [modalMeal, setModalMeal] = useState({});
     const [mealHearted, setMealHearted] = useState(false);  // TODO set default based on whether modalMeal hearted
+    const [meals, setMeals] = useState([]);
 
     const handleCloseModal = () => setShowModal(false);
 
@@ -40,106 +42,112 @@ function MealPlan() {
         setMealHearted(!mealHearted);
     }
 
+    useEffect(() => {
+        userService.getMealPlan().then(meals =>{
+            setMeals(meals);
+        })
+    }, []);
+
     // TODO remove this variable (just temp for testing while not getting data from Spoon API/DB)
-    const meals = Array(7).fill(
-        {
-            breakfast: {
-                name: "Omelette",
-                nutrition: {
-                    calories: 250,
-                    cuisine: "American",
-                    protein: "5g",
-                    carbs: "20g",
-                    sugar: "10g"
-                },
-                recipe: {
-                    ingredients: [
-                        {
-                            name: "Ingredient1",
-                            quantity: "2 lbs"
-                        },
-                        {
-                            name: "Ingredient2",
-                            quantity: "5 tbsp"
-                        },
-                        {
-                            name: "Ingredient3",
-                            quantity: "7"
-                        }
-                    ],
-                    instructions: [
-                        "Lorem ipsum dolor sit amet",
-                        "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-                        "Lorem ipsum dolor sit amet Enjoy!",
-                    ]
-                },
-                hearted: true
-            },
-            lunch: {
-        name: "Omelette",
-            nutrition: {
-            calories: 250,
-                cuisine: "American",
-                protein: "5g",
-                carbs: "20g",
-                sugar: "10g"
-        },
-        recipe: {
-            ingredients: [
-                {
-                    name: "Ingredient1",
-                    quantity: "2 lbs"
-                },
-                {
-                    name: "Ingredient2",
-                    quantity: "5 tbsp"
-                },
-                {
-                    name: "Ingredient3",
-                    quantity: "7"
-                }
-            ],
-                instructions: [
-                "Lorem ipsum dolor sit amet",
-                "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-                "Lorem ipsum dolor sit amet Enjoy!",
-            ]
-        },
-        hearted: true
-    },
-            dinner: {
-        name: "Omelette",
-            nutrition: {
-            calories: 250,
-                cuisine: "American",
-                protein: "5g",
-                carbs: "20g",
-                sugar: "10g"
-        },
-        recipe: {
-            ingredients: [
-                {
-                    name: "Ingredient1",
-                    quantity: "2 lbs"
-                },
-                {
-                    name: "Ingredient2",
-                    quantity: "5 tbsp"
-                },
-                {
-                    name: "Ingredient3",
-                    quantity: "7"
-                }
-            ],
-                instructions: [
-                "Lorem ipsum dolor sit amet",
-                "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
-                "Lorem ipsum dolor sit amet Enjoy!",
-            ]
-        },
-        hearted: true
-    }
-        });
+    // const meals = Array(7).fill(
+    //     {
+    //         breakfast: {
+    //             name: "Omelette",
+    //             nutrition: {
+    //                 calories: 250,
+    //                 cuisine: "American",
+    //                 protein: "5g",
+    //                 carbs: "20g",
+    //                 sugar: "10g"
+    //             },
+    //             recipe: {
+    //                 ingredients: [
+    //                     {
+    //                         name: "Ingredient1",
+    //                         quantity: "2 lbs"
+    //                     },
+    //                     {
+    //                         name: "Ingredient2",
+    //                         quantity: "5 tbsp"
+    //                     },
+    //                     {
+    //                         name: "Ingredient3",
+    //                         quantity: "7"
+    //                     }
+    //                 ],
+    //                 instructions: [
+    //                     "Lorem ipsum dolor sit amet",
+    //                     "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
+    //                     "Lorem ipsum dolor sit amet Enjoy!",
+    //                 ]
+    //             },
+    //             hearted: true
+    //         },
+    //         lunch: {
+    //     name: "Omelette",
+    //         nutrition: {
+    //         calories: 250,
+    //             cuisine: "American",
+    //             protein: "5g",
+    //             carbs: "20g",
+    //             sugar: "10g"
+    //     },
+    //     recipe: {
+    //         ingredients: [
+    //             {
+    //                 name: "Ingredient1",
+    //                 quantity: "2 lbs"
+    //             },
+    //             {
+    //                 name: "Ingredient2",
+    //                 quantity: "5 tbsp"
+    //             },
+    //             {
+    //                 name: "Ingredient3",
+    //                 quantity: "7"
+    //             }
+    //         ],
+    //             instructions: [
+    //             "Lorem ipsum dolor sit amet",
+    //             "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
+    //             "Lorem ipsum dolor sit amet Enjoy!",
+    //         ]
+    //     },
+    //     hearted: true
+    // },
+    //         dinner: {
+    //     name: "Omelette",
+    //         nutrition: {
+    //         calories: 250,
+    //             cuisine: "American",
+    //             protein: "5g",
+    //             carbs: "20g",
+    //             sugar: "10g"
+    //     },
+    //     recipe: {
+    //         ingredients: [
+    //             {
+    //                 name: "Ingredient1",
+    //                 quantity: "2 lbs"
+    //             },
+    //             {
+    //                 name: "Ingredient2",
+    //                 quantity: "5 tbsp"
+    //             },
+    //             {
+    //                 name: "Ingredient3",
+    //                 quantity: "7"
+    //             }
+    //         ],
+    //             instructions: [
+    //             "Lorem ipsum dolor sit amet",
+    //             "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
+    //             "Lorem ipsum dolor sit amet Enjoy!",
+    //         ]
+    //     },
+    //     hearted: true
+    // }
+    //     });
 
     // const getMeals = () => {
     //   TODO get data from Spoonacular/DB

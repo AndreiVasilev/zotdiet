@@ -40,21 +40,23 @@ class SpoonService {
         let requestStr = this.getBaseUrl() + 'mealplanner/generate?' + this.getApiKeyStr()
         let mealPlanStr = '&timeFrame=week&targetCalories=' + targetCalories
         mealPlanStr += '&diet=' + diet
-        mealPlanStr += '&exclude=' + excludeIngredients
+
+        if (excludeIngredients) {
+            mealPlanStr += '&exclude=' + excludeIngredients;
+        }
 
         requestStr += mealPlanStr
 
         console.log(requestStr)
-        try {
-            let res = axios.get(requestStr)
-            console.log('Generate Meal Plan Request Succeeded.')
-            console.log(res.data)
-            return res.data
+
+        const res = await axios.get(requestStr).catch(err => console.error("Failed to generate meal plan.", err));
+        if (!res) {
+            return [];
         }
-        catch {
-            console.log('Generate Meal Plan Request Failed.')
-            return {'result': 'failed'}
-        }
+
+        console.log('Generate Meal Plan Request Succeeded.')
+        console.log(res.data)
+        return res.data
     }
 
 

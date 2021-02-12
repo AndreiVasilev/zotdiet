@@ -1,7 +1,7 @@
 
-const {spoonService} = require('./SpoonService');
+const spoonService = require('./SpoonService');
 
-class RecommenderService {
+class MealPlanService {
 
     constructor() {
         this.calorieMultipliers = {
@@ -26,19 +26,20 @@ class RecommenderService {
         const bmr = this.getUserBMR(user);
         const activityLevel = this.getActivityLevel(steps);
         const maintainCalories = bmr * activityLevel;
+        let targetCalories = maintainCalories;
 
-        if (user.goal === 'Maintain') {
-            // TODO generate meal plan using maintain calories
+        console.log(`Generating meal plan for user ${user.id}, 
+            based on ${bmr} calorie BMR, ${activityLevel} 
+            activity level, and ${user.goal} weight goal.`);
 
+        if (user.goal === 'Lose') {
+            targetCalories = maintainCalories * this.getCalorieMultiplier(true, user.pace);
         }
-        else if (user.goal === 'Lose') {
-            const targetCalories = maintainCalories * this.getCalorieMultiplier(true, user.pace);
-
+        else if (user.goal === 'Gain') {
+            targetCalories = maintainCalories * this.getCalorieMultiplier(false, user.pace);
         }
-        else {
-            const targetCalories = maintainCalories * this.getCalorieMultiplier(false, user.pace);
 
-        }
+        return spoonService.generateMealPlanForWeek(targetCalories, user.diet, user.intolerances);
     }
 
     getActivityLevel(stepCounts) {
@@ -78,14 +79,17 @@ class RecommenderService {
             5.68 * user.age;
     }
 
-    hasMealPlan(user) {
-        const monday = new Date();
-        monday.setDate(monday.getDate() - monday.getDay());
-        monday.setHours(0,0,0,0);
-        return user.lastPlanDate ? user.lastPlanDate.getTime() < monday.getTime() : false;
+    _getKilogramWeight(weight) {
+        const kilogramsPerPound = 0.453592;
+        return weight * kilogramsPerPound;
+    }
+
+    _getCmHeight(feet, inches) {
+        const cmPerInch = 2.54;
+        return feet * 12 * cmPerInch + inches * cmPerInch
     }
 }
 
 module.exports = {
-    mealService: new RecommenderService()
+    mealPlanService: new MealPlanService()
 }

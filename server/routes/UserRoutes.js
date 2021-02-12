@@ -28,14 +28,14 @@ userRouter.get('/steps', [authHandler, async (req, res) => {
 }]);
 
 userRouter.get('/meal-plan', [authHandler, async (req, res) => {
-    const user = await userService.getUserSteps(req.session.accessToken, req.query.lastNumDays)
+    const mealPlan = await userService.getMealPlan(req.session.userId, req.session.accessToken)
         .catch(err => {
-            console.error(`Unable to get steps of user ${req.session.userId}`, err);
+            console.error(`Unable to get meal plan for user ${req.session.userId}`, err);
             res.status(500);
         });
 
-    if (user) {
-        res.json(user);
+    if (mealPlan) {
+        res.json(mealPlan);
     }
 }]);
 
