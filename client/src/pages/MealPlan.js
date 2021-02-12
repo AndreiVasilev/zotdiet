@@ -174,27 +174,30 @@ function MealPlan() {
                             const curDay = meals[MEAL_DAYS[day]];
                             const curDayMeals = curDay.meals;
                             const curDayNutrients = curDay.nutrients;
+                            const breakfast = curDayMeals[0];
+                            const lunch = curDayMeals[1];
+                            const dinner = curDayMeals[2];
                             return (
                                 <Tab tabClassName="meal-plan-tab" eventKey={idx.toString()} title={label} key={idx}>
                                     <div className="daily-meals-container">
                                          {/*Breakfast */}
                                         <MealDisplay
-                                            mealType="Breakfast" mealName={curDayMeals[0].title}
-                                            cookTime={curDayMeals[0].readyInMinutes} nutrition={curDayNutrients}
+                                            mealType="Breakfast" mealName={breakfast.title} url={breakfast.sourceUrl}
+                                            cookTime={breakfast.readyInMinutes} nutrition={curDayNutrients}
                                             // openModal={() => handleShowModal('breakfast')}
                                         />
 
                                         {/* Lunch */}
                                         <MealDisplay
-                                            mealType="Lunch" mealName={curDayMeals[1].title}
-                                            cookTime={curDayMeals[1].readyInMinutes} nutrition={curDayNutrients}
+                                            mealType="Lunch" mealName={lunch.title} url={lunch.sourceUrl}
+                                            cookTime={lunch.readyInMinutes} nutrition={curDayNutrients}
                                             // openModal={() => handleShowModal('lunch')}
                                         />
 
                                         {/* Dinner */}
                                         <MealDisplay
-                                            mealType="Dinner" mealName={curDayMeals[2].title}
-                                            cookTime={curDayMeals[2].readyInMinutes} nutrition={curDayNutrients}
+                                            mealType="Dinner" mealName={dinner.title} url={dinner.sourceUrl}
+                                            cookTime={dinner.readyInMinutes} nutrition={curDayNutrients}
                                             // openModal={() => handleShowModal('dinner')}
                                         />
                                     </div>
