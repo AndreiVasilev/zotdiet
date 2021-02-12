@@ -10,20 +10,11 @@ function MealNutritionInfo(props) {
         <Table borderless className="meal-nutrition-tbl">
             <tbody>
                 <tr>
-                    <td className="calories">Calories:</td>
-                    <td>{nutrition.calories}</td>
-                </tr>
-                <tr>
-                    <td>Fat:</td>
-                    <td>{nutrition.fat} g</td>
-                </tr>
-                <tr>
-                    <td>Protein:</td>
-                    <td>{nutrition.protein} g</td>
-                </tr>
-                <tr>
-                    <td>Carbs:</td>
-                    <td>{nutrition.carbohydrates} g</td>
+                    <td className="today-nutrition-label">TODAY</td>
+                    <td>Calories: {nutrition.calories}</td>
+                    <td>Fat: {nutrition.fat} g</td>
+                    <td>Protein: {nutrition.protein} g</td>
+                    <td>Carbs: {nutrition.carbohydrates} g</td>
                 </tr>
             </tbody>
         </Table>

@@ -107,6 +107,8 @@ function MealPlan() {
                                             // openModal={() => handleShowModal('dinner')}
                                         />
                                     </div>
+                                    <hr className="meal-plan-separator"/>
+                                    <MealNutritionInfo nutrition={curDayNutrients}/>
                                 </Tab>
                             )
                         })
