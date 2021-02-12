@@ -1,11 +1,6 @@
 const axios = require('axios');
-const { request } = require('express');
 
 class SpoonService {
-
-    constructor() {
-        
-    }
 
     async getTestApiCall() {
         console.log('Test Service Called.')
@@ -14,7 +9,7 @@ class SpoonService {
         requestStr = this.getBaseUrl() + requestStr + '&' + this.getApiKeyStr()
 
         let res = await axios.get(requestStr)
-        if (res == undefined){
+        if (!res){
             console.log('Test Request Failed.')
             return {'result': 'failed'}
         }
@@ -30,7 +25,7 @@ class SpoonService {
         try {
             let res = await axios.get(requestStr)
             console.log('Get Recipe Request Succeeded.')
-            return res.data 
+            return res.data
         }
         catch {
             console.log('Get Recipe Request Failed.')
@@ -39,31 +34,29 @@ class SpoonService {
            
     }
 
-
-   
-
-    // TODO: Complete
     async generateMealPlanForWeek(targetCalories, diet, excludeIngredients){
         console.log('Get Meal Plan for Week Request Made.')
 
         let requestStr = this.getBaseUrl() + 'mealplanner/generate?' + this.getApiKeyStr()
         let mealPlanStr = '&timeFrame=week&targetCalories=' + targetCalories
         mealPlanStr += '&diet=' + diet
-        mealPlanStr += '&exclude=' + excludeIngredients
+
+        if (excludeIngredients) {
+            mealPlanStr += '&exclude=' + excludeIngredients;
+        }
 
         requestStr += mealPlanStr
 
         console.log(requestStr)
-        try {
-            let res = axios.get(requestStr)
-            console.log('Generate Meal Plan Request Succeeded.')
-            console.log(res.data)
-            return res.data
+
+        const res = await axios.get(requestStr).catch(err => console.error("Failed to generate meal plan.", err));
+        if (!res) {
+            return [];
         }
-        catch {
-            console.log('Generate Meal Plan Request Failed.')
-            return {'result': 'failed'}
-        }
+
+        console.log('Generate Meal Plan Request Succeeded.')
+        console.log(res.data)
+        return res.data
     }
 
 

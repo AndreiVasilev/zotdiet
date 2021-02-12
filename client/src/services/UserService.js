@@ -89,6 +89,12 @@ class UserService {
         .catch(err => console.error('Unable to get user steps', err));
     return (response && response.status === 200) ? response.data[0] : null;
   }
+
+  async getMealPlan() {
+    const response = await axios.get('/api/user/meal-plan')
+        .catch(err => console.error('Unable to get user meal plan', err));
+    return (response && response.status === 200) ? response.data[0] : null;
+  }
 }
 
 // Export a singleton instance of this service

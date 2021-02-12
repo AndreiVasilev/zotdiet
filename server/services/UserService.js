@@ -1,6 +1,7 @@
 const {google} = require('googleapis');
 const firebase = require("firebase/app");
 require('firebase/database');
+const {mealPlanService} = require("./MealPlanService");
 
 class UserService {
 
@@ -98,35 +99,11 @@ class UserService {
     }
 
     /**
-     * Gets the Basal Metabolic Rate of the given user
-     * based ont the Revised Harris-Benedict Formula
-     */
-    async getUserCurrentBMR(userId) {
-        const user = await this.getUser(userId).catch(err => {
-            console.error(`Unable to calculate BMR of user ${userId}`, err);
-        });
-
-        if (!user) {
-            return 0;
-        }
-
-        if (user.gender === 'Female') {
-            return 447.6 + 9.25 * this._getKilogramWeight(user.currentWeight) +
-                3.10 * this._getCmHeight(user.heightFt, user.heightIn) -
-                4.33 * user.age;
-        }
-
-        return 88.4 + 13.4 * this._getKilogramWeight(user.currentWeight) +
-            4.8 * this._getCmHeight(user.heightFt, user.heightIn) -
-            5.68 * user.age;
-    }
-
-    /**
      * Gets the weight in pounds of the user associated with the
      * given access token over the last number of specified days
      */
     async getUserWeight(accessToken, lastNumDays) {
-        const weights = await this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.weight);
+        const weights = await this._getGoogleFitDataLastNumDays(accessToken, lastNumDays, this.googleFit.weight);
         if (weights) {
             return this._getPoundWeights(weights);
         }
@@ -138,7 +115,18 @@ class UserService {
      * access token over the last number of specified days
      */
     async getUserSteps(accessToken, lastNumDays) {
-        return this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.steps);
+        return this._getGoogleFitDataLastNumDays(accessToken, lastNumDays, this.googleFit.steps);
+    }
+
+    /**
+     * Gets the steps of the user associated with the given
+     * access token over the last number of specified days
+     */
+    async getUserStepsLastWeek(accessToken) {
+        const sunday = this._getLastSunday();
+        const end = sunday.getTime();
+        const start = end - 7 * 86400000;
+        return await this._getGoogleFitData(accessToken, start, end, this.googleFit.steps);
     }
 
     /**
@@ -146,7 +134,7 @@ class UserService {
      * access token over the last number of specified days
      */
     async getUserBMR(accessToken, lastNumDays) {
-        return this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.bmr);
+        return this._getGoogleFitDataLastNumDays(accessToken, lastNumDays, this.googleFit.bmr);
     }
 
     /**
@@ -154,7 +142,46 @@ class UserService {
      * access token over the last number of specified days
      */
     async getUserCaloriesExpended(accessToken, lastNumDays) {
-        return this._getGoogleFitData(accessToken, lastNumDays, this.googleFit.calories);
+        return this._getGoogleFitDataLastNumDays(accessToken, lastNumDays, this.googleFit.calories);
+    }
+
+    /**
+     * Gets the users meal plan for the current week (mon-sun). A meal
+     * plan is generated if one does not exist and is saved for future
+     * reference for the remainder of the week.
+     */
+    async getMealPlan(userId, accessToken) {
+
+        // Get user and check if a valid meal plan has
+        // already been generated for the current week
+        const user = await this.getUser(userId);
+        if (this.hasMealPlan(user)) {
+            return user.mealPlan;
+        }
+
+        // Generate new meal plan for the week
+        const steps = await this.getUserStepsLastWeek(accessToken);
+        const mealPlan = await mealPlanService.generateMealPlan(user, steps);
+
+        // Saved updated user meal plan
+        user.mealPlan = mealPlan;
+        user.planGenDate = Date.now();
+        this.updateUser(user)
+            .then(_ => console.log('Successfully updated user meal plan'))
+            .catch(err => console.error('Failed to update users meal plan.', err));
+
+        return mealPlan;
+    }
+
+    /**
+     * Checks if the user has a meal plan for the current week
+     */
+    hasMealPlan(user) {
+        if (!user.mealPlan) {
+            return false;
+        }
+        const sunday = this._getLastSunday();
+        return user.planGenDate <= sunday.getTime();
     }
 
     /**
@@ -200,19 +227,26 @@ class UserService {
         });
     }
 
-    async _getGoogleFitData(accessToken, lastNumDays, source) {
-        const oauth2Client = this._getOAuthClient();
-        oauth2Client.setCredentials(accessToken);
-
+    async _getGoogleFitDataLastNumDays(accessToken, lastNumDays, source) {
         const midnight = new Date();
         midnight.setHours(24,0,0,0);
+
+        const end = midnight.getTime();
+        const start = end - lastNumDays * 86400000;
+
+        return this._getGoogleFitData(accessToken, start, end, source);
+    }
+
+    async _getGoogleFitData(accessToken, start, end, source) {
+        const oauth2Client = this._getOAuthClient();
+        oauth2Client.setCredentials(accessToken);
 
         const fitness = google.fitness({version: 'v1', auth: oauth2Client});
         const res = await fitness.users.dataset.aggregate({
             userId: 'me',
             requestBody: {
-                startTimeMillis: midnight.getTime() - lastNumDays * 86400000,
-                endTimeMillis: midnight.getTime(),
+                startTimeMillis: start,
+                endTimeMillis: end,
                 bucketByTime: { durationMillis: 86400000 },
                 aggregateBy: [{
                     dataTypeName: source.type,
@@ -232,11 +266,6 @@ class UserService {
         );
     }
 
-    _getKilogramWeight(weight) {
-        const kilogramsPerPound = 0.453592;
-        return weight * kilogramsPerPound;
-    }
-
     _getPoundWeight(weight) {
         const kilogramsPerPound = 0.453592;
         return Math.round(weight / kilogramsPerPound);
@@ -244,11 +273,6 @@ class UserService {
 
     _getPoundWeights(weights) {
         return weights.map(weight => this._getPoundWeight(weight));
-    }
-
-    _getCmHeight(feet, inches) {
-        const cmPerInch = 2.54;
-        return feet * 12 * cmPerInch + inches * cmPerInch
     }
 
     _getDataValues(data) {
@@ -263,6 +287,13 @@ class UserService {
             }
         }
         return values;
+    }
+
+    _getLastSunday() {
+        const day = new Date();
+        day.setDate(day.getDate() - day.getDay());
+        day.setHours(0, 0, 0, 0);
+        return day;
     }
 }
 
