@@ -37,19 +37,15 @@ function MealPlan() {
     const [showModal, setShowModal] = useState(false);
     const [curTabIdx, setCurTabIdx] = useState(getCurDay());
     const [modalMeal, setModalMeal] = useState({});
-    const [mealHearted, setMealHearted] = useState(false);  // TODO set default based on whether modalMeal hearted
     const [meals, setMeals] = useState(null);
+    const [likedMeals, setLikedMeals] = useState([]);
+    const [dislikedMeals, setDislikedMeals] = useState([]);
 
     const handleCloseModal = () => setShowModal(false);
 
     const handleShowModal = (mealType) => {
         setModalMeal(meals[curTabIdx][mealType]);
         setShowModal(true);
-    }
-
-    const toggleHeart = () => {
-        // TODO: save in DB for modalMeal
-        setMealHearted(!mealHearted);
     }
 
     const getMealImgUrl = (mealId) => {
@@ -60,6 +56,13 @@ function MealPlan() {
         userService.getMealPlan().then(meals => {
             setMeals(meals);
         })
+    }, []);
+
+
+    useEffect(() => {
+      userService.getDislikedMeals().then(dislikedMeals => {
+        setDislikedMeals(dislikedMeals);
+      })
     }, []);
 
     return (
@@ -90,6 +93,7 @@ function MealPlan() {
                                         <MealDisplay
                                             mealType="Breakfast" mealName={breakfast.title} url={breakfast.sourceUrl}
                                             img={getMealImgUrl(breakfast.id)} cookTime={breakfast.readyInMinutes}
+                                            liked={likedMeals.includes(breakfast.id)} disliked={dislikedMeals.includes(breakfast.id)}
                                             // openModal={() => handleShowModal('breakfast')}
                                         />
 
@@ -97,6 +101,7 @@ function MealPlan() {
                                         <MealDisplay
                                             mealType="Lunch" mealName={lunch.title} url={lunch.sourceUrl}
                                             img={getMealImgUrl(lunch.id)} cookTime={lunch.readyInMinutes}
+                                            liked={likedMeals.includes(lunch.id)} disliked={dislikedMeals.includes(lunch.id)}
                                             // openModal={() => handleShowModal('lunch')}
                                         />
 
@@ -104,6 +109,7 @@ function MealPlan() {
                                         <MealDisplay
                                             mealType="Dinner" mealName={dinner.title} url={dinner.sourceUrl}
                                             img={getMealImgUrl(dinner.id)} cookTime={dinner.readyInMinutes}
+                                            liked={likedMeals.includes(dinner.id)} disliked={dislikedMeals.includes(dinner.id)}
                                             // openModal={() => handleShowModal('dinner')}
                                         />
                                     </div>

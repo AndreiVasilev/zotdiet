@@ -95,6 +95,18 @@ class UserService {
         .catch(err => console.error('Unable to get user meal plan', err));
     return (response && response.status === 200) ? response.data.week : null;
   }
+
+  // async getLikedMeals() {
+  //     const response = await axios.get('/api/user/liked-meals')
+  //         .catch(err => console.error('Unable to get liked meals', err));
+  //     return (response && response.status === 200) ? response.data : null;
+  // }
+
+  async getDislikedMeals() {
+    const response = await axios.get('/api/user/disliked-meals')
+      .catch(err => console.error('Unable to get disliked meals', err));
+    return (response && response.status === 200) ? response.data : null;
+  }
 }
 
 // Export a singleton instance of this service

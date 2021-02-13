@@ -185,6 +185,28 @@ class UserService {
     }
 
     /**
+     * Gets the users disliked meals
+     */
+    async getDislikedMeals(userId, accessToken) {
+      // Get user and return disliked meals
+      const user = await this.getUser(userId);
+      if(user.dislikedMeals)
+        return user.dislikedMeals;
+      return [];  // user does not have any disliked meals
+    }
+
+    /**
+     * Gets the users liked meals
+     */
+    async getLikedMeals(userId, accessToken) {
+      // Get user and return liked meals
+      const user = await this.getUser(userId);
+      if(user.likedMeals)
+        return user.likedMeals;
+      return [];  // user does not have any liked meals
+    }
+
+    /**
      * Generates a Google API access token from the provided authorization code
      */
     async getAccessToken(authCode) {

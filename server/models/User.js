@@ -13,6 +13,8 @@ class User {
     this.dietRestrictions = [];
     this.foodAllergies = [];
     this.cuisinePreferences = [];
+    this.likedMeals = [];
+    this.dislikedMeals = [];
   }
 }
 

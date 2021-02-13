@@ -1,6 +1,7 @@
-import React, { useState }  from "react";
+import React, { useState, useEffect }  from "react";
 import "./MealDisplay.css";
 import "../App.css";
+import userService from "../services/UserService";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faClock} from "@fortawesome/free-solid-svg-icons/faClock";
 import {faThumbsUp} from "@fortawesome/free-solid-svg-icons/faThumbsUp";
@@ -9,9 +10,9 @@ import {faThumbsDown} from "@fortawesome/free-solid-svg-icons/faThumbsDown";
 import MealDisplayImg from "./MealDisplayImg";
 
 function MealDisplay(props) {
-    const { mealType, mealName, url, img, cookTime, openModal } = props;
-    const [thumbsUp, setThumbsUp] = useState(false); //TODO set to current status
-    const [thumbsDown, setThumbsDown] = useState(false); //TODO set to current status
+    const { mealType, mealName, url, img, cookTime, liked, disliked, openModal } = props;
+    const [thumbsUp, setThumbsUp] = useState(liked);
+    const [thumbsDown, setThumbsDown] = useState(disliked);
 
     const toggleThumbs = (dir) => {
         // cannot have both thumbs up and thumbs down selected
@@ -35,7 +36,7 @@ function MealDisplay(props) {
     return (
         <div className="meal-display-container" onClick={openModal}>
             <p className="bold-text meal-display-text">{mealType}</p>
-            <a href={url} target="_blank">
+            <a href={url} target="_blank" rel="noopener">
                 <MealDisplayImg mealImg={img}  mealName={mealName}/>
                 <p className="bold-text meal-display-text">{mealName}</p>
             </a>
