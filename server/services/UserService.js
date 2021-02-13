@@ -185,6 +185,43 @@ class UserService {
     }
 
     /**
+     * Gets the users liked meals
+     */
+    async getLikedMeals(userId, accessToken) {
+      // Get user and return liked meals
+      const user = await this.getUser(userId);
+      if(user.likedMeals)
+        return user.likedMeals;
+      return [];  // user does not have any liked meals
+    }
+
+    /**
+     * Update the users liked meals
+     */
+    async updateLikedMeals(mealId, userId, accessToken) {
+      // Get users liked meals
+      const user = await this.getUser(userId);
+      let likedMeals = [];
+      if(user.likedMeals)
+        likedMeals = user.likedMeals;
+
+      // check if mealId in liked meals list to determine if adding or removing meal
+      if(likedMeals.includes(mealId))
+        likedMeals.splice(likedMeals.indexOf(mealId), 1);  // remove meal
+      else
+        likedMeals.push(mealId);  // add meal
+
+      // save in database
+      user.likedMeals = likedMeals;
+      this.database.ref(`/users/${user.id}`).update(user)
+        .then(_ => resolve(user))
+        .catch(err => {
+          console.error(`Unable to update user ${user.id}`, err);
+          reject(err);
+        });
+    }
+
+    /**
      * Gets the users disliked meals
      */
     async getDislikedMeals(userId, accessToken) {
@@ -196,14 +233,51 @@ class UserService {
     }
 
     /**
-     * Gets the users liked meals
+     * Update the users disliked meals
      */
-    async getLikedMeals(userId, accessToken) {
-      // Get user and return liked meals
+    async updateDislikedMeals(mealId, userId, accessToken) {
+      // Get users disliked meals
       const user = await this.getUser(userId);
-      if(user.likedMeals)
-        return user.likedMeals;
-      return [];  // user does not have any liked meals
+      let dislikedMeals = [];
+      if(user.dislikedMeals)
+        dislikedMeals = user.dislikedMeals;
+
+      // check if mealId in disliked meals list to determine if adding or removing meal
+      if(dislikedMeals.includes(mealId))
+        dislikedMeals.splice(dislikedMeals.indexOf(mealId), 1);  // remove meal
+      else
+        dislikedMeals.push(mealId);  // add meal
+
+      // save in database
+      user.dislikedMeals = dislikedMeals;
+      this.database.ref(`/users/${user.id}`).update(user)
+        .then(_ => resolve(user))
+        .catch(err => {
+          console.error(`Unable to update user ${user.id}`, err);
+          reject(err);
+        });
+    }
+
+    /**
+     * Gets the users liked ingredients
+     */
+    async getLikedIngredients(userId, accessToken) {
+      // Get user and return liked ingredients
+      const user = await this.getUser(userId);
+      if(user.likedIngredients)
+        return user.likedIngredients;
+      return [];  // user does not have any liked ingredients
+    }
+
+    /**
+     * Gets the users disliked ingredients
+     */
+    async getDislikedIngredients(userId, accessToken) {
+      // Get user and return disliked ingredients
+      const user = await this.getUser(userId);
+      if(user.dislikedIngredients)
+        return user.dislikedIngredients;
+      return [];  // user does not have any disliked ingredients
     }
 
     /**

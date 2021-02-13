@@ -58,7 +58,6 @@ function MealPlan() {
         })
     }, []);
 
-
     useEffect(() => {
       userService.getDislikedMeals().then(dislikedMeals => {
         setDislikedMeals(dislikedMeals);
@@ -96,7 +95,7 @@ function MealPlan() {
                                 <Tab tabClassName="meal-plan-tab" eventKey={idx.toString()} title={label} key={idx}>
                                     <div className="daily-meals-container">
                                          {/*Breakfast */}
-                                        <MealDisplay
+                                        <MealDisplay mealId={breakfast.id}
                                             mealType="Breakfast" mealName={breakfast.title} url={breakfast.sourceUrl}
                                             img={getMealImgUrl(breakfast.id)} cookTime={breakfast.readyInMinutes}
                                             liked={likedMeals.includes(breakfast.id)} disliked={dislikedMeals.includes(breakfast.id)}
@@ -104,7 +103,7 @@ function MealPlan() {
                                         />
 
                                         {/* Lunch */}
-                                        <MealDisplay
+                                        <MealDisplay mealId={lunch.id}
                                             mealType="Lunch" mealName={lunch.title} url={lunch.sourceUrl}
                                             img={getMealImgUrl(lunch.id)} cookTime={lunch.readyInMinutes}
                                             liked={likedMeals.includes(lunch.id)} disliked={dislikedMeals.includes(lunch.id)}
@@ -112,7 +111,7 @@ function MealPlan() {
                                         />
 
                                         {/* Dinner */}
-                                        <MealDisplay
+                                        <MealDisplay mealId={dinner.id}
                                             mealType="Dinner" mealName={dinner.title} url={dinner.sourceUrl}
                                             img={getMealImgUrl(dinner.id)} cookTime={dinner.readyInMinutes}
                                             liked={likedMeals.includes(dinner.id)} disliked={dislikedMeals.includes(dinner.id)}

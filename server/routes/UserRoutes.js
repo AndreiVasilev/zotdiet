@@ -51,6 +51,14 @@ userRouter.get('/liked-meals', [authHandler, async (req, res) => {
   }
 }]);
 
+userRouter.post('/liked-meals', [authHandler, async (req, res) => {
+  await userService.updateLikedMeals(req.body.mealId, req.session.userId, req.session.accessToken)
+    .catch(err => {
+      console.error(`Unable to update liked meals for user ${req.session.userId}`, err);
+      res.status(500);
+    });
+}]);
+
 userRouter.get('/disliked-meals', [authHandler, async (req, res) => {
   const dislikedMeals = await userService.getDislikedMeals(req.session.userId, req.session.accessToken)
     .catch(err => {
@@ -62,6 +70,38 @@ userRouter.get('/disliked-meals', [authHandler, async (req, res) => {
     res.json(dislikedMeals);
   }
 }]);
+
+userRouter.post('/disliked-meals', [authHandler, async (req, res) => {
+  await userService.updateDislikedMeals(req.body.mealId, req.session.userId, req.session.accessToken)
+    .catch(err => {
+      console.error(`Unable to update disliked meals for user ${req.session.userId}`, err);
+      res.status(500);
+    });
+}]);
+
+// userRouter.get('/liked-ingredients', [authHandler, async (req, res) => {
+//   const likedIngredients = await userService.getLikedIngredients(req.session.userId, req.session.accessToken)
+//     .catch(err => {
+//       console.error(`Unable to get liked ingredients for user ${req.session.userId}`, err);
+//       res.status(500);
+//     });
+//
+//   if (likedIngredients) {
+//     res.json(likedIngredients);
+//   }
+// }]);
+//
+// userRouter.get('/disliked-ingredients', [authHandler, async (req, res) => {
+//   const dislikedIngredients = await userService.getDislikedIngredients(req.session.userId, req.session.accessToken)
+//     .catch(err => {
+//       console.error(`Unable to get disliked ingredients for user ${req.session.userId}`, err);
+//       res.status(500);
+//     });
+//
+//   if (dislikedIngredients) {
+//     res.json(dislikedIngredients);
+//   }
+// }]);
 
 userRouter.post('/', [authHandler, async (req, res) => {
     const user = await userService.createUser(req.body)

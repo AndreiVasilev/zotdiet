@@ -10,7 +10,7 @@ import {faThumbsDown} from "@fortawesome/free-solid-svg-icons/faThumbsDown";
 import MealDisplayImg from "./MealDisplayImg";
 
 function MealDisplay(props) {
-    const { mealType, mealName, url, img, cookTime, liked, disliked, openModal } = props;
+    const { mealId, mealType, mealName, url, img, cookTime, liked, disliked, openModal } = props;
     const [thumbsUp, setThumbsUp] = useState(liked);
     const [thumbsDown, setThumbsDown] = useState(disliked);
 
@@ -20,12 +20,12 @@ function MealDisplay(props) {
             case "up":
                 setThumbsUp(!thumbsUp);
                 setThumbsDown(false);
-                // TODO set in DB
+                userService.updateLikedMeals(mealId);
                 break;
             case "down":
                 setThumbsDown(!thumbsDown);
                 setThumbsUp(false);
-                // TODO set in DB
+                userService.updateDislikedMeals(mealId);
                 break;
             default:
                 setThumbsDown(false);

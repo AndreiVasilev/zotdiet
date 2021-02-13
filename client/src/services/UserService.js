@@ -102,11 +102,33 @@ class UserService {
       return (response && response.status === 200) ? response.data : null;
   }
 
+  async updateLikedMeals(mealId) {
+    await axios.post('/api/user/liked-meals', {mealId: mealId})
+      .catch(err => console.error('Unable to update liked meals', err));
+  }
+
   async getDislikedMeals() {
     const response = await axios.get('/api/user/disliked-meals')
       .catch(err => console.error('Unable to get disliked meals', err));
     return (response && response.status === 200) ? response.data : null;
   }
+
+  async updateDislikedMeals(mealId) {
+    await axios.post('/api/user/disliked-meals', {mealId: mealId})
+      .catch(err => console.error('Unable to update disliked meals', err));
+  }
+
+  // async getLikedIngredients() {
+  //   const response = await axios.get('/api/user/liked-ingredients')
+  //     .catch(err => console.error('Unable to get liked ingredients', err));
+  //   return (response && response.status === 200) ? response.data : null;
+  // }
+  //
+  // async getDislikedIngredients() {
+  //   const response = await axios.get('/api/user/disliked-ingredients')
+  //     .catch(err => console.error('Unable to get disliked ingredients', err));
+  //   return (response && response.status === 200) ? response.data : null;
+  // }
 }
 
 // Export a singleton instance of this service
