@@ -5,7 +5,7 @@ function LineChart({ data }) {
   const options = {
     title: {
       display: true,
-      text: "Weight Trend",
+      text: "Step Trend",
     },
   };
 

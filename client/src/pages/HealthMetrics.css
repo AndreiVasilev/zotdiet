@@ -45,6 +45,10 @@
   margin-top: 20px;
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
+}
+
+.cta-btns > .btn:first-child {
+  margin-right: 4rem;
 }
