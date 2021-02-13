@@ -65,6 +65,12 @@ function MealPlan() {
       })
     }, []);
 
+    useEffect(() => {
+      userService.getLikedMeals().then(likedMeals => {
+        setLikedMeals(likedMeals);
+      })
+    }, []);
+
     return (
         <Card className="page-container">
             { !meals &&
