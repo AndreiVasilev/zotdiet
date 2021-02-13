@@ -211,7 +211,7 @@ class UserService {
       return false;
     }
     const sunday = this._getLastSunday();
-    return user.planGenDate <= sunday.getTime();
+    return user.planGenDate >= sunday.getTime();
   }
 
   /**
