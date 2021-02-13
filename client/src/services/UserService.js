@@ -4,7 +4,7 @@ import {Subject} from "rxjs";
 class UserService {
 
   constructor() {
-    this._CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+    this._CLIENT_ID = '545961353765-tbbbj8sg0vataeilj5koe69tvj2k1094.apps.googleusercontent.com';
     this._SCOPES = 'https://www.googleapis.com/auth/fitness.activity.read ' +
       'https://www.googleapis.com/auth/fitness.body.read ' +
       'https://www.googleapis.com/auth/fitness.nutrition.read ' +
