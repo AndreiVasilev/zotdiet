@@ -71,7 +71,7 @@ const HealthMetrics = () => {
       datasets: [
         {
           label: "7 Days (steps)",
-          data: pastSteps.slice(pastSteps.length - 7, pastSteps.length),
+          data: pastSteps.slice(pastSteps.length - 8, pastSteps.length),
           borderColor: [BASE_COLOR],
           backgroundColor: [BASE_COLOR_TRANSPARENT],
           pointBackgroundColor: [BASE_COLOR],
