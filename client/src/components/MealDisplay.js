@@ -8,6 +8,7 @@ import {faThumbsUp} from "@fortawesome/free-solid-svg-icons/faThumbsUp";
 import {faThumbsDown} from "@fortawesome/free-solid-svg-icons/faThumbsDown";
 
 import MealDisplayImg from "./MealDisplayImg";
+import spoonService from "../services/SpoonService";
 
 function MealDisplay(props) {
     const { mealId, mealType, mealName, url, img, cookTime, liked, disliked, openModal } = props;
@@ -15,22 +16,30 @@ function MealDisplay(props) {
     const [thumbsDown, setThumbsDown] = useState(disliked);
 
     const toggleThumbs = (dir) => {
-        // cannot have both thumbs up and thumbs down selected
         switch(dir) {
             case "up":
                 setThumbsUp(!thumbsUp);
-                setThumbsDown(false);
+                setThumbsDown(false);  // cannot have both thumbs up and thumbs down selected
                 userService.updateLikedMeals(mealId);
                 break;
             case "down":
                 setThumbsDown(!thumbsDown);
-                setThumbsUp(false);
-                userService.updateDislikedMeals(mealId);
+                setThumbsUp(false);    // cannot have both thumbs up and thumbs down selected
+                getIngredients().then(ingredients => {   // keep track of disliked ingredients
+                  userService.updateDislikedMeals(mealId, ingredients);
+                });
                 break;
             default:
                 setThumbsDown(false);
                 setThumbsDown(false);
         }
+    };
+
+    // get ingredients for recipe
+    const getIngredients = async () => {
+      let ingredients = await spoonService.getMealIngredients(mealId);
+      ingredients = ingredients.map(ingredient => ingredient.name);  // only store ingredient name
+      return ingredients;
     };
 
     return (

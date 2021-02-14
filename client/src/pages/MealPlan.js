@@ -2,14 +2,13 @@ import React, {useEffect, useState} from "react";
 import {Card, Col, Container, Modal, Row, Tab, Tabs} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faHeart} from "@fortawesome/free-solid-svg-icons/faHeart";
-
-import "./MealPlan.css";
-import "../App.css";
 import MealDisplay from "../components/MealDisplay";
 import MealDisplayImg from "../components/MealDisplayImg";
 import MealNutritionInfo from "../components/MealNutritionInfo";
 import Recipe from "../components/Recipe";
 import userService from "../services/UserService";
+import "./MealPlan.css";
+import "../App.css";
 
 const DAY_LABELS = {
     SUNDAY: "Sun",
@@ -38,8 +37,8 @@ function MealPlan() {
     const [curTabIdx, setCurTabIdx] = useState(getCurDay());
     const [modalMeal, setModalMeal] = useState({});
     const [meals, setMeals] = useState(null);
-    const [likedMeals, setLikedMeals] = useState([]);
-    const [dislikedMeals, setDislikedMeals] = useState([]);
+    const [likedMeals, setLikedMeals] = useState({});
+    const [dislikedMeals, setDislikedMeals] = useState({});
 
     const handleCloseModal = () => setShowModal(false);
 
@@ -98,7 +97,7 @@ function MealPlan() {
                                         <MealDisplay mealId={breakfast.id}
                                             mealType="Breakfast" mealName={breakfast.title} url={breakfast.sourceUrl}
                                             img={getMealImgUrl(breakfast.id)} cookTime={breakfast.readyInMinutes}
-                                            liked={likedMeals.includes(breakfast.id)} disliked={dislikedMeals.includes(breakfast.id)}
+                                            liked={likedMeals.includes(breakfast.id)} disliked={breakfast.id in dislikedMeals}
                                             // openModal={() => handleShowModal('breakfast')}
                                         />
 
@@ -106,7 +105,7 @@ function MealPlan() {
                                         <MealDisplay mealId={lunch.id}
                                             mealType="Lunch" mealName={lunch.title} url={lunch.sourceUrl}
                                             img={getMealImgUrl(lunch.id)} cookTime={lunch.readyInMinutes}
-                                            liked={likedMeals.includes(lunch.id)} disliked={dislikedMeals.includes(lunch.id)}
+                                            liked={likedMeals.includes(lunch.id)} disliked={lunch.id in dislikedMeals}
                                             // openModal={() => handleShowModal('lunch')}
                                         />
 
@@ -114,7 +113,7 @@ function MealPlan() {
                                         <MealDisplay mealId={dinner.id}
                                             mealType="Dinner" mealName={dinner.title} url={dinner.sourceUrl}
                                             img={getMealImgUrl(dinner.id)} cookTime={dinner.readyInMinutes}
-                                            liked={likedMeals.includes(dinner.id)} disliked={dislikedMeals.includes(dinner.id)}
+                                            liked={likedMeals.includes(dinner.id)} disliked={dinner.id in dislikedMeals}
                                             // openModal={() => handleShowModal('dinner')}
                                         />
                                     </div>

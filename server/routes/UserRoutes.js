@@ -52,7 +52,7 @@ userRouter.get('/liked-meals', [authHandler, async (req, res) => {
 }]);
 
 userRouter.post('/liked-meals', [authHandler, async (req, res) => {
-  await userService.updateLikedMeals(req.body.mealId, req.session.userId, req.session.accessToken)
+  await userService.updateLikedMeals(req.body.mealId, req.body.ingredients, req.session.userId, req.session.accessToken)
     .catch(err => {
       console.error(`Unable to update liked meals for user ${req.session.userId}`, err);
       res.status(500);
@@ -72,7 +72,7 @@ userRouter.get('/disliked-meals', [authHandler, async (req, res) => {
 }]);
 
 userRouter.post('/disliked-meals', [authHandler, async (req, res) => {
-  await userService.updateDislikedMeals(req.body.mealId, req.session.userId, req.session.accessToken)
+  await userService.updateDislikedMeals(req.body.mealId, req.body.ingredients, req.session.userId, req.session.accessToken)
     .catch(err => {
       console.error(`Unable to update disliked meals for user ${req.session.userId}`, err);
       res.status(500);

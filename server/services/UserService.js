@@ -235,27 +235,29 @@ class UserService {
     /**
      * Update the users disliked meals
      */
-    async updateDislikedMeals(mealId, userId, accessToken) {
+    async updateDislikedMeals(mealId, ingredients, userId, accessToken) {
       // Get users disliked meals
       const user = await this.getUser(userId);
-      let dislikedMeals = [];
+      let dislikedMeals = {};
       if(user.dislikedMeals)
         dislikedMeals = user.dislikedMeals;
 
       // check if mealId in disliked meals list to determine if adding or removing meal
-      if(dislikedMeals.includes(mealId))
-        dislikedMeals.splice(dislikedMeals.indexOf(mealId), 1);  // remove meal
+      if(mealId in dislikedMeals)
+        delete dislikedMeals[mealId];         // remove meal
       else
-        dislikedMeals.push(mealId);  // add meal
+        dislikedMeals[mealId] = ingredients;  // add meal (mealId: [ingredients])
 
       // save in database
       user.dislikedMeals = dislikedMeals;
-      this.database.ref(`/users/${user.id}`).update(user)
-        .then(_ => resolve(user))
-        .catch(err => {
-          console.error(`Unable to update user ${user.id}`, err);
-          reject(err);
-        });
+      return new Promise((resolve, reject) => {
+        this.database.ref(`/users/${user.id}`).update(user)
+          .then(_ => resolve(user))
+          .catch(err => {
+            console.error(`Unable to update user ${user.id}`, err);
+            reject(err);
+          });
+      });
     }
 
     /**

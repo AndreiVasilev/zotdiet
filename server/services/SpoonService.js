@@ -34,6 +34,22 @@ class SpoonService {
            
     }
 
+    async getIngredientsByRecipeID(recipeID){
+      console.log('Get Recipe Ingredients Request Made.')
+      let requestStr = 'recipes/' + recipeID + '/ingredientWidget.json'
+      requestStr = this.getBaseUrl() + requestStr + '?' + this.getApiKeyStr()
+
+      try {
+        let res = await axios.get(requestStr)
+        console.log('Get Recipe Ingredients Request Succeeded.')
+        return res.data
+      }
+      catch {
+        console.log('Get Recipe Ingredients Request Failed.')
+        return {'result': 'failed'}
+      }
+    }
+
     async generateMealPlanForWeek(targetCalories, diet, excludeIngredients){
         console.log('Get Meal Plan for Week Request Made.')
 
