@@ -97,7 +97,7 @@ function MealPlan() {
                                         <MealDisplay mealId={breakfast.id}
                                             mealType="Breakfast" mealName={breakfast.title} url={breakfast.sourceUrl}
                                             img={getMealImgUrl(breakfast.id)} cookTime={breakfast.readyInMinutes}
-                                            liked={likedMeals.includes(breakfast.id)} disliked={breakfast.id in dislikedMeals}
+                                            liked={breakfast.id in likedMeals} disliked={breakfast.id in dislikedMeals}
                                             // openModal={() => handleShowModal('breakfast')}
                                         />
 
@@ -105,7 +105,7 @@ function MealPlan() {
                                         <MealDisplay mealId={lunch.id}
                                             mealType="Lunch" mealName={lunch.title} url={lunch.sourceUrl}
                                             img={getMealImgUrl(lunch.id)} cookTime={lunch.readyInMinutes}
-                                            liked={likedMeals.includes(lunch.id)} disliked={lunch.id in dislikedMeals}
+                                            liked={lunch.id in likedMeals} disliked={lunch.id in dislikedMeals}
                                             // openModal={() => handleShowModal('lunch')}
                                         />
 
@@ -113,7 +113,7 @@ function MealPlan() {
                                         <MealDisplay mealId={dinner.id}
                                             mealType="Dinner" mealName={dinner.title} url={dinner.sourceUrl}
                                             img={getMealImgUrl(dinner.id)} cookTime={dinner.readyInMinutes}
-                                            liked={likedMeals.includes(dinner.id)} disliked={dinner.id in dislikedMeals}
+                                            liked={dinner.id in likedMeals} disliked={dinner.id in dislikedMeals}
                                             // openModal={() => handleShowModal('dinner')}
                                         />
                                     </div>

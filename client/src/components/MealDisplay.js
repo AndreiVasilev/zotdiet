@@ -20,7 +20,9 @@ function MealDisplay(props) {
             case "up":
                 setThumbsUp(!thumbsUp);
                 setThumbsDown(false);  // cannot have both thumbs up and thumbs down selected
-                userService.updateLikedMeals(mealId);
+                getIngredients().then(ingredients => {   // keep track of liked ingredients
+                  userService.updateLikedMeals(mealId, ingredients);
+                });
                 break;
             case "down":
                 setThumbsDown(!thumbsDown);

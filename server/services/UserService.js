@@ -198,27 +198,29 @@ class UserService {
     /**
      * Update the users liked meals
      */
-    async updateLikedMeals(mealId, userId, accessToken) {
+    async updateLikedMeals(mealId, ingredients, userId, accessToken) {
       // Get users liked meals
       const user = await this.getUser(userId);
-      let likedMeals = [];
+      let likedMeals = {};
       if(user.likedMeals)
         likedMeals = user.likedMeals;
 
       // check if mealId in liked meals list to determine if adding or removing meal
-      if(likedMeals.includes(mealId))
-        likedMeals.splice(likedMeals.indexOf(mealId), 1);  // remove meal
+      if(mealId in likedMeals)
+        delete likedMeals[mealId];         // remove meal
       else
-        likedMeals.push(mealId);  // add meal
+        likedMeals[mealId] = ingredients;  // add meal (mealId: [ingredients])
 
       // save in database
       user.likedMeals = likedMeals;
-      this.database.ref(`/users/${user.id}`).update(user)
-        .then(_ => resolve(user))
-        .catch(err => {
-          console.error(`Unable to update user ${user.id}`, err);
-          reject(err);
-        });
+      return new Promise((resolve, reject) => {
+        this.database.ref(`/users/${user.id}`).update(user)
+          .then(_ => resolve(user))
+          .catch(err => {
+            console.error(`Unable to update user ${user.id}`, err);
+            reject(err);
+          });
+      });
     }
 
     /**
