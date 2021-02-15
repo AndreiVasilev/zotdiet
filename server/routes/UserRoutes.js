@@ -96,6 +96,8 @@ userRouter.patch("/", [
     });
 
     if (user) {
+      userService.updateMealPlan(user, req.session.accessToken)
+          .catch(err => console.log('Unable to update meal plan of user.', err));
       res.json(user);
     }
   },

@@ -202,6 +202,11 @@ class UserService {
     }
 
     // Generate new meal plan for the week
+    return await this.updateMealPlan(user, accessToken);
+  }
+
+  async updateMealPlan(user, accessToken) {
+    // Generate new meal plan for the week
     const steps = await this.getUserStepsLastWeek(accessToken);
     const mealPlan = await mealPlanService.generateMealPlan(user, steps);
 
@@ -209,8 +214,8 @@ class UserService {
     user.mealPlan = mealPlan;
     user.planGenDate = Date.now();
     this.updateUser(user)
-      .then((_) => console.log("Successfully updated user meal plan"))
-      .catch((err) => console.error("Failed to update users meal plan.", err));
+        .then((_) => console.log("Successfully updated user meal plan"))
+        .catch((err) => console.error("Failed to update users meal plan.", err));
 
     return mealPlan;
   }
