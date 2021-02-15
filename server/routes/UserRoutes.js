@@ -5,7 +5,7 @@ const userRouter = require("express").Router();
 userRouter.get("/", [
   authHandler,
   async (req, res) => {
-    const user = await userService.getUser(req.session.userId).catch((err) => {
+    const user = await userService.getUser(req.session.userId, req.session.accessToken).catch((err) => {
       console.error(`Unable to get user ${req.session.userId}`, err);
       res.status(404);
       res.send("User not found.");
@@ -113,7 +113,7 @@ userRouter.post("/login", async (req, res) => {
   // Get Google user info and determine if user already
   // exists with that id in our database
   const googleUser = loginResult.googleUser;
-  let user = await userService.getUser(googleUser.id);
+  let user = await userService.getUser(googleUser.id, loginResult.token);
   let isNew = !user;
 
   // Store user related information in their session

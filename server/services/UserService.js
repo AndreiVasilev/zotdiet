@@ -95,8 +95,9 @@ class UserService {
   /**
    * Gets a user from the database via their Google user ID.
    */
-  getUser(userId) {
-    return new Promise((resolve, reject) => {
+  async getUser(userId, accessToken) {
+    const weight = this.getUserWeight(accessToken, 90);
+    const user = new Promise((resolve, reject) => {
       this.database
         .ref(`/users/${userId}`)
         .once("value")
@@ -106,6 +107,17 @@ class UserService {
           reject(err);
         });
     });
+
+    const values = await Promise.all([user, weight]);
+    if (values) {
+       const currentUser = values[0];
+       const weights = values[1];
+       if (weights.length !== 0) {
+         currentUser.weight = weights[weights.length - 1];
+       }
+       return currentUser;
+    }
+    return null;
   }
 
   /**
@@ -184,7 +196,7 @@ class UserService {
   async getMealPlan(userId, accessToken) {
     // Get user and check if a valid meal plan has
     // already been generated for the current week
-    const user = await this.getUser(userId);
+    const user = await this.getUser(userId, accessToken);
     if (this.hasMealPlan(user)) {
       return user.mealPlan;
     }
@@ -308,7 +320,7 @@ class UserService {
   }
 
   _getPoundWeights(weights) {
-    return [weights.map((weight) => this._getPoundWeight(weight))];
+    return weights.map((weight) => this._getPoundWeight(weight));
   }
 
   _getDataValues(data) {
