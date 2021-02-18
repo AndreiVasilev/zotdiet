@@ -1,0 +1,22 @@
+.stores-container {
+  min-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.stores-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 20px;
+  height: 100%;
+}
+
+.local-stores {
+  text-align: left;
+}
+
+.local-stores > h1 {
+  padding-bottom: 1rem !important;
+}
