@@ -63,6 +63,30 @@ userRouter.get('/disliked-meals', [authHandler, async (req, res) => {
   }
 }]);
 
+userRouter.get('/liked-ingredients', [authHandler, async (req, res) => {
+  const likedIngredients = await userService.getLikedIngredients(req.session.userId, req.session.accessToken)
+    .catch(err => {
+      console.error(`Unable to get liked ingredients for user ${req.session.userId}`, err);
+      res.status(500);
+    });
+
+  if (likedIngredients) {
+    res.json(likedIngredients);
+  }
+}]);
+
+userRouter.get('/disliked-ingredients', [authHandler, async (req, res) => {
+  const dislikedIngredients = await userService.getDislikedIngredients(req.session.userId, req.session.accessToken)
+    .catch(err => {
+      console.error(`Unable to get disliked ingredients for user ${req.session.userId}`, err);
+      res.status(500);
+    });
+
+  if (dislikedIngredients) {
+    res.json(dislikedIngredients);
+  }
+}]);
+
 userRouter.post('/update-meal-prefs', [authHandler, async (req, res) => {
   const mealPrefs = await userService.updateMealPrefs(req.body.mealId, req.body.ingredients, req.body.isUpdatingLiked, req.session.userId, req.session.accessToken)
     .catch(err => {

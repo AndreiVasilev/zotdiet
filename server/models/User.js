@@ -15,6 +15,8 @@ class User {
     this.cuisinePreferences = [];
     this.likedMeals = [];
     this.dislikedMeals = [];
+    this.likedIngredients = {};
+    this.dislikedIngredients = {};
   }
 }
 
