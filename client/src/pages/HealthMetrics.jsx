@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./HealthMetrics.css";
-import {PieChart} from "react-minimal-pie-chart";
-import {Button, Card} from "react-bootstrap";
+import { PieChart } from "react-minimal-pie-chart";
+import { Button, Card } from "react-bootstrap";
 import CountUp from "react-countup";
 import footsteps from "../assets/footstep.svg";
 import LineChart from "../components/LineChart";
@@ -10,10 +10,21 @@ import userService from "../services/UserService";
 
 const HealthMetrics = () => {
   const [selectedData, setSelectedData] = useState({});
-  const [sevenDay, setSevenDay] = useState(false);
-  const [thirtyDay, setThirtyDay] = useState(false);
-  const [ninetyDay, setNinetyDay] = useState(false);
+  const [pastSteps, setPastSteps] = useState([]);
   const [steps, setSteps] = useState(0);
+
+  const date = new Date();
+  const month = date.getMonth();
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  const [currentDateRange, setCurrentDateRange] = useState(
+    `${moment(`${month + 1}.${day}.${year}`, "MM-DD-YYYY")
+      .subtract(7, "days")
+      .calendar()} - ${month + 1}/${day}/${year}`
+  );
+
+  let pastThirtyDays = [];
 
   const MONTHS = [
     "Jan",
@@ -30,11 +41,6 @@ const HealthMetrics = () => {
     "Dec",
   ];
 
-  const date = new Date();
-  const month = date.getMonth();
-  const day = date.getDate();
-  const year = date.getFullYear();
-
   const PIE_ANIMATION_DURATION = 2000;
   const BASE_COLOR = "#F59E0B";
   const BASE_COLOR_TRANSPARENT = "rgba(245, 158, 11, 0.2)";
@@ -45,21 +51,27 @@ const HealthMetrics = () => {
     return parts.join(".");
   };
 
+  useCallback(() => {
+    for (let i = 30; i > 0; i--) {
+      const pastDate = new Date(new Date().setDate(new Date().getDate() - i));
+      const formattedDate = `${
+        MONTHS[pastDate.getMonth()]
+      } ${pastDate.getDate()}`;
+      pastThirtyDays.push(formattedDate);
+    }
+    console.log(pastThirtyDays);
+  }, [pastThirtyDays])();
+
   const datasets = [
     {
-      labels: [
-        `${month + 1}/${day - 6}`,
-        `${month + 1}/${day - 5}`,
-        `${month + 1}/${day - 4}`,
-        `${month + 1}/${day - 3}`,
-        `${month + 1}/${day - 2}`,
-        `${month + 1}/${day - 1}`,
-        `${month + 1}/${day}`,
-      ],
+      labels: pastThirtyDays.slice(
+        pastThirtyDays.length - 7,
+        pastThirtyDays.length
+      ),
       datasets: [
         {
-          label: "7 Days (lbs)",
-          data: [200, 145, 400, 130, 115, 200, 105],
+          label: "7 Days (steps)",
+          data: pastSteps.slice(pastSteps.length - 8, pastSteps.length),
           borderColor: [BASE_COLOR],
           backgroundColor: [BASE_COLOR_TRANSPARENT],
           pointBackgroundColor: [BASE_COLOR],
@@ -68,19 +80,11 @@ const HealthMetrics = () => {
       ],
     },
     {
-      labels: [
-        `${month + 1}/${day - 6}`,
-        `${month + 1}/${day - 5}`,
-        `${month + 1}/${day - 4}`,
-        `${month + 1}/${day - 3}`,
-        `${month + 1}/${day - 2}`,
-        `${month + 1}/${day - 1}`,
-        `${month + 1}/${day}`,
-      ],
+      labels: pastThirtyDays,
       datasets: [
         {
-          label: "30 Days (lbs)",
-          data: [470, 340, 200, 130, 350, 110, 50],
+          label: "30 Days (steps)",
+          data: pastSteps.slice(pastSteps.length - 31, pastSteps.length),
           borderColor: [BASE_COLOR],
           backgroundColor: [BASE_COLOR_TRANSPARENT],
           pointBackgroundColor: [BASE_COLOR],
@@ -116,10 +120,13 @@ const HealthMetrics = () => {
   }, []);
 
   useEffect(() => {
-    userService.getUserSteps().then(stepCount => {
-      setSteps(stepCount);
+    userService.getUserSteps().then((stepData) => {
+      const ldStepCount = stepData[stepData.length - 1];
+      setSteps(ldStepCount);
+      setPastSteps(stepData);
+      console.log(stepData);
     });
-  }, [])
+  }, []);
 
   return (
     <Card className="metrics-container">
@@ -160,11 +167,9 @@ const HealthMetrics = () => {
           </div>
         </div>
         <div className="weight-graph">
-          <h1>Weight Graph</h1>
+          <h1>Step Graph</h1>
 
-          <p>{`${moment(`${month + 1}.${day}.${year}`, "MM-DD-YYYY")
-            .subtract(7, "days")
-            .calendar()} - ${month + 1}/${day}/${year}`}</p>
+          <p>{currentDateRange}</p>
           <div className="weight-chart">
             <LineChart data={selectedData} />
           </div>
@@ -172,6 +177,11 @@ const HealthMetrics = () => {
             <Button
               onClick={() => {
                 setSelectedData(datasets[0]);
+                setCurrentDateRange(
+                  `${moment(`${month + 1}.${day}.${year}`, "MM-DD-YYYY")
+                    .subtract(7, "days")
+                    .calendar()} - ${month + 1}/${day}/${year}`
+                );
               }}
               variant="primary"
             >
@@ -180,19 +190,24 @@ const HealthMetrics = () => {
             <Button
               onClick={() => {
                 setSelectedData(datasets[1]);
+                setCurrentDateRange(
+                  `${moment(`${month + 1}.${day}.${year}`, "MM-DD-YYYY")
+                    .subtract(30, "days")
+                    .calendar()} - ${month + 1}/${day}/${year}`
+                );
               }}
               variant="success"
             >
               30 Days
             </Button>{" "}
-            <Button
+            {/* <Button
               onClick={() => {
                 setSelectedData(datasets[2]);
               }}
               variant="warning"
             >
               90 Days
-            </Button>{" "}
+            </Button>{" "} */}
           </div>
         </div>
       </Card.Body>

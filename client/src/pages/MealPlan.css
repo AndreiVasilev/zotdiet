@@ -31,10 +31,6 @@
     justify-content: center;
 }
 
-.modal-dialog {
-    min-width: 70%;
-}
-
 .meal-modal {
     padding: 30px 50px;
 }
