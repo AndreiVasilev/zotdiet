@@ -21,14 +21,14 @@ function MealDisplay(props) {
                 setThumbsUp(!thumbsUp);
                 setThumbsDown(false);  // cannot have both thumbs up and thumbs down selected
                 getIngredients().then(ingredients => {   // keep track of liked ingredients
-                  userService.updateLikedMeals(mealId, ingredients);
+                  userService.updateMealPreferences(mealId, ingredients, true);  // last param: flag for whether updating liked meals
                 });
                 break;
             case "down":
                 setThumbsDown(!thumbsDown);
                 setThumbsUp(false);    // cannot have both thumbs up and thumbs down selected
                 getIngredients().then(ingredients => {   // keep track of disliked ingredients
-                  userService.updateDislikedMeals(mealId, ingredients);
+                  userService.updateMealPreferences(mealId, ingredients, false);  // updating disliked meals so flag = false
                 });
                 break;
             default:

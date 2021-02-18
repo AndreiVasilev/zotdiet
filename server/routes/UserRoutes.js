@@ -51,14 +51,6 @@ userRouter.get('/liked-meals', [authHandler, async (req, res) => {
   }
 }]);
 
-userRouter.post('/liked-meals', [authHandler, async (req, res) => {
-  await userService.updateLikedMeals(req.body.mealId, req.body.ingredients, req.session.userId, req.session.accessToken)
-    .catch(err => {
-      console.error(`Unable to update liked meals for user ${req.session.userId}`, err);
-      res.status(500);
-    });
-}]);
-
 userRouter.get('/disliked-meals', [authHandler, async (req, res) => {
   const dislikedMeals = await userService.getDislikedMeals(req.session.userId, req.session.accessToken)
     .catch(err => {
@@ -71,12 +63,16 @@ userRouter.get('/disliked-meals', [authHandler, async (req, res) => {
   }
 }]);
 
-userRouter.post('/disliked-meals', [authHandler, async (req, res) => {
-  await userService.updateDislikedMeals(req.body.mealId, req.body.ingredients, req.session.userId, req.session.accessToken)
+userRouter.post('/update-meal-prefs', [authHandler, async (req, res) => {
+  const mealPrefs = await userService.updateMealPrefs(req.body.mealId, req.body.ingredients, req.body.isUpdatingLiked, req.session.userId, req.session.accessToken)
     .catch(err => {
-      console.error(`Unable to update disliked meals for user ${req.session.userId}`, err);
+      console.error(`Unable to update meal preferences ${req.session.userId}`, err);
       res.status(500);
     });
+
+  if (mealPrefs) {
+    res.json(mealPrefs);
+  }
 }]);
 
 // userRouter.get('/liked-ingredients', [authHandler, async (req, res) => {

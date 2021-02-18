@@ -102,33 +102,28 @@ class UserService {
       return (response && response.status === 200) ? response.data : null;
   }
 
-  async updateLikedMeals(mealId, ingredients) {
-    await axios.post('/api/user/liked-meals', {mealId: mealId, ingredients: ingredients})
-      .catch(err => console.error('Unable to update liked meals', err));
-  }
-
   async getDislikedMeals() {
     const response = await axios.get('/api/user/disliked-meals')
       .catch(err => console.error('Unable to get disliked meals', err));
     return (response && response.status === 200) ? response.data : null;
   }
 
-  async updateDislikedMeals(mealId, ingredients) {
-    await axios.post('/api/user/disliked-meals', {mealId: mealId, ingredients: ingredients})
-      .catch(err => console.error('Unable to update disliked meals', err));
-  }
-
   // async getLikedIngredients() {
-  //   const response = await axios.get('/api/user/liked-ingredients')
-  //     .catch(err => console.error('Unable to get liked ingredients', err));
+  //   const response = await axios.get('/api/user/liked-meals')
+  //     .catch(err => console.error('Unable to get liked meals', err));
   //   return (response && response.status === 200) ? response.data : null;
   // }
   //
   // async getDislikedIngredients() {
-  //   const response = await axios.get('/api/user/disliked-ingredients')
-  //     .catch(err => console.error('Unable to get disliked ingredients', err));
+  //   const response = await axios.get('/api/user/disliked-meals')
+  //     .catch(err => console.error('Unable to get disliked meals', err));
   //   return (response && response.status === 200) ? response.data : null;
   // }
+
+  async updateMealPreferences(mealId, ingredients, isUpdatingLiked) {
+    await axios.post('/api/user/update-meal-prefs', {mealId: mealId, ingredients: ingredients, isUpdatingLiked: isUpdatingLiked})
+      .catch(err => console.error('Unable to update meal preferences', err));
+  }
 }
 
 // Export a singleton instance of this service
