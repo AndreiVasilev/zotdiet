@@ -248,9 +248,10 @@ class UserService {
   /**
    * Gets the users liked meals (ids)
    */
+  // accessToken
   async getLikedMeals(userId, accessToken) {
     // Get user and return liked meals
-    const user = await this.getUser(userId);
+    const user = await this.getUser(userId, accessToken);
     if(user.likedMeals)
       return user.likedMeals;
     return [];  // user does not have any liked meals
@@ -261,7 +262,7 @@ class UserService {
    */
   async updateLikedMeals(mealId, ingredients, isUpdatingLiked, userId, accessToken) {
     // Get users liked meals
-    const user = await this.getUser(userId);
+    const user = await this.getUser(userId, accessToken);
     let likedMeals = [];
     if(user.likedMeals)
       likedMeals = user.likedMeals;
@@ -291,7 +292,7 @@ class UserService {
    */
   async getDislikedMeals(userId, accessToken) {
     // Get user and return disliked meals
-    const user = await this.getUser(userId);
+    const user = await this.getUser(userId, accessToken);
     if(user.dislikedMeals)
       return user.dislikedMeals;
     return [];  // user does not have any disliked meals
@@ -302,7 +303,7 @@ class UserService {
    */
   async updateDislikedMeals(mealId, ingredients, isUpdatingLiked, userId, accessToken) {
     // Get users disliked meals
-    const user = await this.getUser(userId);
+    const user = await this.getUser(userId, accessToken);
     let dislikedMeals = [];
     if(user.dislikedMeals)
       dislikedMeals = user.dislikedMeals;
@@ -332,7 +333,7 @@ class UserService {
    */
   async getLikedIngredients(userId, accessToken) {
     // Get user and return liked ingredients
-    const user = await this.getUser(userId);
+    const user = await this.getUser(userId, accessToken);
     if(user.likedIngredients)
       return user.likedIngredients;
     return {};  // user does not have any liked ingredients
@@ -343,7 +344,7 @@ class UserService {
    */
   async updateLikedIngredients(ingredients, isUpdatingLiked, userId, accessToken) {
     // Get users liked ingredients
-    const user = await this.getUser(userId);
+    const user = await this.getUser(userId, accessToken);
     let likedIngredients = {};
     if(user.likedIngredients)
       likedIngredients = user.likedIngredients;
@@ -389,7 +390,7 @@ class UserService {
    */
   async getDislikedIngredients(userId, accessToken) {
     // Get user and return disliked ingredients
-    const user = await this.getUser(userId);
+    const user = await this.getUser(userId, accessToken);
     if(user.dislikedIngredients)
       return user.dislikedIngredients;
     return {};  // user does not have any disliked ingredients
@@ -400,7 +401,7 @@ class UserService {
    */
   async updateDislikedIngredients(ingredients, isUpdatingLiked, userId, accessToken) {
     // Get users disliked ingredients
-    const user = await this.getUser(userId);
+    const user = await this.getUser(userId,accessToken);
     let dislikedIngredients = {};
     if(user.dislikedIngredients)
       dislikedIngredients = user.dislikedIngredients;
@@ -446,7 +447,7 @@ class UserService {
    */
   async updateMealPrefs(mealId, ingredients, isUpdatingLiked, userId, accessToken) {
     // Get user
-    const user = await this.getUser(userId);
+    const user = await this.getUser(userId, accessToken);
 
     // these functions will take care of logic to remove or add based on current liked/disliked meal ids
     await this.updateLikedMeals(mealId, ingredients, isUpdatingLiked, userId, accessToken);     // update liked meal ids
