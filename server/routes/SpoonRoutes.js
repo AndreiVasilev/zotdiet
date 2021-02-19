@@ -32,7 +32,6 @@ spoonRouter.get('/recipes/:id/ingredients', async (request, response) => {
 })
 
 
-// TODO: Complete
 spoonRouter.get('/mealplanner/generate', async (request, response) => {
 
     console.log('Test Route Called.')
@@ -44,6 +43,20 @@ spoonRouter.get('/mealplanner/generate', async (request, response) => {
     
     response.json(data)
     
+})
+
+
+spoonRouter.get('/mealplanner/generateSet', async (request, response) => {
+
+    console.log('Meal Plan Set Route Called.')
+    console.log('request cals: ' + request.query.calories)
+
+    let data = await spoonService.generateMealPlanSet(request.query.calories, request.query.diet, request.query.exclude, request.query.numPlans)
+
+    console.log('Meal Plan Set Returning.')
+
+    response.json(data)
+
 })
 
 
