@@ -1,3 +1,5 @@
+import axios from "axios";
+
 class SpoonService {
 
     constructor() {
@@ -21,6 +23,11 @@ class SpoonService {
         return this.intolerances;
     }
 
+    async getMealIngredients(mealId) {
+      const response = await axios.get(`/spoon/recipes/${mealId}/ingredients`)
+        .catch(err => console.error('Unable to get recipe ingredients', err));
+      return (response && response.status === 200) ? response.data : null;
+    }
 }
 
 const spoonService = new SpoonService();

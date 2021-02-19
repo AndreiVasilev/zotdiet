@@ -79,6 +79,75 @@ userRouter.post("/", [
       res.status(500);
       res.send("Unable to create user.");
     });
+}]);
+
+userRouter.get('/liked-meals', [authHandler, async (req, res) => {
+  const likedMeals = await userService.getLikedMeals(req.session.userId, req.session.accessToken)
+    .catch(err => {
+      console.error(`Unable to get liked meals for user ${req.session.userId}`, err);
+      res.status(500);
+    });
+
+  if (likedMeals) {
+    res.json(likedMeals);
+  }
+}]);
+
+userRouter.get('/disliked-meals', [authHandler, async (req, res) => {
+  const dislikedMeals = await userService.getDislikedMeals(req.session.userId, req.session.accessToken)
+    .catch(err => {
+      console.error(`Unable to get disliked meals for user ${req.session.userId}`, err);
+      res.status(500);
+    });
+
+  if (dislikedMeals) {
+    res.json(dislikedMeals);
+  }
+}]);
+
+userRouter.get('/liked-ingredients', [authHandler, async (req, res) => {
+  const likedIngredients = await userService.getLikedIngredients(req.session.userId, req.session.accessToken)
+    .catch(err => {
+      console.error(`Unable to get liked ingredients for user ${req.session.userId}`, err);
+      res.status(500);
+    });
+
+  if (likedIngredients) {
+    res.json(likedIngredients);
+  }
+}]);
+
+userRouter.get('/disliked-ingredients', [authHandler, async (req, res) => {
+  const dislikedIngredients = await userService.getDislikedIngredients(req.session.userId, req.session.accessToken)
+    .catch(err => {
+      console.error(`Unable to get disliked ingredients for user ${req.session.userId}`, err);
+      res.status(500);
+    });
+
+  if (dislikedIngredients) {
+    res.json(dislikedIngredients);
+  }
+}]);
+
+userRouter.post('/update-meal-prefs', [authHandler, async (req, res) => {
+  const mealPrefs = await userService.updateMealPrefs(req.body.mealId, req.body.ingredients, req.body.isUpdatingLiked, req.body.isAdding, req.session.userId, req.session.accessToken)
+    .catch(err => {
+      console.error(`Unable to update meal preferences ${req.session.userId}`, err);
+      res.status(500);
+    });
+
+  if (mealPrefs) {
+    res.json(mealPrefs);
+  }
+}]);
+
+userRouter.post('/', [authHandler, async (req, res) => {
+    const user = await userService.createUser(req.body)
+        .catch(err => {
+            console.error(`Unable to create user ${req.body.id}`, err);
+            res.status(500);
+            res.send('Unable to create user.');
+        });
 
     if (user) {
       res.json(user);

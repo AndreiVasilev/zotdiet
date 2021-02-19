@@ -2,14 +2,13 @@ import React, {useEffect, useState} from "react";
 import {Card, Col, Container, Modal, Row, Tab, Tabs} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faHeart} from "@fortawesome/free-solid-svg-icons/faHeart";
-
-import "./MealPlan.css";
-import "../App.css";
 import MealDisplay from "../components/MealDisplay";
 import MealDisplayImg from "../components/MealDisplayImg";
 import MealNutritionInfo from "../components/MealNutritionInfo";
 import Recipe from "../components/Recipe";
 import userService from "../services/UserService";
+import "./MealPlan.css";
+import "../App.css";
 
 const DAY_LABELS = {
     SUNDAY: "Sun",
@@ -37,8 +36,9 @@ function MealPlan() {
     const [showModal, setShowModal] = useState(false);
     const [curTabIdx, setCurTabIdx] = useState(getCurDay());
     const [modalMeal, setModalMeal] = useState({});
-    const [mealHearted, setMealHearted] = useState(false);  // TODO set default based on whether modalMeal hearted
     const [meals, setMeals] = useState(null);
+    const [likedMeals, setLikedMeals] = useState([]);
+    const [dislikedMeals, setDislikedMeals] = useState([]);
 
     const handleCloseModal = () => setShowModal(false);
 
@@ -47,19 +47,29 @@ function MealPlan() {
         setShowModal(true);
     }
 
-    const toggleHeart = () => {
-        // TODO: save in DB for modalMeal
-        setMealHearted(!mealHearted);
-    }
-
     const getMealImgUrl = (mealId) => {
         return `https://spoonacular.com/recipeImages/${mealId}-556x370.jpg`
     }
+
+    const isLikedMeal = (mealId) => likedMeals.includes(mealId);
+    const isDislikedMeal = (mealId) => dislikedMeals.includes(mealId);
 
     useEffect(() => {
         userService.getMealPlan().then(meals => {
             setMeals(meals);
         })
+    }, []);
+
+    useEffect(() => {
+      userService.getLikedMeals().then(likedMeals => {
+        setLikedMeals(likedMeals);
+      })
+    }, []);
+
+    useEffect(() => {
+      userService.getDislikedMeals().then(dislikedMeals => {
+        setDislikedMeals(dislikedMeals);
+      })
     }, []);
 
     return (
@@ -87,23 +97,26 @@ function MealPlan() {
                                 <Tab tabClassName="meal-plan-tab" eventKey={idx.toString()} title={label} key={idx}>
                                     <div className="daily-meals-container">
                                          {/*Breakfast */}
-                                        <MealDisplay
+                                        <MealDisplay mealId={breakfast.id}
                                             mealType="Breakfast" mealName={breakfast.title} url={breakfast.sourceUrl}
                                             img={getMealImgUrl(breakfast.id)} cookTime={breakfast.readyInMinutes}
+                                            liked={isLikedMeal(breakfast.id)} disliked={isDislikedMeal(breakfast.id)}
                                             // openModal={() => handleShowModal('breakfast')}
                                         />
 
                                         {/* Lunch */}
-                                        <MealDisplay
+                                        <MealDisplay mealId={lunch.id}
                                             mealType="Lunch" mealName={lunch.title} url={lunch.sourceUrl}
                                             img={getMealImgUrl(lunch.id)} cookTime={lunch.readyInMinutes}
+                                            liked={isLikedMeal(lunch.id)} disliked={isDislikedMeal(lunch.id)}
                                             // openModal={() => handleShowModal('lunch')}
                                         />
 
                                         {/* Dinner */}
-                                        <MealDisplay
+                                        <MealDisplay mealId={dinner.id}
                                             mealType="Dinner" mealName={dinner.title} url={dinner.sourceUrl}
                                             img={getMealImgUrl(dinner.id)} cookTime={dinner.readyInMinutes}
+                                            liked={isLikedMeal(dinner.id)} disliked={isDislikedMeal(dinner.id)}
                                             // openModal={() => handleShowModal('dinner')}
                                         />
                                     </div>

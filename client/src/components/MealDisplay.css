@@ -29,8 +29,33 @@
     border: 2px solid black;
 }
 
-.meal-time-icon {
+.meal-display-icon {
     width: 25px !important;
     height: 25px !important;
+}
+
+.meal-time-icon {
     margin-right: 5px;
+}
+
+.meal-thumbs-icon {
+    margin: 5px 25px;
+}
+
+.meal-thumbs-icon:hover {
+    cursor: pointer;
+}
+
+.thumbs-selected {
+    /*color: #2D2DD7;*/
+    color: #ffd221;
+}
+
+.thumbs-unselected {
+    color: gray;
+}
+
+.thumbs-container {
+    display: flex;
+    justify-content: center;
 }

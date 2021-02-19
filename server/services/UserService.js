@@ -246,6 +246,222 @@ class UserService {
   }
 
   /**
+   * Gets the users liked meals (ids)
+   */
+  // accessToken
+  async getLikedMeals(userId, accessToken) {
+    // Get user and return liked meals
+    const user = await this.getUser(userId, accessToken);
+    if(user.likedMeals)
+      return user.likedMeals;
+    return [];  // user does not have any liked meals
+  }
+
+  /**
+   * Update the users liked meals (ids)
+   */
+  async updateLikedMeals(mealId, ingredients, isUpdatingLiked, userId, accessToken) {
+    // Get users liked meals
+    const user = await this.getUser(userId, accessToken);
+    let likedMeals = [];
+    if(user.likedMeals)
+      likedMeals = user.likedMeals;
+
+    // check if mealId in liked meals list to determine if adding or removing meal
+    if(likedMeals.includes(mealId))
+      likedMeals.splice(likedMeals.indexOf(mealId), 1);  // remove meal
+    else {
+      if(isUpdatingLiked)
+        likedMeals.push(mealId);  // add meal only if liking meal
+    }
+
+    // save in database
+    user.likedMeals = likedMeals;
+    return new Promise((resolve, reject) => {
+      this.database.ref(`/users/${user.id}`).update(user)
+        .then(_ => resolve(user))
+        .catch(err => {
+          console.error(`Unable to update user ${user.id}`, err);
+          reject(err);
+        });
+    });
+  }
+
+  /**
+   * Gets the users disliked meals (ids)
+   */
+  async getDislikedMeals(userId, accessToken) {
+    // Get user and return disliked meals
+    const user = await this.getUser(userId, accessToken);
+    if(user.dislikedMeals)
+      return user.dislikedMeals;
+    return [];  // user does not have any disliked meals
+  }
+
+  /**
+   * Update the users disliked meals (ids)
+   */
+  async updateDislikedMeals(mealId, ingredients, isUpdatingLiked, userId, accessToken) {
+    // Get users disliked meals
+    const user = await this.getUser(userId, accessToken);
+    let dislikedMeals = [];
+    if(user.dislikedMeals)
+      dislikedMeals = user.dislikedMeals;
+
+    // check if mealId in liked meals list to determine if adding or removing meal
+    if(dislikedMeals.includes(mealId))
+      dislikedMeals.splice(dislikedMeals.indexOf(mealId), 1);  // remove meal
+    else {
+      if(!isUpdatingLiked)
+        dislikedMeals.push(mealId);  // add meal only if disliking meal
+    }
+
+    // save in database
+    user.dislikedMeals = dislikedMeals;
+    return new Promise((resolve, reject) => {
+      this.database.ref(`/users/${user.id}`).update(user)
+        .then(_ => resolve(user))
+        .catch(err => {
+          console.error(`Unable to update user ${user.id}`, err);
+          reject(err);
+        });
+    });
+  }
+
+  /**
+   * Gets the users liked ingredients
+   */
+  async getLikedIngredients(userId, accessToken) {
+    // Get user and return liked ingredients
+    const user = await this.getUser(userId, accessToken);
+    if(user.likedIngredients)
+      return user.likedIngredients;
+    return {};  // user does not have any liked ingredients
+  }
+
+  /**
+   * Update the users liked ingredients
+   */
+  async updateLikedIngredients(ingredients, isUpdatingLiked, isAdding, userId, accessToken) {
+    // Get users liked ingredients
+    const user = await this.getUser(userId, accessToken);
+    let likedIngredients = {};
+    if(user.likedIngredients)
+      likedIngredients = user.likedIngredients;
+
+    // if adding to liked ingredients
+    // check if each ingredient in likedIngredients; if so, increment count; if not, add ingredient
+    if(isUpdatingLiked && isAdding) {
+      for (let i = 0; i < ingredients.length; i++) {
+        const ingredient = ingredients[i];
+        if (ingredient in likedIngredients)
+          likedIngredients[ingredient]++;
+        else
+          likedIngredients[ingredient] = 1;
+      }
+    }
+    // removing from liked ingredients or adding to disliked ingredients => remove from liked ingredients
+    else if((isUpdatingLiked && !isAdding) || (!isUpdatingLiked && isAdding)) {
+      // removing ingredients from liked ingredients
+      // check if each ingredient in likedIngredients; if so, decrement count; if not, do nothing
+      for(let i = 0; i < ingredients.length; i++) {
+        const ingredient = ingredients[i];
+        if (ingredient in likedIngredients) {
+          likedIngredients[ingredient]--;
+          if(likedIngredients[ingredient] <= 0)  // ingredient count <= 0, remove ingredient
+            delete likedIngredients[ingredient]
+        }
+      }
+    }
+
+    // save in database
+    user.likedIngredients = likedIngredients;
+    return new Promise((resolve, reject) => {
+      this.database.ref(`/users/${user.id}`).update(user)
+        .then(_ => resolve(user))
+        .catch(err => {
+          console.error(`Unable to update user ${user.id}`, err);
+          reject(err);
+        });
+    });
+  }
+
+  /**
+   * Gets the users disliked ingredients
+   */
+  async getDislikedIngredients(userId, accessToken) {
+    // Get user and return disliked ingredients
+    const user = await this.getUser(userId, accessToken);
+    if(user.dislikedIngredients)
+      return user.dislikedIngredients;
+    return {};  // user does not have any disliked ingredients
+  }
+
+  /**
+   * Update the users disliked ingredients
+   */
+  async updateDislikedIngredients(ingredients, isUpdatingLiked, isAdding, userId, accessToken) {
+    // Get users disliked ingredients
+    const user = await this.getUser(userId,accessToken);
+    let dislikedIngredients = {};
+    if(user.dislikedIngredients)
+      dislikedIngredients = user.dislikedIngredients;
+
+    // if adding to disliked ingredients
+    // check if each ingredient in dislikedIngredients; if so, increment count; if not, add ingredient
+    if(!isUpdatingLiked && isAdding) {
+      for (let i = 0; i < ingredients.length; i++) {
+        const ingredient = ingredients[i];
+        if (ingredient in dislikedIngredients)
+          dislikedIngredients[ingredient]++;
+        else
+          dislikedIngredients[ingredient] = 1;
+      }
+    }
+    // removing from disliked ingredients or adding to liked ingredients => remove from disliked ingredients
+    else if((!isUpdatingLiked && !isAdding) || (isUpdatingLiked && isAdding)) {
+      // removing ingredients from disliked ingredients
+      // check if each ingredient in dislikedIngredients; if so, decrement count; if not, do nothing
+      for(let i = 0; i < ingredients.length; i++) {
+        const ingredient = ingredients[i];
+        if (ingredient in dislikedIngredients) {
+          dislikedIngredients[ingredient]--;
+          if(dislikedIngredients[ingredient] <= 0)  // ingredient count <= 0, remove ingredient
+            delete dislikedIngredients[ingredient]
+        }
+      }
+    }
+
+    // save in database
+    user.dislikedIngredients = dislikedIngredients;
+    return new Promise((resolve, reject) => {
+      this.database.ref(`/users/${user.id}`).update(user)
+        .then(_ => resolve(user))
+        .catch(err => {
+          console.error(`Unable to update user ${user.id}`, err);
+          reject(err);
+        });
+    });
+  }
+
+  /**
+   * Update the users meal preferences (liked/disliked meal ids, ingredients)
+   */
+  async updateMealPrefs(mealId, ingredients, isUpdatingLiked, isAdding, userId, accessToken) {
+    // Get user
+    const user = await this.getUser(userId, accessToken);
+
+    // these functions will take care of logic to remove or add based on current liked/disliked meal ids
+    await this.updateLikedMeals(mealId, ingredients, isUpdatingLiked, userId, accessToken);     // update liked meal ids
+    await this.updateDislikedMeals(mealId, ingredients, isUpdatingLiked, userId, accessToken);  // update disliked meal ids
+
+    // these functions need extra parameter (isAdding) to determine whether to remove or add since
+    // ingredients are not unique to each meal (if dislike a meal, need to remove ingredients from liked ingredients)
+    await this.updateLikedIngredients(ingredients, isUpdatingLiked, isAdding, userId, accessToken);     // update liked ingredients
+    await this.updateDislikedIngredients(ingredients, isUpdatingLiked, isAdding, userId, accessToken);  // update disliked ingredients
+  }
+
+  /**
    * Gets the ID and name of the currently logged in Google user.
    */
   async getGoogleUser(accessToken) {

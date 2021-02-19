@@ -1,4 +1,5 @@
 const axios = require('axios');
+const nlpService = require("./NLPService");
 
 class SpoonService {
 
@@ -32,6 +33,26 @@ class SpoonService {
             return {'result': 'failed'}
         }
            
+    }
+
+    async getIngredientsByRecipeID(recipeID){
+      console.log('Get Recipe Ingredients Request Made.')
+      let requestStr = 'recipes/' + recipeID + '/ingredientWidget.json'
+      requestStr = this.getBaseUrl() + requestStr + '?' + this.getApiKeyStr()
+
+      try {
+        let res = await axios.get(requestStr)
+        console.log('Get Recipe Ingredients Request Succeeded.')
+
+        // get ingredients names and perform NLP to standardize
+        let ingredients = res.data.ingredients;
+        ingredients = ingredients.map(ingredient => nlpService.standardize(ingredient.name)).flat();  // flatten 2D array to 1D array
+        return ingredients
+      }
+      catch {
+        console.log('Get Recipe Ingredients Request Failed.')
+        return {'result': 'failed'}
+      }
     }
 
     async generateMealPlanForWeek(targetCalories, diet, excludeIngredients){
