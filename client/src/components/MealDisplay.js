@@ -40,7 +40,6 @@ function MealDisplay(props) {
     // get ingredients for recipe
     const getIngredients = async () => {
       let ingredients = await spoonService.getMealIngredients(mealId);
-      ingredients = ingredients.map(ingredient => ingredient.name);  // only store ingredient name
       return ingredients;
     };
 
