@@ -342,7 +342,7 @@ class UserService {
   /**
    * Update the users liked ingredients
    */
-  async updateLikedIngredients(ingredients, isUpdatingLiked, userId, accessToken) {
+  async updateLikedIngredients(ingredients, isUpdatingLiked, isAdding, userId, accessToken) {
     // Get users liked ingredients
     const user = await this.getUser(userId, accessToken);
     let likedIngredients = {};
@@ -351,8 +351,8 @@ class UserService {
 
     // if adding to liked ingredients
     // check if each ingredient in likedIngredients; if so, increment count; if not, add ingredient
-    if(isUpdatingLiked) {
-      for(let i = 0; i < ingredients.length; i++) {
+    if(isUpdatingLiked && isAdding) {
+      for (let i = 0; i < ingredients.length; i++) {
         const ingredient = ingredients[i];
         if (ingredient in likedIngredients)
           likedIngredients[ingredient]++;
@@ -360,7 +360,8 @@ class UserService {
           likedIngredients[ingredient] = 1;
       }
     }
-    else {
+    // removing from liked ingredients or adding to disliked ingredients => remove from liked ingredients
+    else if((isUpdatingLiked && !isAdding) || (!isUpdatingLiked && isAdding)) {
       // removing ingredients from liked ingredients
       // check if each ingredient in likedIngredients; if so, decrement count; if not, do nothing
       for(let i = 0; i < ingredients.length; i++) {
@@ -399,7 +400,7 @@ class UserService {
   /**
    * Update the users disliked ingredients
    */
-  async updateDislikedIngredients(ingredients, isUpdatingLiked, userId, accessToken) {
+  async updateDislikedIngredients(ingredients, isUpdatingLiked, isAdding, userId, accessToken) {
     // Get users disliked ingredients
     const user = await this.getUser(userId,accessToken);
     let dislikedIngredients = {};
@@ -408,16 +409,17 @@ class UserService {
 
     // if adding to disliked ingredients
     // check if each ingredient in dislikedIngredients; if so, increment count; if not, add ingredient
-    if(!isUpdatingLiked) {
-      for(let i = 0; i < ingredients.length; i++) {
-          const ingredient = ingredients[i];
+    if(!isUpdatingLiked && isAdding) {
+      for (let i = 0; i < ingredients.length; i++) {
+        const ingredient = ingredients[i];
         if (ingredient in dislikedIngredients)
           dislikedIngredients[ingredient]++;
         else
           dislikedIngredients[ingredient] = 1;
       }
     }
-    else {
+    // removing from disliked ingredients or adding to liked ingredients => remove from disliked ingredients
+    else if((!isUpdatingLiked && !isAdding) || (isUpdatingLiked && isAdding)) {
       // removing ingredients from disliked ingredients
       // check if each ingredient in dislikedIngredients; if so, decrement count; if not, do nothing
       for(let i = 0; i < ingredients.length; i++) {
@@ -445,7 +447,7 @@ class UserService {
   /**
    * Update the users meal preferences (liked/disliked meal ids, ingredients)
    */
-  async updateMealPrefs(mealId, ingredients, isUpdatingLiked, userId, accessToken) {
+  async updateMealPrefs(mealId, ingredients, isUpdatingLiked, isAdding, userId, accessToken) {
     // Get user
     const user = await this.getUser(userId, accessToken);
 
@@ -453,10 +455,10 @@ class UserService {
     await this.updateLikedMeals(mealId, ingredients, isUpdatingLiked, userId, accessToken);     // update liked meal ids
     await this.updateDislikedMeals(mealId, ingredients, isUpdatingLiked, userId, accessToken);  // update disliked meal ids
 
-    // these functions need extra parameter (isUpdatingLiked) to determine whether to remove or add since
+    // these functions need extra parameter (isAdding) to determine whether to remove or add since
     // ingredients are not unique to each meal (if dislike a meal, need to remove ingredients from liked ingredients)
-    await this.updateLikedIngredients(ingredients, isUpdatingLiked, userId, accessToken);     // update liked ingredients
-    await this.updateDislikedIngredients(ingredients, isUpdatingLiked, userId, accessToken);  // update disliked ingredients
+    await this.updateLikedIngredients(ingredients, isUpdatingLiked, isAdding, userId, accessToken);     // update liked ingredients
+    await this.updateDislikedIngredients(ingredients, isUpdatingLiked, isAdding, userId, accessToken);  // update disliked ingredients
   }
 
   /**

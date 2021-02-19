@@ -130,7 +130,7 @@ userRouter.get('/disliked-ingredients', [authHandler, async (req, res) => {
 }]);
 
 userRouter.post('/update-meal-prefs', [authHandler, async (req, res) => {
-  const mealPrefs = await userService.updateMealPrefs(req.body.mealId, req.body.ingredients, req.body.isUpdatingLiked, req.session.userId, req.session.accessToken)
+  const mealPrefs = await userService.updateMealPrefs(req.body.mealId, req.body.ingredients, req.body.isUpdatingLiked, req.body.isAdding, req.session.userId, req.session.accessToken)
     .catch(err => {
       console.error(`Unable to update meal preferences ${req.session.userId}`, err);
       res.status(500);

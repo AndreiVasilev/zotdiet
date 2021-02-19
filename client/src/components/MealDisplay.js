@@ -16,19 +16,22 @@ function MealDisplay(props) {
     const [thumbsDown, setThumbsDown] = useState(disliked);
 
     const toggleThumbs = (dir) => {
+        let isAdding = false;
         switch(dir) {
-            case "up":
+          case "up":
+                isAdding = !thumbsUp;  // if was previously not thumbs up and just switched to thumbs up, then adding to liked
                 setThumbsUp(!thumbsUp);
                 setThumbsDown(false);  // cannot have both thumbs up and thumbs down selected
                 getIngredients().then(ingredients => {   // keep track of liked ingredients
-                  userService.updateMealPreferences(mealId, ingredients, true);  // last param: flag for whether updating liked meals
+                  userService.updateMealPreferences(mealId, ingredients, true, isAdding);  // last 2 params: flags for whether add/remove liked meals
                 });
                 break;
             case "down":
+                isAdding = !thumbsDown;  // if was previously not thumbs down and just switched to thumbs down, then adding to disliked
                 setThumbsDown(!thumbsDown);
                 setThumbsUp(false);    // cannot have both thumbs up and thumbs down selected
                 getIngredients().then(ingredients => {   // keep track of disliked ingredients
-                  userService.updateMealPreferences(mealId, ingredients, false);  // updating disliked meals so flag = false
+                  userService.updateMealPreferences(mealId, ingredients, false, isAdding);  // last 2 params: flags for whether add/remove liked meals
                 });
                 break;
             default:

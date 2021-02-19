@@ -138,8 +138,8 @@ class UserService {
     return (response && response.status === 200) ? response.data : null;
   }
 
-  async updateMealPreferences(mealId, ingredients, isUpdatingLiked) {
-    await axios.post('/api/user/update-meal-prefs', {mealId: mealId, ingredients: ingredients, isUpdatingLiked: isUpdatingLiked})
+  async updateMealPreferences(mealId, ingredients, isUpdatingLiked, isAdding) {
+    await axios.post('/api/user/update-meal-prefs', {mealId: mealId, ingredients: ingredients, isUpdatingLiked: isUpdatingLiked, isAdding: isAdding})
       .catch(err => console.error('Unable to update meal preferences', err));
   }
 }
