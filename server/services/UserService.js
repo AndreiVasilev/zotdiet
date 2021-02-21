@@ -277,14 +277,7 @@ class UserService {
 
     // save in database
     user.likedMeals = likedMeals;
-    return new Promise((resolve, reject) => {
-      this.database.ref(`/users/${user.id}`).update(user)
-        .then(_ => resolve(user))
-        .catch(err => {
-          console.error(`Unable to update user ${user.id}`, err);
-          reject(err);
-        });
-    });
+    return this.updateUser(user);
   }
 
   /**
@@ -318,14 +311,7 @@ class UserService {
 
     // save in database
     user.dislikedMeals = dislikedMeals;
-    return new Promise((resolve, reject) => {
-      this.database.ref(`/users/${user.id}`).update(user)
-        .then(_ => resolve(user))
-        .catch(err => {
-          console.error(`Unable to update user ${user.id}`, err);
-          reject(err);
-        });
-    });
+    return this.updateUser(user);
   }
 
   /**
@@ -376,14 +362,7 @@ class UserService {
 
     // save in database
     user.likedIngredients = likedIngredients;
-    return new Promise((resolve, reject) => {
-      this.database.ref(`/users/${user.id}`).update(user)
-        .then(_ => resolve(user))
-        .catch(err => {
-          console.error(`Unable to update user ${user.id}`, err);
-          reject(err);
-        });
-    });
+    return this.updateUser(user);
   }
 
   /**
@@ -434,23 +413,13 @@ class UserService {
 
     // save in database
     user.dislikedIngredients = dislikedIngredients;
-    return new Promise((resolve, reject) => {
-      this.database.ref(`/users/${user.id}`).update(user)
-        .then(_ => resolve(user))
-        .catch(err => {
-          console.error(`Unable to update user ${user.id}`, err);
-          reject(err);
-        });
-    });
+    return this.updateUser(user);
   }
 
   /**
    * Update the users meal preferences (liked/disliked meal ids, ingredients)
    */
   async updateMealPrefs(mealId, ingredients, isUpdatingLiked, isAdding, userId, accessToken) {
-    // Get user
-    const user = await this.getUser(userId, accessToken);
-
     // these functions will take care of logic to remove or add based on current liked/disliked meal ids
     await this.updateLikedMeals(mealId, ingredients, isUpdatingLiked, userId, accessToken);     // update liked meal ids
     await this.updateDislikedMeals(mealId, ingredients, isUpdatingLiked, userId, accessToken);  // update disliked meal ids
