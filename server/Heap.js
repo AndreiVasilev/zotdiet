@@ -6,13 +6,11 @@ const ROOT_INDEX = 1;
 
 class Heap {
 
-  constructor(capacity = 64, keys = [], priorities = [],
-              KeysBackingArrayType = Uint32Array,
-              PrioritiesBackingArrayType = Uint32Array) {
+  constructor(capacity = 64, keys = [], priorities = []) {
 
     this._capacity = capacity;
-    this._keys = new KeysBackingArrayType(capacity + ROOT_INDEX);
-    this._priorities = new PrioritiesBackingArrayType(capacity + ROOT_INDEX);
+    this._priorities = new Array(capacity + ROOT_INDEX);
+    this._keys = new Array(capacity + ROOT_INDEX);
     // to keep track of whether the first element is a deleted one
     this._hasPoppedElement = false;
 
@@ -55,8 +53,8 @@ class Heap {
     while (index > ROOT_INDEX) {
       // get its parent item
       const parentIndex = index >>> 1;
-      if (this._priorities[parentIndex] <= priority) {
-        break;  // if parent priority is smaller, heap property is satisfied
+      if (this._priorities[parentIndex] >= priority) {
+        break;  // if parent priority is greater, heap property is satisfied
       }
       // bubble parent down so the item can go up
       this._keys[index] = this._keys[parentIndex];
@@ -91,19 +89,19 @@ class Heap {
       let childKey = this._keys[left];
       let childIndex = left;
 
-      // if there's a right child, choose the child with the smallest priority
+      // if there's a right child, choose the child with the largest priority
       const right = left + 1;
       if (right < lastIndex) {
         const rightPriority = this._priorities[right];
-        if (rightPriority < childPriority) {
+        if (rightPriority > childPriority) {
           childPriority = rightPriority;
           childKey = this._keys[right];
           childIndex = right;
         }
       }
 
-      if (childPriority >= priority) {
-        break;  // if children have higher priority, heap property is satisfied
+      if (childPriority <= priority) {
+        break;  // if children have lower priority, heap property is satisfied
       }
 
       // bubble the child up to where the parent is
@@ -180,6 +178,10 @@ class Heap {
 
   get size() {
     return this.length;
+  }
+
+  get values() {
+    return this._keys;
   }
 
   dumpRawPriorities() {
