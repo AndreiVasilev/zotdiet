@@ -48,13 +48,23 @@ class NLPService {
     return resWords;
   }
 
+  /**
+   * Applies Porter Stemmer to all words from given wordlist
+   *
+   * @param wordList : list of words to stem
+   * @returns list of stemmed words
+   */
+  stem(wordList) {
+    return wordList.map(word => nlp.PorterStemmer.stem(word));
+  }
+
   // Text Standardization NLP Pipeline
   // 1. tokenize text
   // 2. remove stopwords
   // 3. use POS tagging to remove adjectives
-  // 4. stemming? // TODO?
+  // 4. stemming
   standardize(text) {
-    return this.posTagger(this.removeStopwords(this.tokenize(text)));
+    return this.stem(this.posTagger(this.removeStopwords(this.tokenize(text))));
   }
 }
 

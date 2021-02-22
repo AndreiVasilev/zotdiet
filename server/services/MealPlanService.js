@@ -1,5 +1,6 @@
-
 const spoonService = require('./SpoonService');
+const nlpService = require('./NLPService');
+const {Heap} = require('../Heap');
 
 class MealPlanService {
 
@@ -63,6 +64,14 @@ class MealPlanService {
         return lose ? this.calorieMultipliers.INTENSE_LOSS : this.calorieMultipliers.INTENSE_GAIN;
     }
 
+    rankMeals(user, meals) {
+        const rankedMeals = new Heap(5);
+        for (const meal of meals) {
+            rankedMeals.push(meal, this._getMealScore(meal, user));
+        }
+        return rankedMeals.values.filter(value => value !== null);
+    }
+
     /**
      * Gets the Basal Metabolic Rate of the given user
      * based ont the Revised Harris-Benedict Formula
@@ -87,6 +96,27 @@ class MealPlanService {
     _getCmHeight(feet, inches) {
         const cmPerInch = 2.54;
         return feet * 12 * cmPerInch + inches * cmPerInch
+    }
+
+    _getMealScore(meal, user) {
+        if (user.dislikedMeals && user.dislikedMeals.includes(meal.id)) {
+            return Number.MIN_SAFE_INTEGER;
+        }
+
+        const ingredients = meal.extendedIngredients.map(ing => nlpService.standardize(ing.name)).flat();
+        let score = 0;
+
+        for (const ingredient of ingredients) {
+            if (user.likedIngredients && user.likedIngredients[ingredient]) {
+                score += user.likedIngredients[ingredient];
+            }
+            if (user.dislikedIngredients && user.dislikedIngredients[ingredient]) {
+                score -= user.dislikedIngredients[ingredient];
+            }
+        }
+
+        console.log(meal, score);
+        return score;
     }
 }
 
