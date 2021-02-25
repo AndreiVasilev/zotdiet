@@ -55,11 +55,12 @@ class SpoonService {
       }
     }
 
-    async generateMealPlanForWeek(targetCalories, diet, excludeIngredients){
-        console.log('Get Meal Plan for Week Request Made.')
+    async generateMealPlan(targetCalories, timeFrame, diet, excludeIngredients){
+        console.log('Get Meal Plan Request Made.')
 
         let requestStr = this.getBaseUrl() + 'mealplanner/generate?' + this.getApiKeyStr()
-        let mealPlanStr = '&timeFrame=week&targetCalories=' + targetCalories
+        let mealPlanStr = '&timeFrame=' + timeFrame
+        mealPlanStr += '&targetCalories=' + targetCalories
         mealPlanStr += '&diet=' + diet
 
         if (excludeIngredients) {
@@ -79,6 +80,21 @@ class SpoonService {
         console.log(res.data)
         return res.data
     }
+
+    async generateMealPlanSet(targetCalories, timeFrame, diet, excludeIngredients, numPlans){
+
+        console.log('Generate Meal Plan Set Function Entered.')
+        let mealPlans = []
+
+        for(let i = 0; i < numPlans; i++){
+            let mealPlan = await this.generateMealPlan(targetCalories, timeFrame, diet, excludeIngredients)
+            mealPlans.push(mealPlan)
+        }
+
+        console.log('Generate Meal Plan Set Function Succeeded.')
+        return mealPlans
+    }
+
 
     async generateMealPlanSet(targetCalories, diet, excludeIngredients, numPlans){
 

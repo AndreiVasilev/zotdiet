@@ -37,7 +37,7 @@ spoonRouter.get('/mealplanner/generate', async (request, response) => {
     console.log('Test Route Called.')
     console.log('request cals: ' + request.query.calories)
 
-    let data = await spoonService.generateMealPlanForWeek(request.query.calories, request.query.diet, request.query.exclude)
+    let data = await spoonService.generateMealPlan(request.query.calories, request.query.timeFrame, request.query.diet, request.query.exclude)
     
     console.log('Test Route Returning.')
     
