@@ -96,21 +96,6 @@ class SpoonService {
     }
 
 
-    async generateMealPlanSet(targetCalories, diet, excludeIngredients, numPlans){
-
-        console.log('Generate Meal Plan Set Function Entered.')
-        let mealPlans = []
-
-        for(let i = 0; i < numPlans; i++){
-            let mealPlan = await this.generateMealPlanForWeek(targetCalories, diet, excludeIngredients)
-            mealPlans.push(mealPlan)
-        }
-
-        console.log('Generate Meal Plan Set Function Succeeded.')
-        return mealPlans
-    }
-
-
     getBaseUrl(){
         return 'https://api.spoonacular.com/'
     }
