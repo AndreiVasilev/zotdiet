@@ -56,25 +56,46 @@ class SpoonService {
     }
 
 
-    async getIngredientsByRecipeIDBulk(recipeIDs){
+    async getRecipeByIDBulk(recipeIDs){
         console.log('Get Recipe Ingredients Request Made.')
-        let requestStr = 'recipes/informationBulk' + recipeIDs
+        let requestStr = 'recipes/informationBulk'
         requestStr = this.getBaseUrl() + requestStr + '?' + this.getApiKeyStr()
-  
+        requestStr = requestStr + '&ids=' + recipeIDs
+
+
         try {
           let res = await axios.get(requestStr)
           console.log('Get Recipe Ingredients Bulk Request Succeeded.')
+          return res.data
+        }
+        catch (err) {
+          console.log('Get Recipe Ingredients Request Failed.')
+          return {'result': 'failed'}
+        }
+    }
+
+
+    async getShoppingList(recipeIDs){
+        console.log('Get Shopping List Request Made.')
   
-          // get ingredients names and perform NLP to standardize
-          let ingredients = res.data.ingredients;
-          ingredients = ingredients.map(ingredient => nlpService.standardize(ingredient.name)).flat();  // flatten 2D array to 1D array
-          return ingredients
+        try {
+          let recipesInfo = await this.getRecipeByIDBulk(recipeIDs)
+
+          let shoppingList = [];
+          recipesInfo.forEach(recipe => {
+              let exIngs = recipe.extendedIngredients
+              exIngs.forEach(ingredient => {
+                  shoppingList.push(ingredient.original)
+              })
+          })
+          console.log('Get Shopping List Bulk Request Succeeded.')
+          return shoppingList
         }
         catch {
           console.log('Get Recipe Ingredients Request Failed.')
           return {'result': 'failed'}
         }
-      }
+    }
 
     
 
