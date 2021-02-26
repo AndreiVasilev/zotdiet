@@ -27,14 +27,20 @@ spoonRouter.get('/recipes/:id/information', async (request, response) => {
 })
 
 spoonRouter.get('/recipes/:id/ingredients', async (request, response) => {
-  let data = await spoonService.getIngredientsByRecipeID(request.params.id)
+    let data = await spoonService.getIngredientsByRecipeID(request.params.id)
   response.json(data)
 })
 
 spoonRouter.get('/recipes/informationBulk', async (request, response) => {
-    let data = await spoonService.getIngredientsByRecipeIDBulk(request.params.ids)
+    let data = await spoonService.getRecipeByIDBulk(request.query.ids)
     response.json(data)
-  })
+})
+
+
+spoonRouter.get('/recipes/shoppingList', async (request, response) => {
+    let data = await spoonService.getShoppingList(request.query.ids)
+    response.json(data)
+})
 
 
 spoonRouter.get('/mealplanner/generate', async (request, response) => {
