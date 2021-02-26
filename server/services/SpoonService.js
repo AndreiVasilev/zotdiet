@@ -55,11 +55,35 @@ class SpoonService {
       }
     }
 
-    async generateMealPlanForWeek(targetCalories, diet, excludeIngredients){
-        console.log('Get Meal Plan for Week Request Made.')
+
+    async getIngredientsByRecipeIDBulk(recipeIDs){
+        console.log('Get Recipe Ingredients Request Made.')
+        let requestStr = 'recipes/informationBulk' + recipeIDs
+        requestStr = this.getBaseUrl() + requestStr + '?' + this.getApiKeyStr()
+  
+        try {
+          let res = await axios.get(requestStr)
+          console.log('Get Recipe Ingredients Bulk Request Succeeded.')
+  
+          // get ingredients names and perform NLP to standardize
+          let ingredients = res.data.ingredients;
+          ingredients = ingredients.map(ingredient => nlpService.standardize(ingredient.name)).flat();  // flatten 2D array to 1D array
+          return ingredients
+        }
+        catch {
+          console.log('Get Recipe Ingredients Request Failed.')
+          return {'result': 'failed'}
+        }
+      }
+
+    
+
+    async generateMealPlan(targetCalories, timeFrame, diet, excludeIngredients){
+        console.log('Get Meal Plan Request Made.')
 
         let requestStr = this.getBaseUrl() + 'mealplanner/generate?' + this.getApiKeyStr()
-        let mealPlanStr = '&timeFrame=week&targetCalories=' + targetCalories
+        let mealPlanStr = '&timeFrame=' + timeFrame
+        mealPlanStr += '&targetCalories=' + targetCalories
         mealPlanStr += '&diet=' + diet
 
         if (excludeIngredients) {
@@ -78,6 +102,20 @@ class SpoonService {
         console.log('Generate Meal Plan Request Succeeded.')
         console.log(res.data)
         return res.data
+    }
+
+    async generateMealPlanSet(targetCalories, timeFrame, diet, excludeIngredients, numPlans){
+
+        console.log('Generate Meal Plan Set Function Entered.')
+        let mealPlans = []
+
+        for(let i = 0; i < numPlans; i++){
+            let mealPlan = await this.generateMealPlan(targetCalories, timeFrame, diet, excludeIngredients)
+            mealPlans.push(mealPlan)
+        }
+
+        console.log('Generate Meal Plan Set Function Succeeded.')
+        return mealPlans
     }
 
 
