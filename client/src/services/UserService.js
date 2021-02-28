@@ -91,7 +91,6 @@ class UserService {
   }
 
   async getUserSteps() {
-    const headers = { "Content-Type": "application/json" };
     const response = await axios
       .get("/api/user/steps", { params: { lastNumDays: 90 } })
       .catch((err) => console.error("Unable to get user steps", err));
@@ -111,7 +110,7 @@ class UserService {
     const response = await axios
       .get("/api/user/meal-plan")
       .catch((err) => console.error("Unable to get user meal plan", err));
-    return response && response.status === 200 ? response.data.week : null;
+    return response && response.status === 200 ? response.data : null;
   }
 
   async getLikedMeals() {

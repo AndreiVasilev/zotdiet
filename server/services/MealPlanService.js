@@ -24,6 +24,10 @@ class MealPlanService {
 
     async generateMealPlan(user, steps) {
 
+        /*
+            Calculate user's daily target calories based on their age,
+            weight, height, gender, activity level, and weight goals
+         */
         const bmr = this.getUserBMR(user);
         const activityLevel = this.getActivityLevel(steps);
         const maintainCalories = bmr * activityLevel;
@@ -40,7 +44,35 @@ class MealPlanService {
             targetCalories = maintainCalories * this.getCalorieMultiplier(false, user.pace);
         }
 
-        return spoonService.generateMealPlanForWeek(targetCalories, user.diet, user.intolerances);
+        /*
+            Get a set of initial meals from Spoonacular matching the constraints calculated
+            above and then further rank meals based on user's liked/disliked ingredients and
+            cuisine preferences.
+         */
+        const mealsToRank = 10;
+        const mealPlans = await spoonService.generateMealPlanSet(targetCalories, 'day', user.diet, user.intolerances, mealsToRank);
+        const recipeIds = mealPlans.map(plan => plan.meals.map(meal => meal.id)).flatMap(ids => ids);
+        const bulkMeals = await spoonService.getRecipeByIDBulk(recipeIds);
+        const mealScores = this.getMealScores(user, bulkMeals);
+
+        const rankedMeals = new Heap(mealsToRank);
+        for (const plan of mealPlans) {
+            let score = plan.meals.map(meal => mealScores[meal.id]).reduce((a,b) => a + b, 0);
+            rankedMeals.push(plan, score);
+        }
+
+        console.log(rankedMeals);
+
+        const topPlans = rankedMeals.values.slice(1, 9);
+        return {
+            sunday: topPlans[0],
+            monday: topPlans[1],
+            tuesday: topPlans[2],
+            wednesday: topPlans[3],
+            thursday: topPlans[4],
+            friday: topPlans[5],
+            saturday: topPlans[6]
+        }
     }
 
     getActivityLevel(stepCounts) {
@@ -64,12 +96,12 @@ class MealPlanService {
         return lose ? this.calorieMultipliers.INTENSE_LOSS : this.calorieMultipliers.INTENSE_GAIN;
     }
 
-    rankMeals(user, meals) {
-        const rankedMeals = new Heap(5);
+    getMealScores(user, meals) {
+        const mealScores = {};
         for (const meal of meals) {
-            rankedMeals.push(meal, this._getMealScore(meal, user));
+            mealScores[meal.id] = this._getMealScore(meal, user);
         }
-        return rankedMeals.values.filter(value => value !== null);
+        return mealScores;
     }
 
     /**
@@ -115,7 +147,6 @@ class MealPlanService {
             }
         }
 
-        console.log(meal, score);
         return score;
     }
 }

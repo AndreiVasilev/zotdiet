@@ -55,7 +55,6 @@ class SpoonService {
       }
     }
 
-
     async getRecipeByIDBulk(recipeIDs){
         console.log('Get Recipe Ingredients Request Made.')
         let requestStr = 'recipes/informationBulk'
@@ -100,7 +99,7 @@ class SpoonService {
     
 
     async generateMealPlan(targetCalories, timeFrame, diet, excludeIngredients){
-        console.log('Get Meal Plan Request Made.')
+        console.debug('Get Meal Plan Request Made.')
 
         let requestStr = this.getBaseUrl() + 'mealplanner/generate?' + this.getApiKeyStr()
         let mealPlanStr = '&timeFrame=' + timeFrame
@@ -113,29 +112,30 @@ class SpoonService {
 
         requestStr += mealPlanStr
 
-        console.log(requestStr)
+        console.debug(requestStr)
 
         const res = await axios.get(requestStr).catch(err => console.error("Failed to generate meal plan.", err));
         if (!res) {
             return [];
         }
 
-        console.log('Generate Meal Plan Request Succeeded.')
-        console.log(res.data)
+        console.debug('Generate Meal Plan Request Succeeded.')
         return res.data
     }
 
     async generateMealPlanSet(targetCalories, timeFrame, diet, excludeIngredients, numPlans){
 
-        console.log('Generate Meal Plan Set Function Entered.')
-        let mealPlans = []
+        console.debug('Generate Meal Plan Set Function Entered.')
+        const mealPromises = []
 
         for(let i = 0; i < numPlans; i++){
-            let mealPlan = await this.generateMealPlan(targetCalories, timeFrame, diet, excludeIngredients)
-            mealPlans.push(mealPlan)
+            const mealPromise = this.generateMealPlan(targetCalories, timeFrame, diet, excludeIngredients)
+            mealPromises.push(mealPromise)
         }
 
-        console.log('Generate Meal Plan Set Function Succeeded.')
+        const mealPlans = await Promise.all(mealPromises);
+
+        console.debug('Generate Meal Plan Set Function Succeeded.')
         return mealPlans
     }
 
