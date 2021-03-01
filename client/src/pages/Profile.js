@@ -15,6 +15,8 @@ function Profile(props) {
     const [showModal, setShowModal] = useState(false);
     const [intolerances, setIntolerances] = useState([]);
     const [intolerance, setIntolerance] = useState('Dairy');
+    const [cuisines, setCuisines] = useState([]);
+    const [cuisine, setCuisine] = useState('Dairy');
     const [user, setUser] = useState({
         id: '',
         firstName: '',
@@ -48,6 +50,9 @@ function Profile(props) {
                     if (currUser.intolerances) {
                         setIntolerances(currUser.intolerances);
                     }
+                    if (currUser.cuisines) {
+                        setCuisines(currUser.cuisines);
+                    }
                     setUser(currUser);
                 });
             }
@@ -59,13 +64,13 @@ function Profile(props) {
 
         // TODO add error checking
         if (initUser) {
-            userService.createUser({...user, intolerances}).then(user => {
+            userService.createUser({...user, intolerances, cuisines}).then(user => {
                 if (user) {
                     history.push(HOME);
                 }
             });
         } else {
-            userService.updateUser({...user, intolerances}).then(_ =>
+            userService.updateUser({...user, intolerances, cuisines}).then(_ =>
                 alert('User profile updated')
             );
         }
@@ -126,6 +131,27 @@ function Profile(props) {
     function deleteIntolerance(intolerance) {
         return () => {
             setIntolerances(intolerances.filter(value => value !== intolerance));
+        }
+    }
+
+    function getCuisineOptions() {
+        const cuisines = spoonService.getCuisines();
+        const items = [];
+        for (const cuisine of cuisines) {
+            items.push(<option>{cuisine}</option>);
+        }
+        return items;
+    }
+
+    function addCuisine() {
+        if (!cuisines.includes(cuisine)) {
+            setCuisines([...cuisines, cuisine]);
+        }
+    }
+
+    function deleteCuisine(cuisine) {
+        return () => {
+            setCuisines(cuisines.filter(value => value !== cuisine));
         }
     }
 
@@ -218,13 +244,30 @@ function Profile(props) {
                             </Form.Group>
                         </Row>
 
+                        <Form.Label className="mt-4">Favorite Cuisines</Form.Label>
+                        <Row>
+                            <Col className="col-4 m-auto">
+                                <Form.Control required as="select" placeholder="Choose cuisine..."
+                                              type="text" name="cuisine" value={cuisine}
+                                              onChange={(event) => setCuisine(event.target.value)}>
+                                    {getCuisineOptions()}
+                                </Form.Control>
+                            </Col>
+                            <Col className="col-auto m-auto">
+                                <Button variant="primary" type="button" onClick={addCuisine}>Add</Button>
+                            </Col>
+                            <Col className="m-auto">
+                                <ChipList chips={cuisines} handleDelete={deleteCuisine}/>
+                            </Col>
+                        </Row>
+
                         <Form.Label className="mt-4">Food Allergies</Form.Label>
                         <Row>
                             <Col className="col-4 m-auto">
                                 <Form.Control required as="select" placeholder="Choose intolerance..."
                                               type="text" name="intolerance" value={intolerance}
                                               onChange={(event) =>
-                                                  setIntolerance(event.target.value)}>
+                                                setIntolerance(event.target.value)}>
                                     {getIntoleranceOptions()}
                                 </Form.Control>
                             </Col>

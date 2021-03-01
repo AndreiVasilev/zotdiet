@@ -9,6 +9,14 @@ class SpoonService {
             'Vegan', 'Pescetarian', 'Paleo', 'Primal', 'Whole30',
         ];
 
+        this.cuisines = [
+            'African', 'American', 'British', 'Cajun', 'Caribbean', 'Chinese',
+            'Eastern European', 'European', 'French', 'German', 'Greek', 'Indian',
+            'Irish', 'Italian', 'Japanese', 'Jewish', 'Korean', 'Latin American',
+            'Mediterranean', 'Mexican', 'Middle Eastern', 'Nordic', 'Southern',
+            'Spanish', 'Thai', 'Vietnamese'
+        ];
+
         this.intolerances = [
             'Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood', 'Sesame',
             'Shellfish', 'Soy', 'Sulfite', 'Tree Nut', 'Wheat',
@@ -21,6 +29,10 @@ class SpoonService {
 
     getIntolerances() {
         return this.intolerances;
+    }
+
+    getCuisines() {
+        return this.cuisines;
     }
 
     async getMealIngredients(mealId) {
