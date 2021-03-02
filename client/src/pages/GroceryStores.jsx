@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Button, Card } from "react-bootstrap";
+import { Edit } from "react-feather";
 import GoogleMapReact from "google-map-react";
 import axios from "axios";
 import "./GroceryStores.css";
@@ -14,7 +15,7 @@ const defaultLocation = {
 };
 
 const Map = () => (
-  <div className="google-map" style={{ height: "300px", width: "1000px" }}>
+  <div className="google-map" style={{ height: "300px", width: "500px" }}>
     <GoogleMapReact
       bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY }}
       defaultCenter={defaultLocation.center}
@@ -22,6 +23,26 @@ const Map = () => (
     ></GoogleMapReact>
   </div>
 );
+
+const Checkbox = ({ label }) => {
+  const [checked, setChecked] = useState(false);
+
+  const handleChange = () => {
+    setChecked(!checked);
+  };
+
+  return (
+    <div className="checkbox-wrapper">
+      <input
+        type="checkbox"
+        value={label}
+        onChange={handleChange}
+        defaultChecked={checked}
+      />
+      <span>{label}</span>
+    </div>
+  );
+};
 
 const GroceryStores = () => {
   const baseURL =
@@ -72,39 +93,71 @@ const GroceryStores = () => {
     }
   }, []);
 
+  const groceryListItems = [
+    "Cheese",
+    "Bread",
+    "Salad",
+    "Chipotle Sauce",
+    "Onions",
+    "Bellpepers",
+    "Ranch",
+    "Red Peppers",
+    "Eggs",
+    "Goat Cheese",
+    "Pepper Jack Cheese",
+    "Spinach",
+    "Pizza Dough",
+    "Cake Mix",
+  ];
+
   return (
     <Card className="stores-container">
-      <div className="stores-content">
-        <div className="local-stores">
-          <h1>Grocery Stores Near You</h1>
-          <div>
-            {stores &&
-              stores.map((store) => (
-                <div key={store.name}>
-                  <strong>{store.name} - </strong>
-                  <span>
-                    <a
-                      target="_blank"
-                      href={`https://www.google.com/maps/place/${store.vicinity}`}
-                    >
-                      {store.vicinity}
-                    </a>
-                  </span>
+      <div className="flex-row">
+        <div className="stores-content">
+          <div className="local-stores">
+            <h1>Grocery Stores Near You</h1>
+            <div>
+              {stores &&
+                stores.map((store) => (
+                  <div key={store.name}>
+                    <strong>{store.name} - </strong>
+                    <span>
+                      <a
+                        target="_blank"
+                        href={`https://www.google.com/maps/place/${store.vicinity}`}
+                      >
+                        {store.vicinity}
+                      </a>
+                    </span>
 
-                  <ul>
-                    <li>
-                      {store?.opening_hours?.open_now
-                        ? "Currently Open"
-                        : "Currently Closed"}
-                    </li>
-                    <li>Rating: {store.rating}/5 stars</li>
-                  </ul>
-                </div>
-              ))}
+                    <ul>
+                      <li>
+                        {store?.opening_hours?.open_now
+                          ? "Currently Open"
+                          : "Currently Closed"}
+                      </li>
+                      <li>Rating: {store.rating}/5 stars</li>
+                    </ul>
+                  </div>
+                ))}
+            </div>
+          </div>
+          <div className="map">
+            <Map />
           </div>
         </div>
-        <div className="map">
-          <Map />
+        <div className="grocery-list">
+          <h1>
+            Grocery List
+            <span className="pencil-icon">
+              <Edit />
+            </span>
+          </h1>
+          <div className="grocery-list-wrapper">
+            {groceryListItems.map((item) => (
+              <Checkbox label={item} />
+            ))}
+          </div>
         </div>
       </div>
     </Card>
