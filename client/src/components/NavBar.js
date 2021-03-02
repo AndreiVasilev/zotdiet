@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import { Navbar, Nav } from 'react-bootstrap';
 import "./NavBar.css"
 import logo from "../assets/logo.png";
-import { HOME, MEAL_PLAN, HEALTH_METRICS, PROFILE } from "../routes";
+import {HOME, MEAL_PLAN, HEALTH_METRICS, PROFILE, GROCERY_STORES} from "../routes";
 import LoginButton from "./LoginButton";
 import userService from "../services/UserService";
 
@@ -32,6 +32,7 @@ function NavBar() {
               <Nav id="nav-links">
                 <Nav.Link className="nav-link" href={HOME}>Home</Nav.Link>
                 <Nav.Link className="nav-link" href={MEAL_PLAN}>Meal Plan</Nav.Link>
+                <Nav.Link className="nav-link" href={GROCERY_STORES}>Local Stores</Nav.Link>
                 <Nav.Link className="nav-link" href={HEALTH_METRICS}>Health Metrics</Nav.Link>
                 <Nav.Link className="nav-link" href={PROFILE}>Profile</Nav.Link>
               </Nav> : <div/>
