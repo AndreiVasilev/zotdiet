@@ -147,6 +147,10 @@ class MealPlanService {
             }
         }
 
+        for (const cuisine of meal.cuisines) {
+            score += user.cuisines.includes(cuisine) ? 5.0 : 0;
+        }
+
         return score;
     }
 }
