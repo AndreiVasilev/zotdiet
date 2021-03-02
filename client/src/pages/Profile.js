@@ -16,7 +16,7 @@ function Profile(props) {
     const [intolerances, setIntolerances] = useState([]);
     const [intolerance, setIntolerance] = useState('Dairy');
     const [cuisines, setCuisines] = useState([]);
-    const [cuisine, setCuisine] = useState('Dairy');
+    const [cuisine, setCuisine] = useState('African');
     const [user, setUser] = useState({
         id: '',
         firstName: '',
