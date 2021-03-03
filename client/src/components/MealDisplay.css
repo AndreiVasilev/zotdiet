@@ -16,10 +16,6 @@
     font-size: 1.2rem;
 }
 
-.meal-display-container:hover {
-    /*cursor: pointer;*/
-}
-
 .meal-display-nutrients-tbl {
     border: 2px solid black;
     width: 100%;
@@ -47,7 +43,6 @@
 }
 
 .thumbs-selected {
-    /*color: #2D2DD7;*/
     color: #ffd221;
 }
 

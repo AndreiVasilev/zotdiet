@@ -1,14 +1,16 @@
 import React, { useState }  from "react";
 import "./MealDisplay.css";
 import "../App.css";
+
 import userService from "../services/UserService";
+import spoonService from "../services/SpoonService";
+
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faClock} from "@fortawesome/free-solid-svg-icons/faClock";
 import {faThumbsUp} from "@fortawesome/free-solid-svg-icons/faThumbsUp";
 import {faThumbsDown} from "@fortawesome/free-solid-svg-icons/faThumbsDown";
 
 import MealDisplayImg from "./MealDisplayImg";
-import spoonService from "../services/SpoonService";
 
 function MealDisplay(props) {
     const { mealId, mealType, mealName, url, img, cookTime, liked, disliked, openModal } = props;
