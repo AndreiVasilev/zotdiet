@@ -3,6 +3,8 @@ import { Button, Card } from "react-bootstrap";
 import { Edit } from "react-feather";
 import GoogleMapReact from "google-map-react";
 import axios from "axios";
+import { db, auth } from "../utils/firebase";
+import spoonService from "../services/SpoonService";
 import "./GroceryStores.css";
 
 const defaultLocation = {
@@ -53,6 +55,9 @@ const GroceryStores = () => {
 
   const [positionCoords, setPositionCoords] = useState({});
   const [stores, setStores] = useState([]);
+  const [meals, setMeals] = useState();
+  const [ingredients, setIngredients] = useState(["Beans", "Bread"]);
+  const [groceryListItems, setGroceryListItems] = useState([]);
 
   useEffect(() => {
     const fetchStores = async ({ lat, lng }) => {
@@ -85,30 +90,63 @@ const GroceryStores = () => {
             lng: position.coords.longitude,
           });
         },
-        (error) => console.log("Error locating user location", error),
-        {
-          timeout: 5000,
-        }
+        (error) => console.log("Error locating user location", error)
       );
     }
   }, []);
 
-  const groceryListItems = [
-    "Cheese",
-    "Bread",
-    "Salad",
-    "Chipotle Sauce",
-    "Onions",
-    "Bellpepers",
-    "Ranch",
-    "Red Peppers",
-    "Eggs",
-    "Goat Cheese",
-    "Pepper Jack Cheese",
-    "Spinach",
-    "Pizza Dough",
-    "Cake Mix",
-  ];
+  useEffect(() => {
+    const getAllIngredients = async (fetchedMeals) => {
+      console.log("fetchedMeals", fetchedMeals);
+      let formattedBulk = fetchedMeals?.map((meal) => meal?.id ?? "");
+      formattedBulk = formattedBulk.join(",");
+
+      console.log("formattedBulk", formattedBulk);
+
+      if (formattedBulk) {
+        let ings = [];
+
+        ings = await spoonService.getBulkMealIngredients(formattedBulk);
+
+        console.log("ings", ings);
+
+        let extendedIngs = [];
+        ings.forEach((ing) => {
+          for (let el in ing.extendedIngredients) {
+            extendedIngs.push(ing.extendedIngredients[el].name);
+          }
+        });
+
+        console.log(extendedIngs);
+
+        const rmDupsIngs = extendedIngs.reduce(function (prev, curr) {
+          if (prev.indexOf(curr) < 0) prev.push(curr);
+          return prev;
+        }, []);
+
+        if (ings.result !== "failed") {
+          setGroceryListItems(rmDupsIngs);
+        }
+      }
+    };
+
+    const mealsRef = db.ref("/users/" + "118022199851261398091" + "/mealPlan");
+
+    mealsRef.on("value", (snapshot) => {
+      const { week } = snapshot.val();
+      console.log(week);
+
+      let localMeals = [];
+      for (const [key, value] of Object.entries(week)) {
+        const { meals: fetchedMeals } = value;
+
+        localMeals.push(...fetchedMeals);
+      }
+
+      setMeals(localMeals);
+      getAllIngredients(localMeals);
+    });
+  }, []);
 
   return (
     <Card className="stores-container">
