@@ -35,3 +35,8 @@ Then, to run the project call the following from the root 'zotdiet' directory :
 ```
 $ npm run dev
 ```
+## Software Used and Citations
+- Software Used: Node.js, Bootstrap, React, Google Places API, Google Maps API, Spoonacular API, Firebase
+- We used FontAwesome, a fully open-source font and icon toolkit for icons on our web app.
+- We used Chart.js, a free open-source Javascript library for our graph data visualization. 
+- We used the open-source react pie chart for aesthetic design on our web app. (https://www.npmjs.com/package/react-minimal-pie-chart)
